@@ -4,36 +4,36 @@ export class APIError extends Error {
   constructor(message: string, status: number) {
     super(message);
     this.status = status;
-    this.name = 'APIError';
+    this.name = "APIError";
   }
 }
 
 export async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {},
-  serverToken?: string // Allows passing cookies from Next.js Server Components securely
+  serverToken?: string, // Allows passing cookies from Next.js Server Components securely
 ): Promise<T> {
-  const isClient = typeof window !== 'undefined';
-  
-  let url = '';
+  const isClient = typeof window !== "undefined";
+
+  let url = "";
   const headers = new Headers(options.headers || {});
-  
+
   if (isClient) {
     // If executing in browser, proxy through our secure Next.js server route (/api/admin/...)
-    url = `/api${endpoint}`; 
+    url = `/api${endpoint}`;
   } else {
     // If executing on server, query the backend API directly using absolute URLs
-    const backendUrl = process.env.BACKEND_API_URL || 'https://api.trios.com';
+    const backendUrl = process.env.BACKEND_API_URL || "https://api.trios.com";
     url = `${backendUrl}${endpoint}`;
-    
+
     if (serverToken) {
-      headers.set('Authorization', `Bearer ${serverToken}`);
+      headers.set("Authorization", `Bearer ${serverToken}`);
     }
   }
 
-  headers.set('Accept', 'application/json');
+  headers.set("Accept", "application/json");
   if (!(options.body instanceof FormData)) {
-    headers.set('Content-Type', 'application/json');
+    headers.set("Content-Type", "application/json");
   }
 
   const response = await fetch(url, {
@@ -48,7 +48,10 @@ export async function apiFetch<T>(
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new APIError(data.message || 'An API error occurred', response.status);
+    throw new APIError(
+      data.message || "An API error occurred",
+      response.status,
+    );
   }
 
   return data as T;

@@ -56,6 +56,10 @@ export interface AdminVendorDetail extends AdminVendor {
   status: string;
 }
 
+export interface VendorPageResponse {
+  [key: string]: unknown;
+}
+
 export interface DashboardResponse {
   total_events: number;
   total_users: number;
