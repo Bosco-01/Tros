@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   Search, 
   Bell, 
@@ -22,12 +22,13 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react';
+import { apiFetch } from '@/services/apiClient';
+import { AdminProfile } from '@/types/admin';
 
 interface TopbarProps {
   title: string;
 }
 
-// Navigation items matching your Sidebar exactly
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'All Users', href: '/dashboard/users', icon: Users },
@@ -42,7 +43,27 @@ const navItems = [
 
 export const Topbar: React.FC<TopbarProps> = ({ title }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Real profile state managed dynamically
+  const [profile, setProfile] = useState<AdminProfile | null>(null);
+
+  // Fetch the logged-in administrator's profile details on mount
+  useEffect(() => {
+    const fetchAdminProfile = async () => {
+      try {
+        const data = await apiFetch<AdminProfile>('/admin/profile');
+        setProfile(data);
+      } catch (error) {
+        console.error('Failed to retrieve active administrator profile:', error);
+        // Optional fallback: redirect to login if there is no session token
+        // router.push('/');
+      }
+    };
+    
+    fetchAdminProfile();
+  }, [router]);
 
   return (
     <>
@@ -50,7 +71,6 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
         
         {/* Left Side: Mobile Menu Button & Title */}
         <div className="flex items-center gap-3">
-          {/* Hamburger Icon Button - Only visible below desktop breakpoint (lg) */}
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
             className="lg:hidden p-2 rounded-xl text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 transition-colors focus:outline-none"
@@ -88,21 +108,21 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
             <span className="absolute top-2.5 right-3 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
           </button>
 
-          {/* User Profile Info */}
-          <div className="flex items-center gap-3 pl-1 md:pl-2">
-            <div className="w-9 h-10 md:w-10 md:h-10 rounded-full overflow-hidden relative bg-neutral-200 flex-shrink-0">
+          {/* Dynamic Admin Profile Info (Top-Right Corner) */}
+          <div className="flex items-center gap-3 pl-1 md:pl-2 select-none">
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden relative bg-neutral-100 border border-neutral-100 flex-shrink-0">
               <img
-                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop"
-                alt="Emmanuel Isiguzo"
+                src={profile?.avatar_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop"}
+                alt={profile?.name || "Administrator"}
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="hidden sm:flex flex-col text-left">
               <span className="text-sm font-bold text-neutral-900 leading-tight">
-                Emmanuel Isiguzo
+                {profile ? profile.name : 'Loading Profile...'}
               </span>
-              <span className="text-xs text-neutral-500 font-medium">
-                emmanuel@gmail.com
+              <span className="text-xs text-neutral-500 font-medium leading-normal">
+                {profile ? profile.email : 'Connecting...'}
               </span>
             </div>
           </div>
@@ -110,33 +130,22 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
         </div>
       </header>
 
-      {/* 
-        ========================================================================
-        MOBILE NAVIGATION DRAWER OVERLAY
-        ========================================================================
-      */}
+      {/* Mobile Drawer (replicated here with dynamic profile bindings too) */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
-          
-          {/* 1. Backdrop Dimmer (click outside to close) */}
           <div 
             onClick={() => setIsMobileMenuOpen(false)}
             className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
           />
-
-          {/* 2. Sliding Sidebar Drawer */}
           <div className="relative w-[280px] h-full bg-white shadow-2xl flex flex-col pt-8 pb-6 z-10 animate-in slide-in-from-left duration-300">
-            
-            {/* Close Button on Top Right of Drawer */}
             <button 
               onClick={() => setIsMobileMenuOpen(false)}
               className="absolute top-6 right-5 p-2 rounded-xl text-neutral-500 hover:bg-neutral-50 hover:text-neutral-950 transition-colors focus:outline-none"
-              aria-label="Close navigation menu"
+              aria-label="Close navigation"
             >
               <X className="w-5 h-5 stroke-[2.5]" />
             </button>
 
-            {/* Brand Logo inside Drawer */}
             <div className="flex items-center gap-3 px-8 mb-8 select-none">
               <div className="text-[#FF5C00]">
                 <svg width="26" height="28" viewBox="0 0 24 24" fill="currentColor">
@@ -146,7 +155,6 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
               <span className="text-2xl font-black text-[#6312E1] tracking-tight">Trios</span>
             </div>
 
-            {/* Navigation list */}
             <nav className="flex-1 overflow-y-auto px-5 flex flex-col gap-1 custom-scrollbar">
               {navItems.map((item) => {
                 const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
@@ -155,7 +163,7 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)} // Close drawer on route click
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all ${
                       isActive
                         ? 'text-neutral-950 font-bold bg-neutral-50/90'
@@ -171,7 +179,6 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
               })}
             </nav>
 
-            {/* Bottom Admin Drawer Settings */}
             <div className="px-5 pt-4 border-t border-neutral-100 flex flex-col gap-1 mt-auto">
               <Link
                 href="/dashboard/settings"
@@ -186,7 +193,6 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
                 <span className="text-[15px]">Logout</span>
               </button>
             </div>
-
           </div>
         </div>
       )}
