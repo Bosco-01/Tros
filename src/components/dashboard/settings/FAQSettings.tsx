@@ -83,13 +83,13 @@ export const FAQSettings: React.FC = () => {
                   />
                   <div className="flex gap-2.5 mt-1">
                     <button
-                      onClick={() => handleSaveEdit(idx)}
+                      onClick={() => handleSaveEdit(faq.id)}
                       className="px-4 py-1.5 bg-[#BEF2CB] text-[#168E33] font-bold text-xs rounded-lg hover:bg-[#a6f0b8] transition-colors"
                     >
                       Apply
                     </button>
                     <button
-                      onClick={() => setEditingIndex(null)}
+                      onClick={() => setEditingId(null)}
                       className="px-4 py-1.5 bg-neutral-100 text-neutral-700 font-bold text-xs rounded-lg hover:bg-neutral-200 transition-colors"
                     >
                       Cancel
