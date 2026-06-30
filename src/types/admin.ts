@@ -20,7 +20,7 @@ export interface AdminEvent {
   event_type: string;
   price: number;
   date_time: string;
-  status: string;
+  status: 'active' | 'on_hold' | 'cancelled' | 'pending_cancellation';
   total_users: number;
   rating: number;
   review_count: number;
@@ -54,10 +54,6 @@ export interface AdminVendorDetail extends AdminVendor {
   state: string;
   city: string;
   status: string;
-}
-
-export interface VendorPageResponse {
-  [key: string]: unknown;
 }
 
 export interface DashboardResponse {
@@ -132,4 +128,55 @@ export interface CreateSubscriptionPlanRequest {
 
 export interface UpdateSubscriptionPlanRequest extends CreateSubscriptionPlanRequest {
   is_active: boolean;
+}
+
+export interface DisputeRow {
+  dispute_id: string;
+  customer_name: string;
+  transaction_id: string;
+  payment_title: string;
+  amount: number;
+  date: string;
+  status: 'pending' | 'resolved';
+  admin_note?: string;
+}
+
+export interface SupportTicket {
+  ticket_id: string;
+  customer_name: string;
+  customer_email: string;
+  customer_number: string;
+  subject: string;
+  priority: 'High' | 'Medium' | 'Low';
+  status: 'open' | 'in_progress' | 'resolved' | 'closed';
+  complaint?: string;
+  dateTime: string;
+}
+
+export interface TransactionRow {
+  customerName: string;
+  transactionId: string;
+  paymentTitle: string;
+  amount: string;
+  date: string;
+  paymentType: 'Subscription' | 'Ad';
+  status: 'Successful' | 'Declined' | 'Pending';
+}
+
+export interface WithdrawalRequestRow {
+  withdrawal_id: string;
+  vendor_name: string;
+  account_name: string;
+  account_number: string;
+  bank_name: string;
+  amount: number;
+  status: 'pending' | 'successful' | 'failed';
+  reference: string;
+  date: string;
+}
+
+export interface VendorPageResponse {
+  vendor: AdminVendorDetail;
+  events: AdminEvent[];
+  total_events: number;
 }

@@ -3,6 +3,24 @@ import * as T from '@/types/admin';
 
 export const adminService = {
   // ==========================================
+  // AUTHENTICATION & PROFILE
+  // ==========================================
+  getProfile: (serverToken?: string) => {
+    return apiFetch<T.AdminProfile>('/admin/profile', {}, serverToken);
+  },
+
+  logout: () => {
+    return apiFetch<{ message: string }>('/admin/logout', { method: 'POST' });
+  },
+
+  changePassword: (data: any) => {
+    return apiFetch<any>('/admin/change-password', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // ==========================================
   // DASHBOARD & ANALYTICS
   // ==========================================
   getDashboardStats: (from?: string, to?: string, serverToken?: string) => {
@@ -21,8 +39,12 @@ export const adminService = {
     return apiFetch<T.ReportsAnalyticsResponse>(`/admin/reports/analytics${queryString}`, {}, serverToken);
   },
 
+  getReportsList: (page = 1, limit = 20, serverToken?: string) => {
+    return apiFetch<any>(`/admin/reports?page=${page}&limit=${limit}`, {}, serverToken);
+  },
+
   // ==========================================
-  // STAFF ADMIN MANAGEMENT
+  // STAFF ADMINS MANAGEMENT
   // ==========================================
   listAdmins: (page = 1, limit = 20, serverToken?: string) => {
     return apiFetch<any>(`/admin/admins?page=${page}&limit=${limit}`, {}, serverToken);
@@ -49,7 +71,21 @@ export const adminService = {
   },
 
   // ==========================================
-  // USER ACCOUNTS
+  // BROADCASTS
+  // ==========================================
+  listBroadcasts: (page = 1, limit = 20, serverToken?: string) => {
+    return apiFetch<any>(`/admin/broadcasts?page=${page}&limit=${limit}`, {}, serverToken);
+  },
+
+  sendBroadcast: (data: { channel: string; title: string; content: string; recipients?: string }) => {
+    return apiFetch<any>('/admin/broadcasts', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // ==========================================
+  // APP USERS MANAGEMENT
   // ==========================================
   listUsers: (params: { search?: string; phone?: string; status?: string; page?: number; limit?: number }, serverToken?: string) => {
     const query = new URLSearchParams();
@@ -77,7 +113,7 @@ export const adminService = {
   },
 
   // ==========================================
-  // VENDOR ACCOUNTS
+  // VENDORS MANAGEMENT
   // ==========================================
   listVendors: (params: { search?: string; status?: string; page?: number; limit?: number }, serverToken?: string) => {
     const query = new URLSearchParams();
@@ -88,12 +124,20 @@ export const adminService = {
     return apiFetch<any>(`/admin/vendors?${query.toString()}`, {}, serverToken);
   },
 
-  getVendorPageBundle: (vendorId: string, page = 1, limit = 20, serverToken?: string) => {
-    return apiFetch<T.VendorPageResponse>(`/admin/vendors/${vendorId}/page?page=${page}&limit=${limit}`, {}, serverToken);
+  getVendorDetail: (vendorId: string, serverToken?: string) => {
+    return apiFetch<T.AdminVendorDetail>(`/admin/vendors/${vendorId}`, {}, serverToken);
+  },
+
+  getVendorEvents: (vendorId: string, page = 1, limit = 20, serverToken?: string) => {
+    return apiFetch<any>(`/admin/vendors/${vendorId}/events?page=${page}&limit=${limit}`, {}, serverToken);
   },
 
   getVendorKYC: (vendorId: string, serverToken?: string) => {
     return apiFetch<any>(`/admin/vendors/${vendorId}/kyc`, {}, serverToken);
+  },
+
+  getVendorPageBundle: (vendorId: string, page = 1, limit = 20, serverToken?: string) => {
+    return apiFetch<T.VendorPageResponse>(`/admin/vendors/${vendorId}/page?page=${page}&limit=${limit}`, {}, serverToken);
   },
 
   updateVendorStatus: (vendorId: string, payload: { verification_status: 'pending' | 'approved' | 'rejected'; is_active?: boolean }) => {
@@ -104,7 +148,7 @@ export const adminService = {
   },
 
   // ==========================================
-  // EVENTS
+  // PLATFORM EVENTS MANAGEMENT
   // ==========================================
   listEvents: (page = 1, limit = 20, serverToken?: string) => {
     return apiFetch<any>(`/admin/events?page=${page}&limit=${limit}`, {}, serverToken);
@@ -117,6 +161,35 @@ export const adminService = {
   approveEventCancellation: (eventId: string) => {
     return apiFetch<any>(`/admin/events/${eventId}/approve-cancellation`, {
       method: 'POST',
+    });
+  },
+
+  // ==========================================
+  // DISPUTES, TRANSACTION RECORDS & WITHDRAWALS
+  // ==========================================
+  listTransactions: (page = 1, limit = 20, serverToken?: string) => {
+    return apiFetch<any>('/admin/transactions', {}, serverToken);
+  },
+
+  listWithdrawals: (params: { search?: string; status?: string; from?: string; to?: string; page?: number; limit?: number }, serverToken?: string) => {
+    const query = new URLSearchParams();
+    if (params.search) query.set('search', params.search);
+    if (params.status) query.set('status', params.status);
+    if (params.from) query.set('from', params.from);
+    if (params.to) query.set('to', params.to);
+    query.set('page', String(params.page || 1));
+    query.set('limit', String(params.limit || 20));
+    return apiFetch<any>(`/admin/withdrawals?${query.toString()}`, {}, serverToken);
+  },
+
+  listDisputes: (page = 1, limit = 20, serverToken?: string) => {
+    return apiFetch<any>('/admin/disputes', {}, serverToken);
+  },
+
+  resolveDispute: (disputeId: string, payload: { status: string; admin_note?: string }) => {
+    return apiFetch<any>(`/admin/disputes/${disputeId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
     });
   },
 
@@ -168,6 +241,10 @@ export const adminService = {
     });
   },
 
+  listVendorSubscriptions: (page = 1, limit = 20, serverToken?: string) => {
+    return apiFetch<any>(`/admin/subscriptions?page=${page}&limit=${limit}`, {}, serverToken);
+  },
+
   // ==========================================
   // SUPPORT TICKETS
   // ==========================================
@@ -183,35 +260,6 @@ export const adminService = {
     return apiFetch<any>(`/admin/support/${ticketId}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
-    });
-  },
-
-  // ==========================================
-  // DISPUTES, TRANSACTIONS & WITHDRAWALS
-  // ==========================================
-  listTransactions: (page = 1, limit = 20, serverToken?: string) => {
-    return apiFetch<any>(`/admin/transactions?page=${page}&limit=${limit}`, {}, serverToken);
-  },
-
-  listWithdrawals: (params: { search?: string; status?: string; from?: string; to?: string; page?: number; limit?: number }, serverToken?: string) => {
-    const query = new URLSearchParams();
-    if (params.search) query.set('search', params.search);
-    if (params.status) query.set('status', params.status);
-    if (params.from) query.set('from', params.from);
-    if (params.to) query.set('to', params.to);
-    query.set('page', String(params.page || 1));
-    query.set('limit', String(params.limit || 20));
-    return apiFetch<any>(`/admin/withdrawals?${query.toString()}`, {}, serverToken);
-  },
-
-  listDisputes: (page = 1, limit = 20, serverToken?: string) => {
-    return apiFetch<any>(`/admin/disputes?page=${page}&limit=${limit}`, {}, serverToken);
-  },
-
-  resolveDispute: (disputeId: string, payload: { status: string; admin_note?: string }) => {
-    return apiFetch<any>(`/admin/disputes/${disputeId}`, {
-      method: 'PATCH',
-      body: JSON.stringify(payload),
     });
   },
 

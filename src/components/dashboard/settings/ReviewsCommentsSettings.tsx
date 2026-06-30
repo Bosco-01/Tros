@@ -1,97 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Topbar } from '@/components/layout/topbar'; // Note: Matches lowercase filename on disk
-import { SettingsMenu } from '@/components/dashboard/settings/SettingsMenu';
-import { ThemeSettingsForm } from '@/components/dashboard/settings/ThemeSettingsForm';
-import { FAQSettings } from '@/components/dashboard/settings/FAQSettings';
-import { ReferralSettings } from '@/components/dashboard/settings/ReferralSettings';
-import { AboutSettings } from '@/components/dashboard/settings/AboutSettings';
-import { FooterSettings } from '@/components/dashboard/settings/FooterSettings';
-import { PolicyTermsSettings } from '@/components/dashboard/settings/PolicyTermsSettings'; // Added Policy terms import
 import { apiFetch } from '@/services/apiClient';
-import { mockThemeConfig } from '@/data/settings';
-import { mockReviewsCommentsConfig, ReviewsCommentsConfig } from '@/data/reviews-comments';
+import { ReviewsCommentsConfig, mockReviewsCommentsConfig } from '@/data/reviews-comments';
 
-export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState('Policy & Terms'); // Sets active default tab to match your request
-
-  return (
-    <>
-      <Topbar title="Settings" />
-      
-      {/* 
-        Main content wrapper with slightly grey background 
-        so the pure white layout forms and menu cards stand out.
-      */}
-      <main className="flex-1 p-8 bg-[#F8F9FA] overflow-y-auto custom-scrollbar">
-        <div className="max-w-[1100px] flex flex-col md:flex-row gap-8 items-start w-full">
-          
-          {/* Left panel tabs menu list */}
-          <SettingsMenu activeTab={activeTab} onTabChange={setActiveTab} />
-
-          {/* Right panel forms switching state dynamic outputs */}
-          <div className="flex-1 w-full">
-            {activeTab === 'Themes & Colors' && (
-              <ThemeSettingsForm initialConfig={mockThemeConfig} />
-            )}
-
-            {activeTab === 'FAQ' && (
-              <FAQSettings />
-            )}
-
-            {activeTab === 'Manage Referrals' && (
-              <ReferralSettings />
-            )}
-
-            {activeTab === 'About Us' && (
-              <AboutSettings />
-            )}
-
-            {activeTab === 'Footer & Social Links' && (
-              <FooterSettings />
-            )}
-
-            {activeTab === 'Reviews & Comments' && (
-              <ReviewsCommentsSettings />
-            )}
-
-            {activeTab === 'Policy & Terms' && (
-              <PolicyTermsSettings />
-            )}
-
-            {activeTab !== 'Themes & Colors' && 
-             activeTab !== 'FAQ' && 
-             activeTab !== 'Manage Referrals' && 
-             activeTab !== 'About Us' && 
-             activeTab !== 'Footer & Social Links' && 
-             activeTab !== 'Reviews & Comments' && 
-             activeTab !== 'Policy & Terms' && (
-              // Fallback rendering for the other menu items to prevent empty space states
-              <div className="bg-white rounded-3xl p-12 border border-neutral-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.03)] flex-1 text-center select-none">
-                <h3 className="text-lg font-bold text-neutral-900 mb-1">{activeTab} Parameters</h3>
-                <p className="text-sm text-neutral-500">Form configuration controls for {activeTab.toLowerCase()} parameters are being mapped.</p>
-              </div>
-            )}
-          </div>
-
-        </div>
-      </main>
-    </>
-  );
-}
-
-// ==========================================
-// SEAMLESS INTEGRATION INLINE FALLBACK COMPONENT
-// Maps reviews & comments configuration
-// ==========================================
-const ReviewsCommentsSettings: React.FC = () => {
+export const ReviewsCommentsSettings: React.FC = () => {
   const [config, setConfig] = useState<ReviewsCommentsConfig>(mockReviewsCommentsConfig);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
+  // Fetch current setting configurations from database on mount
   useEffect(() => {
     const loadSettings = async () => {
       try {
@@ -106,6 +26,7 @@ const ReviewsCommentsSettings: React.FC = () => {
         setIsLoading(false);
       }
     };
+
     loadSettings();
   }, []);
 
@@ -120,6 +41,7 @@ const ReviewsCommentsSettings: React.FC = () => {
     setError('');
 
     try {
+      // Sequentially patch each config key as per REST specification
       await apiFetch('/admin/settings/reviews_enabled', {
         method: 'PATCH',
         body: JSON.stringify({ value: String(config.enableReviews) }),
@@ -163,6 +85,7 @@ const ReviewsCommentsSettings: React.FC = () => {
         <p className="text-sm font-medium text-neutral-500 leading-normal">{description}</p>
       </div>
 
+      {/* High-Fidelity iOS-style sliding toggle switch */}
       <div
         className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${
           checked ? 'bg-[#6312E1]' : 'bg-neutral-200'
@@ -190,10 +113,13 @@ const ReviewsCommentsSettings: React.FC = () => {
 
   return (
     <form onSubmit={handleSave} className="bg-white rounded-3xl p-8 border border-neutral-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.03)] flex-1 w-full flex flex-col gap-6">
+      
+      {/* Title */}
       <h3 className="text-lg font-bold text-neutral-950 tracking-tight leading-none select-none border-b border-neutral-50 pb-4 mb-2">
         Reviews and Comments
       </h3>
 
+      {/* Cards Switch list */}
       <div className="flex flex-col gap-4 w-full">
         <ToggleCard
           title="Enable Reviews"
@@ -221,6 +147,7 @@ const ReviewsCommentsSettings: React.FC = () => {
         </div>
       )}
 
+      {/* Save Button CTA */}
       <div className="flex items-center mt-4">
         <button
           type="submit"
@@ -237,6 +164,7 @@ const ReviewsCommentsSettings: React.FC = () => {
           )}
         </button>
       </div>
+
     </form>
   );
 };

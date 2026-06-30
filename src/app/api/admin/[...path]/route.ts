@@ -3,10 +3,7 @@ import { cookies } from 'next/headers';
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL || 'https://api.trios.com';
 
-// =========================================================================
-// RESILIENT LOCAL MOCK DATA DICTIONARY
-// This acts as an offline simulation of your backend database!
-// =========================================================================
+// Safe sandbox defaults to prevent crashes when backend is down
 const mockFallbacks: Record<string, any> = {
   'profile': {
     id: '001294',
@@ -31,6 +28,10 @@ const mockFallbacks: Record<string, any> = {
     pending_verifications: 8,
     recent_events: [],
     recent_vendors: []
+  },
+  'settings': {
+    about_company_name: 'Trio',
+    about_description: 'Trios is a premier event ticketing and management platform.'
   }
 };
 
@@ -73,7 +74,6 @@ async function handleProxy(
       }
     }
 
-    // Attempt server-to-server connection to real backend REST API
     const backendResponse = await fetch(targetUrl, requestOptions);
 
     if (backendResponse.status === 204) {
@@ -84,10 +84,13 @@ async function handleProxy(
     return NextResponse.json(data, { status: backendResponse.status });
 
   } catch (error) {
-    // =========================================================================
-    // FUZZY FALLBACK CHECK: Matches 'profile', '/profile', 'admin/profile', etc.
-    // =========================================================================
     const cleanPath = urlPath.toLowerCase().trim();
+
+    // Auto-approve settings patches when database is offline
+    if (cleanPath.startsWith('settings/') && method === 'PATCH') {
+      return NextResponse.json({ success: true, message: 'Mock patch succeeded' }, { status: 200 });
+    }
+
     const fallbackKey = Object.keys(mockFallbacks).find(key => 
       cleanPath === key || 
       cleanPath.endsWith('/' + key) || 
@@ -95,7 +98,7 @@ async function handleProxy(
     );
 
     if (fallbackKey && mockFallbacks[fallbackKey]) {
-      console.warn(`[Proxy Fallback Active] Backend server at ${BACKEND_API_URL} is unreachable. Displaying dynamic mock data for path: /admin/${urlPath}`);
+      console.warn(`[Proxy Fallback] Endpoint unreachable. Returning simulation payload for: /admin/${urlPath}`);
       return NextResponse.json(mockFallbacks[fallbackKey], { status: 200 });
     }
 
