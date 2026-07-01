@@ -14,6 +14,7 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({ activeTab, onTabChan
     'Footer & Social Links',
     'Reviews & Comments',
     'Policy & Terms',
+    'Broadcasts',
   ];
 
   return (

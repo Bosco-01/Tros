@@ -1,8 +1,8 @@
 import React from 'react';
-import { VendorEventRowData } from '@/data/vendor-details';
+import type { EventRowData } from '@/types/admin';
 
 interface VendorEventsTableProps {
-  data: VendorEventRowData[];
+  data: EventRowData[];
 }
 
 const getCategoryStyles = (category: string) => {
@@ -85,17 +85,15 @@ export const VendorEventsTable: React.FC<VendorEventsTableProps> = ({ data }) =>
                   </td>
 
                   {/* Total Users */}
-                  <td className="px-6 py-5 text-[14px] text-neutral-700 font-medium">{row.totalUsers}</td>
+                  <td className="px-6 py-5 text-[14px] text-neutral-700 font-medium">{row.totalUsers ?? '—'}</td>
 
-                  {/* Ratings & Reviews Column */}
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-1.5 text-[14px] font-bold text-neutral-900">
-                      {/* Orange star icon */}
                       <svg className="w-4 h-4 text-amber-500 fill-current" viewBox="0 0 24 24">
                         <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                       </svg>
-                      <span>{row.rating.toFixed(1)}</span>
-                      <span className="text-neutral-500 font-medium">({row.reviewsCount})</span>
+                      <span>{(row.rating ?? 0).toFixed(1)}</span>
+                      <span className="text-neutral-500 font-medium">({row.reviewsCount ?? 0})</span>
                     </div>
                   </td>
 

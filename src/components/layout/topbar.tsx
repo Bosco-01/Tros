@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { apiFetch } from '@/services/apiClient';
 import { AdminProfile } from '@/types/admin';
+import { useLogout } from '@/lib/auth';
 
 interface TopbarProps {
   title: string;
@@ -44,6 +45,7 @@ const navItems = [
 export const Topbar: React.FC<TopbarProps> = ({ title }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const logout = useLogout();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Real profile state managed dynamically
@@ -188,7 +190,11 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
                 <Settings className="w-5 h-5 text-neutral-500" />
                 <span className="text-[15px]">Platform Setting</span>
               </Link>
-              <button className="flex items-center gap-4 px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl transition-colors text-left">
+              <button
+                type="button"
+                onClick={() => void logout()}
+                className="flex items-center gap-4 px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl transition-colors text-left w-full"
+              >
                 <LogOut className="w-5 h-5" />
                 <span className="text-[15px]">Logout</span>
               </button>

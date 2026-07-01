@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { AdminProfileData } from '@/data/admins';
+import { adminService } from '@/services/adminService';
 
 interface AdminFormProps {
   initialData: AdminProfileData;
@@ -10,26 +11,42 @@ interface AdminFormProps {
 
 export const AdminForm: React.FC<AdminFormProps> = ({ initialData }) => {
   const [formData, setFormData] = useState<AdminProfileData>(initialData);
-  const [password, setPassword] = useState('supersecretpassword123');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (field: keyof AdminProfileData, value: string) => {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSaving(true);
     setSuccess(false);
+    setError('');
 
-    // Mock API saving trigger
-    setTimeout(() => {
-      setIsSaving(false);
+    if (!password) {
+      setError('Enter a new password to update your credentials.');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await adminService.changePassword({
+        current_password: currentPassword,
+        new_password: password,
+      });
       setSuccess(true);
-      setTimeout(() => setSuccess(false), 2000); // clear success msg after 2s
-    }, 1000);
+      setCurrentPassword('');
+      setPassword('');
+      setTimeout(() => setSuccess(false), 2500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update password');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -98,9 +115,20 @@ export const AdminForm: React.FC<AdminFormProps> = ({ initialData }) => {
           />
         </div>
 
-        {/* Password (Interactive hidden toggle) */}
+        {/* Current Password */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-neutral-500">Password</label>
+          <label className="text-sm font-medium text-neutral-500">Current Password</label>
+          <input
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/60 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all shadow-sm shadow-neutral-100/30"
+          />
+        </div>
+
+        {/* New Password (Interactive hidden toggle) */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-neutral-500">New Password</label>
           <div className="relative bg-white rounded-xl h-14 border border-neutral-100/60 px-5 flex items-center justify-between shadow-sm shadow-neutral-100/30">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -128,7 +156,13 @@ export const AdminForm: React.FC<AdminFormProps> = ({ initialData }) => {
       {/* Success/Saving Visual Indicators */}
       {success && (
         <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold self-start transition-all">
-          Profile Changes Saved Successfully!
+          Password updated successfully!
+        </div>
+      )}
+
+      {error && (
+        <div className="p-3.5 bg-red-50 text-red-600 rounded-xl text-sm font-bold self-start transition-all">
+          {error}
         </div>
       )}
 

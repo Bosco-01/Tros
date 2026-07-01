@@ -1,5 +1,5 @@
 import React from 'react';
-import { VendorProfileData } from '@/data/vendor-details';
+import type { VendorProfileData } from '@/types/admin';
 
 interface VendorProfileHeaderProps {
   data: VendorProfileData;

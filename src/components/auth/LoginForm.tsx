@@ -51,7 +51,7 @@ export const LoginForm: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -67,17 +67,29 @@ export const LoginForm: React.FC = () => {
 
     setIsLoading(true);
 
-    // Mock Backend validation delay
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setError(data.message || 'Invalid email or password.');
+        return;
+      }
+
       setSuccess('Successfully logged in! Redirecting...');
-      
-      // Navigate to the dashboard after a short delay so the success message is visible
       setTimeout(() => {
         router.push('/dashboard');
-      }, 500);
-      
-    }, 1200);
+      }, 400);
+    } catch {
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

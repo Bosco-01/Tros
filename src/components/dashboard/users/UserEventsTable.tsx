@@ -1,5 +1,5 @@
 import React from "react";
-import { EventRowData } from "@/data/user-details";
+import type { EventRowData } from '@/types/admin';
 
 interface UserEventsTableProps {
   data: EventRowData[];

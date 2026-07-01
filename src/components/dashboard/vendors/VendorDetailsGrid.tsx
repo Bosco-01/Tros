@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
-import { VendorProfileData } from '@/data/vendor-details';
+import type { VendorProfileData } from '@/types/admin';
 
 interface VendorDetailsGridProps {
   data: VendorProfileData;
@@ -44,7 +44,7 @@ export const VendorDetailsGrid: React.FC<VendorDetailsGridProps> = ({ data }) =>
           {/* Subscription Row */}
           <div className="flex items-center gap-6">
             <span className="text-[15px] font-medium text-neutral-500 w-28">Subscription:</span>
-            <span className="font-bold text-[17px] text-neutral-900">{data.subscriptionPlan}</span>
+            <span className="font-bold text-[17px] text-neutral-900">{data.planName}</span>
           </div>
 
         </div>
@@ -55,13 +55,13 @@ export const VendorDetailsGrid: React.FC<VendorDetailsGridProps> = ({ data }) =>
           {/* Event Posts Row */}
           <div className="flex items-center gap-6">
             <span className="text-[15px] font-medium text-neutral-500 w-28">Event Posts:</span>
-            <span className="font-bold text-[17px] text-neutral-900">{data.eventPostsCount} Event Posts</span>
+            <span className="font-bold text-[17px] text-neutral-900">{data.eventsCount} Event Posts</span>
           </div>
 
           {/* Location Row */}
           <div className="flex items-center gap-6">
             <span className="text-[15px] font-medium text-neutral-500 w-28">Location:</span>
-            <span className="font-bold text-[17px] text-neutral-900">{data.location}</span>
+            <span className="font-bold text-[17px] text-neutral-900">{data.city}, {data.state}</span>
           </div>
 
         </div>

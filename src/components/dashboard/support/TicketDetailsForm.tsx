@@ -4,30 +4,37 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { X, Send } from 'lucide-react';
 import { TicketDetailsData } from '@/data/ticket-details';
+import { adminService } from '@/services/adminService';
 
 interface TicketDetailsFormProps {
   data: TicketDetailsData;
+  ticketId: string;
 }
 
-export const TicketDetailsForm: React.FC<TicketDetailsFormProps> = ({ data }) => {
+export const TicketDetailsForm: React.FC<TicketDetailsFormProps> = ({ data, ticketId }) => {
   const [response, setResponse] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleReply = (e: React.FormEvent) => {
+  const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!response.trim()) return;
 
     setIsSending(true);
     setSuccess(false);
+    setError('');
 
-    // Mock API reply trigger
-    setTimeout(() => {
-      setIsSending(false);
+    try {
+      await adminService.updateSupportTicketStatus(ticketId, 'resolved');
       setSuccess(true);
       setResponse('');
       setTimeout(() => setSuccess(false), 2000);
-    }, 1200);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update ticket');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -104,7 +111,13 @@ export const TicketDetailsForm: React.FC<TicketDetailsFormProps> = ({ data }) =>
 
         {success && (
           <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold transition-all">
-            Response reply sent successfully!
+            Ticket marked as resolved!
+          </div>
+        )}
+
+        {error && (
+          <div className="p-3.5 bg-red-50 text-red-600 rounded-xl text-sm font-bold transition-all">
+            {error}
           </div>
         )}
 

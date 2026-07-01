@@ -2,27 +2,37 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
+import { adminService } from '@/services/adminService';
 
 export const AddAdminForm: React.FC = () => {
-  const [name, setName] = useState('Admin User');
-  const [email, setEmail] = useState('Johnadmin@gmail.com');
-  const [phone, setPhone] = useState('+234 6879403445');
-  const [role, setRole] = useState('DevOps Admin');
-  const [jobTitle, setJobTitle] = useState('Customer Support');
+  const router = useRouter();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'ADMIN' | 'SUPER_ADMIN'>('ADMIN');
+  const [jobTitle, setJobTitle] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsAdding(true);
     setSuccess(false);
+    setError('');
 
-    // Mock successful saving trigger
-    setTimeout(() => {
-      setIsAdding(false);
+    try {
+      await adminService.createAdmin({ name, email, password, role });
       setSuccess(true);
-    }, 1200);
+      setTimeout(() => router.push('/dashboard/admins'), 1000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add admin');
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   return (
@@ -78,15 +88,29 @@ export const AddAdminForm: React.FC = () => {
           />
         </div>
 
+        {/* Password */}
+        <div className="flex flex-col gap-2">
+          <label className="text-[14px] font-medium text-neutral-500">Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+          />
+        </div>
+
         {/* Administrative Role */}
         <div className="flex flex-col gap-2">
           <label className="text-[14px] font-medium text-neutral-500">Role</label>
-          <input
-            type="text"
+          <select
             value={role}
-            onChange={(e) => setRole(e.target.value)}
+            onChange={(e) => setRole(e.target.value as 'ADMIN' | 'SUPER_ADMIN')}
             className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
-          />
+          >
+            <option value="ADMIN">Admin</option>
+            <option value="SUPER_ADMIN">Super Admin</option>
+          </select>
         </div>
 
         {/* Job Title */}
@@ -103,6 +127,12 @@ export const AddAdminForm: React.FC = () => {
         {success && (
           <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold transition-all">
             New Administrative User added successfully!
+          </div>
+        )}
+
+        {error && (
+          <div className="p-3.5 bg-red-50 text-red-600 rounded-xl text-sm font-bold transition-all">
+            {error}
           </div>
         )}
 

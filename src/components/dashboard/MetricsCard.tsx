@@ -1,6 +1,6 @@
 import React from 'react';
 import { Users, Tag, Calendar, Layers, TrendingUp, TrendingDown } from 'lucide-react';
-import { MetricData } from '@/data/dashboard';
+import { MetricData } from '@/types/admin';
 
 interface MetricsCardProps {
   data: MetricData;

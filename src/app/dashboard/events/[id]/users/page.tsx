@@ -1,79 +1,69 @@
-import React from 'react';
+'use client';
+
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { Topbar } from '@/components/layout/topbar';
-
 import { EventUsersFilter } from '@/components/dashboard/events/EventUsersFilter';
-import { EventUserCard } from '@/components/dashboard/events/EventUserCard';
+import { adminService } from '@/services/adminService';
+import type { AdminEventDetail } from '@/types/admin';
+import { LoadingState, ErrorState, EmptyState, PageShell } from '@/components/ui/AsyncStates';
 
-import { mockEventUsers } from '@/data/event-users';
-import { mockEventDetails } from '@/data/event-details';
+export default function EventUsersPage() {
+  const params = useParams();
+  const eventId = decodeURIComponent(String(params.id || ''));
+  const [event, setEvent] = useState<AdminEventDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
+  const load = useCallback(async () => {
+    if (!eventId) return;
+    setLoading(true);
+    setError('');
+    try {
+      const data = await adminService.getEventDetail(eventId);
+      setEvent(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load event');
+    } finally {
+      setLoading(false);
+    }
+  }, [eventId]);
 
-export default async function EventUsersPage({ params }: PageProps) {
-  // Resolve dynamic promise parameter
-  const resolvedParams = await params;
-  const eventId = resolvedParams.id;
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   return (
     <>
       <Topbar title="Event Details" />
-      
-      {/* 
-        Main content wrapper with slightly grey background 
-        so the pure white user cards stand out.
-      */}
-      <main className="flex-1 p-8 bg-[#F8F9FA] overflow-y-auto custom-scrollbar">
-        <div className="max-w-[1100px]">
-          
-          {/* Breadcrumbs matching visual layout */}
-          <div className="flex items-center gap-2 text-[15px] font-medium mb-10 select-none">
-            <Link href="/dashboard/vendors" className="text-neutral-900 hover:text-[#6312E1] transition-colors">
-              All Vendors
+      <PageShell>
+        <div className="max-w-[1100px] w-full">
+          <div className="flex flex-wrap items-center gap-2 text-sm sm:text-[15px] font-medium mb-8 sm:mb-10 select-none">
+            <Link href="/dashboard/events" className="text-neutral-900 hover:text-[#6312E1] transition-colors">
+              Events
             </Link>
-            <ChevronRight className="w-4 h-4 text-neutral-500" />
-            <span className="text-neutral-900">John Doe</span>
-            <ChevronRight className="w-4 h-4 text-neutral-500" />
-            <Link href={`/dashboard/events/${eventId}`} className="text-neutral-900 hover:text-[#6312E1] transition-colors">
-              {mockEventDetails.title}
+            <ChevronRight className="w-4 h-4 text-neutral-500 flex-shrink-0" />
+            <Link href={`/dashboard/events/${eventId}`} className="text-neutral-900 hover:text-[#6312E1] transition-colors truncate max-w-[200px] sm:max-w-none">
+              {event?.title || eventId}
             </Link>
-            <ChevronRight className="w-4 h-4 text-neutral-500" />
+            <ChevronRight className="w-4 h-4 text-neutral-500 flex-shrink-0" />
             <span className="text-neutral-900">Users</span>
           </div>
 
-          {/* Search/Filter bar headers */}
-          <EventUsersFilter />
-
-          {/* User Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            {mockEventUsers.map((user, index) => (
-              <EventUserCard key={index} data={user} />
-            ))}
-          </div>
-
-          {/* Pagination Footer */}
-          <div className="flex items-center justify-between w-full mt-4">
-            <span className="text-[15px] font-semibold text-neutral-900">1 of 88</span>
-            <div className="flex items-center gap-2">
-              <button className="w-9 h-9 rounded-lg bg-[#6312e1] text-white text-sm font-bold flex items-center justify-center">1</button>
-              {[2, 3, 4, 5].map((page) => (
-                <button key={page} className="w-9 h-9 rounded-lg bg-[#F4F4F5] text-neutral-700 text-sm font-bold hover:bg-neutral-200 transition-colors flex items-center justify-center">
-                  {page}
-                </button>
-              ))}
-              <span className="w-9 h-9 flex items-center justify-center bg-[#F4F4F5] text-neutral-700 rounded-lg font-bold text-sm tracking-widest">...</span>
-              <button className="w-10 h-9 rounded-lg bg-[#F4F4F5] text-neutral-700 text-sm font-bold hover:bg-neutral-200 transition-colors flex items-center justify-center">
-                88
-              </button>
-            </div>
-            <div className="w-16 hidden md:block"></div>
-          </div>
-
+          {loading ? (
+            <LoadingState />
+          ) : error ? (
+            <ErrorState message={error} onRetry={load} />
+          ) : (
+            <>
+              <EventUsersFilter />
+              <EmptyState message="Event attendee list is not exposed by the admin API yet. Use user bookings for per-user event history." />
+            </>
+          )}
         </div>
-      </main>
+      </PageShell>
     </>
   );
 }

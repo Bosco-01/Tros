@@ -16,6 +16,7 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react';
+import { useLogout } from '@/lib/auth';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -31,6 +32,7 @@ const navItems = [
 
 export const Sidebar = () => {
   const pathname = usePathname();
+  const logout = useLogout();
 
   return (
     <aside className="w-[260px] flex-shrink-0 h-screen bg-white border-r border-neutral-100 flex flex-col pt-8 pb-6 sticky top-0 hidden lg:flex">
@@ -78,7 +80,11 @@ export const Sidebar = () => {
           <Settings className="w-5 h-5 text-neutral-500" />
           <span className="text-[15px]">Platform Setting</span>
         </Link>
-        <button className="flex items-center gap-4 px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl transition-colors text-left">
+        <button
+          type="button"
+          onClick={() => void logout()}
+          className="flex items-center gap-4 px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl transition-colors text-left w-full"
+        >
           <LogOut className="w-5 h-5" />
           <span className="text-[15px]">Logout</span>
         </button>

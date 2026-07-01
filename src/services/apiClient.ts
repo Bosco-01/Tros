@@ -1,3 +1,5 @@
+import { BACKEND_API_URL } from '@/lib/config';
+
 export class APIError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -5,6 +7,14 @@ export class APIError extends Error {
     this.status = status;
     this.name = 'APIError';
   }
+}
+
+function extractErrorMessage(data: unknown): string {
+  if (!data || typeof data !== 'object') return 'An API error occurred';
+  const obj = data as Record<string, unknown>;
+  if (typeof obj.message === 'string') return obj.message;
+  if (typeof obj.error === 'string') return obj.error;
+  return 'An API error occurred';
 }
 
 export async function apiFetch<T>(
@@ -20,8 +30,7 @@ export async function apiFetch<T>(
   if (isClient) {
     url = `/api${endpoint}`; 
   } else {
-    const backendUrl = process.env.BACKEND_API_URL || 'https://api.trios.com/api/v1';
-    url = `${backendUrl}${endpoint}`;
+    url = `${BACKEND_API_URL}${endpoint}`;
     
     if (serverToken) {
       headers.set('Authorization', `Bearer ${serverToken}`);
@@ -45,7 +54,7 @@ export async function apiFetch<T>(
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new APIError(data.message || 'An API error occurred', response.status);
+    throw new APIError(extractErrorMessage(data), response.status);
   }
 
   return data as T;

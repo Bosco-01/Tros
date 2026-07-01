@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserProfileData } from '@/data/user-details';
+import type { UserProfileData } from '@/types/admin';
 
 interface UserProfileHeaderProps {
   data: UserProfileData;

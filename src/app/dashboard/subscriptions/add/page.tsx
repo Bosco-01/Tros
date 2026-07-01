@@ -13,7 +13,7 @@ export default function AddSubscriptionPackagePage() {
         Main content wrapper with slightly grey background 
         so the pure white layout forms and benefit rows stand out.
       */}
-      <main className="flex-1 p-8 bg-[#F8F9FA] overflow-y-auto custom-scrollbar">
+      <main className="flex-1 p-4 md:p-8 bg-[#F8F9FA] overflow-y-auto custom-scrollbar">
         <div className="max-w-[1100px]">
           
           {/* Breadcrumbs matching layout specification */}

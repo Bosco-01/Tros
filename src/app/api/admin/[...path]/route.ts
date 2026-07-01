@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-
-const BACKEND_API_URL = process.env.BACKEND_API_URL || 'https://api.trios.com';
+import { BACKEND_API_URL, SESSION_COOKIE, USE_MOCK_FALLBACK } from '@/lib/config';
 
 // Safe sandbox defaults to prevent crashes when backend is down
 const mockFallbacks: Record<string, any> = {
@@ -47,7 +46,7 @@ async function handleProxy(
 
   try {
     const cookieStore = await cookies();
-    const tokenObj = cookieStore.get('trios_session_token');
+    const tokenObj = cookieStore.get(SESSION_COOKIE);
     const token = tokenObj?.value;
 
     const headers = new Headers();
@@ -84,22 +83,24 @@ async function handleProxy(
     return NextResponse.json(data, { status: backendResponse.status });
 
   } catch (error) {
-    const cleanPath = urlPath.toLowerCase().trim();
+    if (USE_MOCK_FALLBACK) {
+      const cleanPath = urlPath.toLowerCase().trim();
 
-    // Auto-approve settings patches when database is offline
-    if (cleanPath.startsWith('settings/') && method === 'PATCH') {
-      return NextResponse.json({ success: true, message: 'Mock patch succeeded' }, { status: 200 });
-    }
+      if (cleanPath.startsWith('settings/') && method === 'PATCH') {
+        return NextResponse.json({ success: true, message: 'Mock patch succeeded' }, { status: 200 });
+      }
 
-    const fallbackKey = Object.keys(mockFallbacks).find(key => 
-      cleanPath === key || 
-      cleanPath.endsWith('/' + key) || 
-      key.endsWith('/' + cleanPath)
-    );
+      const fallbackKey = Object.keys(mockFallbacks).find(
+        (key) =>
+          cleanPath === key ||
+          cleanPath.endsWith('/' + key) ||
+          key.endsWith('/' + cleanPath),
+      );
 
-    if (fallbackKey && mockFallbacks[fallbackKey]) {
-      console.warn(`[Proxy Fallback] Endpoint unreachable. Returning simulation payload for: /admin/${urlPath}`);
-      return NextResponse.json(mockFallbacks[fallbackKey], { status: 200 });
+      if (fallbackKey && mockFallbacks[fallbackKey]) {
+        console.warn(`[Proxy Fallback] Endpoint unreachable. Returning simulation payload for: /admin/${urlPath}`);
+        return NextResponse.json(mockFallbacks[fallbackKey], { status: 200 });
+      }
     }
 
     console.error('Server Proxy Error:', error);

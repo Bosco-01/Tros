@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
-import { UserProfileData } from '@/data/user-details';
+import type { UserProfileData } from '@/types/admin';
 
 interface UserDetailsGridProps {
   data: UserProfileData;
