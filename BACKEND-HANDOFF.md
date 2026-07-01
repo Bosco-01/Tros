@@ -46,11 +46,18 @@ After running `test-admin-endpoints.ps1`, note any failing routes here:
 
 ## Environment
 
-Copy `.env.example` to `.env.local`:
+Copy `.env.example` to `.env.local` for local dev. On **Vercel**, set these in Project → Settings → Environment Variables:
+
+| Variable | Value |
+|----------|-------|
+| `BACKEND_API_URL` | `https://trios.viaspark.site/api/v1` |
+
+**Important:** The value must include `/api/v1`. If you set only `https://trios.viaspark.site`, login will return **404** because the backend route is `/api/v1/admin/login`, not `/admin/login`.
+
+The browser always calls `POST /api/admin/login` on your Vercel domain (correct). That Next.js route proxies to `${BACKEND_API_URL}/admin/login` on the Trios server.
 
 ```
-BACKEND_API_URL=https://trios.viaspark.site/api/v1
-USE_MOCK_FALLBACK=false
+Browser  →  tros-nine.vercel.app/api/admin/login  →  trios.viaspark.site/api/v1/admin/login
 ```
 
 Set `USE_MOCK_FALLBACK=true` only for offline UI development.

@@ -38,9 +38,22 @@ export async function POST(request: Request) {
     const data = (await backendResponse.json().catch(() => ({}))) as Record<string, unknown>;
 
     if (!backendResponse.ok) {
+      const status = backendResponse.status;
+      const backendMessage = data.message as string | undefined;
+
+      if (status === 404) {
+        return NextResponse.json(
+          {
+            message:
+              'Admin login endpoint not found on backend. Set BACKEND_API_URL to https://trios.viaspark.site/api/v1 in Vercel environment variables.',
+          },
+          { status: 502 },
+        );
+      }
+
       return NextResponse.json(
-        { message: (data.message as string) || 'Invalid email or password.' },
-        { status: backendResponse.status },
+        { message: backendMessage || 'Invalid email or password.' },
+        { status },
       );
     }
 
