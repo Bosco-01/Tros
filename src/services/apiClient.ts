@@ -20,7 +20,7 @@ export async function apiFetch<T>(
   if (isClient) {
     url = `/api${endpoint}`; 
   } else {
-    const backendUrl = process.env.BACKEND_API_URL || 'https://api.trios.com';
+    const backendUrl = process.env.BACKEND_API_URL || 'https://api.trios.com/api/v1';
     url = `${backendUrl}${endpoint}`;
     
     if (serverToken) {
