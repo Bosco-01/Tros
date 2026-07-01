@@ -11,6 +11,7 @@ import { FooterSettings } from '@/components/dashboard/settings/FooterSettings';
 import { PolicyTermsSettings } from '@/components/dashboard/settings/PolicyTermsSettings';
 import { BroadcastSettings } from '@/components/dashboard/settings/BroadcastSettings';
 import { apiFetch } from '@/services/apiClient';
+import { settingsToMap } from '@/lib/api-helpers';
 import { mockReviewsCommentsConfig, ReviewsCommentsConfig } from '@/data/reviews-comments';
 
 export default function SettingsPage() {
@@ -49,7 +50,7 @@ const ReviewsCommentsSettings: React.FC = () => {
   React.useEffect(() => {
     const loadSettings = async () => {
       try {
-        const settings = await apiFetch<Record<string, string>>('/admin/settings');
+        const settings = settingsToMap(await apiFetch('/admin/settings'));
         setConfig({
           enableReviews: settings.reviews_enabled === 'true',
           moderateComments: settings.comments_moderate === 'true',

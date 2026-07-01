@@ -32,9 +32,9 @@ function normalizeTicketStatus(s?: string): SupportTicketRow['status'] {
 
 export function mapSupportTicketToRow(ticket: SupportTicket): SupportTicketRow {
   return {
-    customerName: ticket.customer_name || '—',
-    customerEmail: ticket.customer_email || '—',
-    customerNumber: ticket.customer_number || '—',
+    customerName: ticket.customer_name || ticket.user_name || '—',
+    customerEmail: ticket.customer_email || ticket.user_email || '—',
+    customerNumber: ticket.customer_number || ticket.user_phone || '—',
     ticketId: ticket.ticket_id || '—',
     subject: ticket.subject || '—',
     priority: normalizePriority(ticket.priority),
@@ -46,8 +46,8 @@ export function mapSupportTicketToDetails(ticket: SupportTicket): TicketDetailsD
   return {
     id: ticket.ticket_id || '—',
     subject: ticket.subject || '—',
-    dateTime: ticket.dateTime || formatDate(ticket.created_at),
-    complaint: ticket.complaint || '—',
+    dateTime: ticket.dateTime || ticket.created_at || '—',
+    complaint: ticket.complaint || ticket.message || '—',
   };
 }
 
@@ -116,12 +116,12 @@ export function mapVendorToProfile(
 
 export function mapTransactionToRow(tx: TransactionRow): TransactionRowData {
   return {
-    customerName: tx.customer_name || tx.customerName || '—',
-    transactionId: tx.transaction_id || '—',
-    paymentTitle: tx.payment_title || tx.paymentTitle || '—',
+    customerName: tx.customer_name || tx.user_name || tx.customerName || '—',
+    transactionId: tx.transaction_id || tx.payment_id || tx.reference || '—',
+    paymentTitle: tx.payment_title || tx.paymentTitle || tx.description || tx.type || '—',
     amount: formatCurrency(tx.amount),
-    date: formatDate(tx.date),
-    paymentType: titleCase(tx.payment_type || tx.paymentType) || '—',
+    date: formatDate(tx.date || tx.created_at || tx.paid_at),
+    paymentType: titleCase(tx.payment_type || tx.paymentType || tx.type) || '—',
     status: titleCase(tx.status) || '—',
   };
 }

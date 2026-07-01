@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/apiClient';
+import { settingsToMap } from '@/lib/api-helpers';
 import { PolicyTermsConfig, mockPolicyTermsConfig } from '@/data/policy-terms';
 
 export const PolicyTermsSettings: React.FC = () => {
@@ -15,7 +16,7 @@ export const PolicyTermsSettings: React.FC = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const settings = await apiFetch<Record<string, string>>('/admin/settings');
+        const settings = settingsToMap(await apiFetch('/admin/settings'));
         setConfig({
           privacyPolicy: settings.privacy_policy || mockPolicyTermsConfig.privacyPolicy,
           termsConditions: settings.terms_conditions || mockPolicyTermsConfig.termsConditions,

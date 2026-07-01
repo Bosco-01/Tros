@@ -15,12 +15,12 @@ import { LoadingState, ErrorState, PageShell } from '@/components/ui/AsyncStates
 const HEADER_COLORS = ['bg-[#6312E1]', 'bg-[#FF5C00]', 'bg-[#18392B]'];
 
 function mapPlanToCard(plan: SubscriptionPlan, index: number): SubscriptionPackage {
-  const features: string[] = [];
+  const features: string[] = [...(plan.benefits || [])];
   if (plan.max_events) features.push(`Up to ${plan.max_events} events`);
   if (plan.max_tickets_per_event) features.push(`Up to ${plan.max_tickets_per_event} tickets/event`);
   if (plan.can_access_reports) features.push('Access to reports');
   if (plan.can_broadcast) features.push('Broadcast messages');
-  if (plan.description) features.push(plan.description);
+  if (plan.description && features.length === 0) features.push(plan.description);
   if (features.length === 0) features.push('Standard vendor features');
 
   return {

@@ -236,10 +236,11 @@ export interface SubscriptionPlan {
   name: string;
   price: number;
   description?: string;
-  max_events: number;
-  max_tickets_per_event: number;
+  max_events?: number;
+  max_tickets_per_event?: number;
   can_access_reports?: boolean;
   can_broadcast?: boolean;
+  benefits?: string[];
   is_active?: boolean;
 }
 
@@ -279,15 +280,39 @@ export interface DisputeRow {
 
 export interface SupportTicket {
   ticket_id: string;
-  customer_name: string;
-  customer_email: string;
-  customer_number: string;
+  customer_name?: string;
+  customer_email?: string;
+  customer_number?: string;
+  user_name?: string;
+  user_email?: string;
+  user_phone?: string;
   subject: string;
   priority: 'High' | 'Medium' | 'Low' | string;
   status: 'open' | 'in_progress' | 'resolved' | 'closed' | string;
   complaint?: string;
+  message?: string;
   dateTime?: string;
   created_at?: string;
+}
+
+export interface TransactionRow {
+  transaction_id?: string;
+  payment_id?: string;
+  reference?: string;
+  customer_name?: string;
+  customerName?: string;
+  user_name?: string;
+  payment_title?: string;
+  paymentTitle?: string;
+  description?: string;
+  type?: string;
+  amount?: number | string;
+  date?: string;
+  created_at?: string;
+  paid_at?: string;
+  payment_type?: string;
+  paymentType?: string;
+  status?: string;
 }
 
 export interface TransactionRowData {
@@ -298,19 +323,6 @@ export interface TransactionRowData {
   date: string;
   paymentType: string;
   status: string;
-}
-
-export interface TransactionRow {
-  transaction_id?: string;
-  customer_name?: string;
-  customerName?: string;
-  payment_title?: string;
-  paymentTitle?: string;
-  amount?: number | string;
-  date?: string;
-  payment_type?: string;
-  paymentType?: string;
-  status?: string;
 }
 
 export interface WithdrawalRequestRow {

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/apiClient';
+import { settingsToMap } from '@/lib/api-helpers';
 import { FooterLinksConfig, mockFooterLinksConfig } from '@/data/footer-links';
 
 export const FooterSettings: React.FC = () => {
@@ -15,7 +16,7 @@ export const FooterSettings: React.FC = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const settings = await apiFetch<Record<string, string>>('/admin/settings');
+        const settings = settingsToMap(await apiFetch('/admin/settings'));
         setConfig({
           footerText: settings.footer_text || mockFooterLinksConfig.footerText,
           facebookUrl: settings.social_facebook || mockFooterLinksConfig.facebookUrl,

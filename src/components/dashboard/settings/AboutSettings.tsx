@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/apiClient';
+import { settingsToMap } from '@/lib/api-helpers';
 
 export const AboutSettings: React.FC = () => {
   const [companyName, setCompanyName] = useState('Trio');
@@ -15,7 +16,7 @@ export const AboutSettings: React.FC = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const settings = await apiFetch<Record<string, string>>('/admin/settings');
+        const settings = settingsToMap(await apiFetch('/admin/settings'));
         if (settings.about_company_name) {
           setCompanyName(settings.about_company_name);
         }

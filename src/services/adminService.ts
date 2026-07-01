@@ -1,4 +1,5 @@
 import { apiFetch } from './apiClient';
+import { unwrapEntity, unwrapVendorPage, settingsToMap } from '@/lib/api-helpers';
 import * as T from '@/types/admin';
 
 export const adminService = {
@@ -18,8 +19,12 @@ export const adminService = {
     return fetch('/api/admin/logout', { method: 'POST' }).then((r) => r.json());
   },
 
-  getProfile: (serverToken?: string) => {
-    return apiFetch<T.AdminProfile>('/admin/profile', {}, serverToken);
+  getProfile: async (serverToken?: string) => {
+    const raw = await apiFetch<Record<string, unknown>>('/admin/profile', {}, serverToken);
+    if (raw.admin && typeof raw.admin === 'object') {
+      return raw.admin as T.AdminProfile;
+    }
+    return unwrapEntity<T.AdminProfile>(raw);
   },
 
   changePassword: (data: T.ChangeAdminPasswordRequest) => {
@@ -107,8 +112,9 @@ export const adminService = {
     return apiFetch<T.PaginatedResponse<T.AppUser>>(`/admin/users?${query.toString()}`, {}, serverToken);
   },
 
-  getUserDetail: (userId: string, serverToken?: string) => {
-    return apiFetch<T.AppUser>(`/admin/users/${userId}`, {}, serverToken);
+  getUserDetail: async (userId: string, serverToken?: string) => {
+    const raw = await apiFetch<unknown>(`/admin/users/${userId}`, {}, serverToken);
+    return unwrapEntity<T.AppUser>(raw);
   },
 
   getUserBookings: (userId: string, page = 1, limit = 20, serverToken?: string) => {
@@ -154,16 +160,20 @@ export const adminService = {
     );
   },
 
-  getVendorKYC: (vendorId: string, serverToken?: string) => {
-    return apiFetch<T.VendorKYC>(`/admin/vendors/${vendorId}/kyc`, {}, serverToken);
+  getVendorKYC: async (vendorId: string, serverToken?: string) => {
+    const raw = await apiFetch<unknown>(`/admin/vendors/${vendorId}/kyc`, {}, serverToken);
+    return unwrapEntity<T.VendorKYC>(raw);
   },
 
-  getVendorPageBundle: (vendorId: string, page = 1, limit = 20, serverToken?: string) => {
-    return apiFetch<T.VendorPageResponse>(
+  getVendorPageBundle: async (vendorId: string, page = 1, limit = 20, serverToken?: string) => {
+    const raw = await apiFetch<unknown>(
       `/admin/vendors/${vendorId}/page?page=${page}&limit=${limit}`,
       {},
       serverToken,
     );
+    const bundle = unwrapVendorPage(raw);
+    if (!bundle) throw new Error('Vendor not found');
+    return bundle as T.VendorPageResponse;
   },
 
   updateVendorStatus: (
@@ -184,8 +194,9 @@ export const adminService = {
     );
   },
 
-  getEventDetail: (eventId: string, serverToken?: string) => {
-    return apiFetch<T.AdminEventDetail>(`/admin/events/${eventId}`, {}, serverToken);
+  getEventDetail: async (eventId: string, serverToken?: string) => {
+    const raw = await apiFetch<unknown>(`/admin/events/${eventId}`, {}, serverToken);
+    return unwrapEntity<T.AdminEventDetail>(raw);
   },
 
   approveEventCancellation: (eventId: string) => {
@@ -295,8 +306,9 @@ export const adminService = {
     );
   },
 
-  getSupportTicket: (ticketId: string, serverToken?: string) => {
-    return apiFetch<T.SupportTicket>(`/admin/support/${ticketId}`, {}, serverToken);
+  getSupportTicket: async (ticketId: string, serverToken?: string) => {
+    const raw = await apiFetch<unknown>(`/admin/support/${ticketId}`, {}, serverToken);
+    return unwrapEntity<T.SupportTicket>(raw);
   },
 
   updateSupportTicketStatus: (
@@ -309,8 +321,9 @@ export const adminService = {
     });
   },
 
-  getSettings: (serverToken?: string) => {
-    return apiFetch<T.PlatformSettings>('/admin/settings', {}, serverToken);
+  getSettings: async (serverToken?: string) => {
+    const raw = await apiFetch<unknown>('/admin/settings', {}, serverToken);
+    return settingsToMap(raw);
   },
 
   updateSetting: (key: string, value: string) => {
