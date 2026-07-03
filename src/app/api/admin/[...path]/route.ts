@@ -2,17 +2,20 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { BACKEND_API_URL, SESSION_COOKIE, USE_MOCK_FALLBACK } from '@/lib/config';
 
-// Safe sandbox defaults to prevent crashes when backend is down
+// =========================================================================
+// RESILIENT LOCAL MOCK DATA DICTIONARY
+// This acts as an offline simulation of your backend database!
+// =========================================================================
 const mockFallbacks: Record<string, any> = {
-  'profile': {
+  profile: {
     id: '001294',
     name: 'Emmanuel Isiguzo',
     email: 'emmanuel@gmail.com',
     role: 'SUPER_ADMIN',
     is_active: true,
-    avatar_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop'
+    avatar_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop',
   },
-  'dashboard': {
+  dashboard: {
     total_events: 860,
     total_users: 1450,
     total_vendors: 300,
@@ -26,12 +29,12 @@ const mockFallbacks: Record<string, any> = {
     pending_approvals: 12,
     pending_verifications: 8,
     recent_events: [],
-    recent_vendors: []
+    recent_vendors: [],
   },
-  'settings': {
+  settings: {
     about_company_name: 'Trio',
-    about_description: 'Trios is a premier event ticketing and management platform.'
-  }
+    about_description: 'Trios is a premier event ticketing and management platform.',
+  },
 };
 
 async function handleProxy(
@@ -81,7 +84,6 @@ async function handleProxy(
 
     const data = await backendResponse.json().catch(() => ({}));
     return NextResponse.json(data, { status: backendResponse.status });
-
   } catch (error) {
     if (USE_MOCK_FALLBACK) {
       const cleanPath = urlPath.toLowerCase().trim();
@@ -90,11 +92,18 @@ async function handleProxy(
         return NextResponse.json({ success: true, message: 'Mock patch succeeded' }, { status: 200 });
       }
 
+      if (cleanPath === 'vendors' && method === 'POST') {
+        return NextResponse.json(
+          { success: true, message: 'Vendor manually onboarded successfully' },
+          { status: 201 }
+        );
+      }
+
       const fallbackKey = Object.keys(mockFallbacks).find(
         (key) =>
           cleanPath === key ||
           cleanPath.endsWith('/' + key) ||
-          key.endsWith('/' + cleanPath),
+          key.endsWith('/' + cleanPath)
       );
 
       if (fallbackKey && mockFallbacks[fallbackKey]) {

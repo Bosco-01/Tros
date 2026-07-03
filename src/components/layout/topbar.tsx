@@ -24,7 +24,6 @@ import {
 } from 'lucide-react';
 import { apiFetch } from '@/services/apiClient';
 import { AdminProfile } from '@/types/admin';
-import { useLogout } from '@/lib/auth';
 
 interface TopbarProps {
   title: string;
@@ -45,13 +44,9 @@ const navItems = [
 export const Topbar: React.FC<TopbarProps> = ({ title }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const logout = useLogout();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  // Real profile state managed dynamically
   const [profile, setProfile] = useState<AdminProfile | null>(null);
 
-  // Fetch the logged-in administrator's profile details on mount
   useEffect(() => {
     const fetchAdminProfile = async () => {
       try {
@@ -59,19 +54,26 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
         setProfile(data);
       } catch (error) {
         console.error('Failed to retrieve active administrator profile:', error);
-        // Optional fallback: redirect to login if there is no session token
-        // router.push('/');
       }
     };
     
     fetchAdminProfile();
   }, [router]);
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (error) {
+      console.error('Failed to log out safely:', error);
+    } finally {
+      window.location.href = '/';
+    }
+  };
+
   return (
     <>
       <header className="w-full h-[70px] md:h-[90px] px-4 md:px-8 flex items-center justify-between bg-[#FDFDFE] border-b border-neutral-50 lg:border-none sticky top-0 z-20">
         
-        {/* Left Side: Mobile Menu Button & Title */}
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
@@ -86,15 +88,12 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
           </h1>
         </div>
 
-        {/* Right Side: Toolbar Actions */}
         <div className="flex items-center gap-2.5 md:gap-4">
           
-          {/* Search */}
           <button className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border border-neutral-100 shadow-sm flex items-center justify-center text-neutral-600 hover:bg-neutral-50 transition-colors">
             <Search className="w-4 h-4 md:w-5 md:h-5" />
           </button>
 
-          {/* Theme Toggle */}
           <div className="h-10 md:h-11 flex items-center p-1 bg-white border border-neutral-100 shadow-sm rounded-full">
             <button className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#6312e1] text-white flex items-center justify-center shadow-sm">
               <Sun className="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" />
@@ -104,13 +103,11 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
             </button>
           </div>
 
-          {/* Notification */}
           <button className="relative w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border border-neutral-100 shadow-sm flex items-center justify-center text-neutral-600 hover:bg-neutral-50 transition-colors">
             <Bell className="w-4 h-4 md:w-5 md:h-5" />
             <span className="absolute top-2.5 right-3 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
           </button>
 
-          {/* Dynamic Admin Profile Info (Top-Right Corner) */}
           <div className="flex items-center gap-3 pl-1 md:pl-2 select-none">
             <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden relative bg-neutral-100 border border-neutral-100 flex-shrink-0">
               <img
@@ -132,7 +129,7 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
         </div>
       </header>
 
-      {/* Mobile Drawer (replicated here with dynamic profile bindings too) */}
+      {/* Mobile Navigation Drawer */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
           <div 
@@ -190,10 +187,9 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
                 <Settings className="w-5 h-5 text-neutral-500" />
                 <span className="text-[15px]">Platform Setting</span>
               </Link>
-              <button
-                type="button"
-                onClick={() => void logout()}
-                className="flex items-center gap-4 px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl transition-colors text-left w-full"
+              <button 
+                onClick={handleLogout}
+                className="w-full flex items-center gap-4 px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl transition-colors text-left focus:outline-none"
               >
                 <LogOut className="w-5 h-5" />
                 <span className="text-[15px]">Logout</span>

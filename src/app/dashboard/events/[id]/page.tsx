@@ -1,104 +1,115 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { use, useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
-import { Topbar } from '@/components/layout/topbar';
-import { EventBanner } from '@/components/dashboard/events/EventBanner';
-import { EventActionButtons } from '@/components/dashboard/events/EventActionButtons';
-import { adminService } from '@/services/adminService';
-import type { AdminEventDetail } from '@/types/admin';
-import { formatCurrency, formatDate } from '@/lib/api-helpers';
-import { LoadingState, ErrorState, PageShell } from '@/components/ui/AsyncStates';
+import { Topbar } from '@/components/layout/topbar'; // Note: Matches lowercase filename on disk
 
-export default function EventDetailsPage() {
-  const params = useParams();
-  const eventId = decodeURIComponent(String(params.id));
-  const [event, setEvent] = useState<AdminEventDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+import { EventDetailsManager } from '@/components/dashboard/events/EventDetailsManager';
+import { EventReviewsSection } from '@/components/dashboard/events/EventReviewsSection';
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const data = await adminService.getEventDetail(eventId);
-      setEvent(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Event not found');
-    } finally {
-      setLoading(false);
-    }
-  }, [eventId]);
+import { mockEventDetails, mockEventReviews, EventDetailsData } from '@/data/event-details';
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-  const handleApproveCancellation = async () => {
-    try {
-      await adminService.approveEventCancellation(eventId);
-      await load();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Action failed');
-    }
+export default function EventDetailsPage({ params }: PageProps) {
+  // Gracefully unwrap dynamic route parameters under React 19 rules
+  const resolvedParams = use(params);
+  const eventId = resolvedParams.id;
+
+  const [eventData, setEventData] = useState<EventDetailsData>(mockEventDetails);
+  const [success, setSuccess] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
+
+  const handleSaveData = (updated: EventDetailsData) => {
+    setEventData(updated);
+  };
+
+  const handleCreateWorkflow = () => {
+    setIsCreating(true);
+    setSuccess('');
+    
+    // Simulate endpoint registration success
+    setTimeout(() => {
+      setIsCreating(false);
+      setSuccess('Event successfully launched on the live platform!');
+      setTimeout(() => setSuccess(''), 2500);
+    }, 1200);
   };
 
   return (
     <>
-      <Topbar title="Event Details" />
-      {loading ? (
-        <LoadingState />
-      ) : error || !event ? (
-        <ErrorState message={error || 'Event not found'} onRetry={load} />
-      ) : (
-        <PageShell>
-          <div className="max-w-[1100px] w-full">
-            <div className="flex items-center gap-2 text-sm font-medium mb-6 flex-wrap">
-              <Link href="/dashboard/events" className="hover:text-[#6312E1]">
-                All Events
-              </Link>
-              <ChevronRight className="w-4 h-4 text-neutral-500" />
-              <span>{event.title}</span>
-            </div>
-
-            <EventBanner url={event.cover_image_url || ''} />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 my-6">
-              {[
-                ['Category', event.category],
-                ['Event Type', event.event_type],
-                ['Title', event.title],
-                ['Vendor', event.vendor_name],
-                ['Price', formatCurrency(event.price)],
-                ['Date', formatDate(event.date_time)],
-                ['Status', event.status],
-                ['Venue', event.venue_name || '—'],
-                ['Address', event.venue_address || '—'],
-                ['Total Users', String(event.total_users)],
-                ['Rating', `${event.rating} (${event.review_count} reviews)`],
-              ].map(([label, value]) => (
-                <div key={label} className="bg-white rounded-xl border border-neutral-100 p-4">
-                  <p className="text-sm text-neutral-500 mb-1">{label}</p>
-                  <p className="font-bold text-neutral-900">{value}</p>
-                </div>
-              ))}
-            </div>
-
-            {event.description && (
-              <div className="bg-white rounded-xl border border-neutral-100 p-4 mb-6">
-                <p className="text-sm text-neutral-500 mb-2">Description</p>
-                <p className="text-neutral-800 leading-relaxed">{event.description}</p>
-              </div>
-            )}
-
-            {event.status === 'pending_cancellation' && (
-              <EventActionButtons onApprove={handleApproveCancellation} />
-            )}
+      <Topbar title="All Events" />
+      
+      {/* 
+        Main content wrapper with slightly grey background 
+        so the pure white layout forms and rating lists stand out.
+      */}
+      <main className="flex-1 p-8 bg-[#F8F9FA] overflow-y-auto custom-scrollbar">
+        <div className="max-w-[1100px]">
+          
+          {/* Breadcrumbs matching design specifications */}
+          <div className="flex items-center gap-2 text-[15px] font-medium mb-10 select-none">
+            <Link href="/dashboard/vendors" className="text-neutral-900 hover:text-[#6312E1] transition-colors">
+              All Vendors
+            </Link>
+            <ChevronRight className="w-4 h-4 text-neutral-500" />
+            <span className="text-neutral-900">John Doe</span>
+            <ChevronRight className="w-4 h-4 text-neutral-500" />
+            <span className="text-neutral-900">{eventData.title}</span>
           </div>
-        </PageShell>
-      )}
+
+          {/* Unified dynamic Details Manager (View + Edit states) */}
+          <EventDetailsManager initialData={eventData} onSave={handleSaveData} />
+
+          {/* New Ratings and Reviews Section */}
+          <EventReviewsSection reviews={mockEventReviews} averageRating={eventData.rating} />
+
+          {/* Success toast alerts */}
+          {success && (
+            <div className="mt-8 p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold max-w-[540px] transition-all">
+              {success}
+            </div>
+          )}
+
+          {/* 
+            ========================================================================
+            ADMIN-CREATED EVENT WORKFLOW ACTIONS
+            Approve/Disapprove buttons replaced with Create/Cancel triggers
+            ========================================================================
+          */}
+          <div className="flex items-center gap-6 w-full max-w-[540px] mt-8">
+            {/* Create Trigger */}
+            <button 
+              onClick={handleCreateWorkflow}
+              disabled={isCreating}
+              className="flex-1 h-12 bg-[#6312E1] hover:bg-[#520cbd] text-white font-bold text-base rounded-2xl transition-all active:scale-[0.99] flex items-center justify-center shadow-sm shadow-[#6312E1]/5"
+            >
+              {isCreating ? (
+                <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              ) : (
+                'Create'
+              )}
+            </button>
+
+            {/* Cancel Trigger */}
+            <Link href="/dashboard/events" className="flex-1">
+              <button 
+                type="button"
+                className="w-full h-12 bg-[#FFE8E8] hover:bg-[#fbdada] text-[#D82F2F] font-bold text-base rounded-2xl transition-all active:scale-[0.99] flex items-center justify-center shadow-sm"
+              >
+                Cancel
+              </button>
+            </Link>
+          </div>
+
+        </div>
+      </main>
     </>
   );
 }

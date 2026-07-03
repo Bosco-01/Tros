@@ -5,7 +5,7 @@ import { EventDetailsData } from '@/data/event-details';
 
 interface EventDetailsGridProps {
   data: EventDetailsData;
-  eventId: string; // Added dynamic eventId prop
+  eventId: string;
 }
 
 const DetailField = ({ label, children }: { label: string; children: React.ReactNode }) => (
@@ -30,14 +30,13 @@ export const EventDetailsGrid: React.FC<EventDetailsGridProps> = ({ data, eventI
         <span>{data.eventType}</span>
       </DetailField>
 
-      {/* Row 2: Title & Total Users (Linked to nested Event Users page) */}
+      {/* Row 2: Title & Total Users */}
       <DetailField label="Title">
         <span>{data.title}</span>
       </DetailField>
 
       <DetailField label="Total Users">
         <span>{data.totalUsers}</span>
-        {/* Dynamic redirection link added here */}
         <Link 
           href={`/dashboard/events/${eventId}/users`}
           className="text-sm font-semibold text-neutral-500 flex items-center hover:text-[#6312E1] transition-colors focus:outline-none select-none"
@@ -46,14 +45,21 @@ export const EventDetailsGrid: React.FC<EventDetailsGridProps> = ({ data, eventI
         </Link>
       </DetailField>
 
-      {/* Row 3: Price & Date and Time */}
+      {/* Row 3: Price & Conditional Date/Time vs Working Hours */}
       <DetailField label="Price">
         <span>{data.price}</span>
       </DetailField>
 
-      <DetailField label="Date and Time">
-        <span>{data.dateTime}</span>
-      </DetailField>
+      {/* Conditional rendering depending on whether Working Hours are set */}
+      {data.workingHours ? (
+        <DetailField label="Working Hours">
+          <span>{data.workingHours}</span>
+        </DetailField>
+      ) : (
+        <DetailField label="Date and Time">
+          <span>{data.dateTime || 'N/A'}</span>
+        </DetailField>
+      )}
 
       {/* Row 4: Status & Ratings/Reviews */}
       <DetailField label="Status">
