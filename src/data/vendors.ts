@@ -21,7 +21,7 @@ export const mockVendors: VendorRowData[] = [
     status: 'Active',
   },
   {
-    id: '#001294',
+    id: '#001295', // Unique ID
     fullName: 'John Doe',
     businessName: "John's Bakeries and Co.",
     email: 'JohnDoe@gmail.com',
@@ -31,7 +31,7 @@ export const mockVendors: VendorRowData[] = [
     status: 'Pending',
   },
   {
-    id: '#001294',
+    id: '#001296', // Unique ID
     fullName: 'John Doe',
     businessName: "John's Bakeries and Co.",
     email: 'JohnDoe@gmail.com',
@@ -41,7 +41,7 @@ export const mockVendors: VendorRowData[] = [
     status: 'Active',
   },
   {
-    id: '#001294',
+    id: '#001297', // Unique ID
     fullName: 'John Doe',
     businessName: "John's Bakeries and Co.",
     email: 'JohnDoe@gmail.com',
@@ -51,7 +51,7 @@ export const mockVendors: VendorRowData[] = [
     status: 'Inactive',
   },
   {
-    id: '#001294',
+    id: '#001298', // Unique ID
     fullName: 'John Doe',
     businessName: "John's Bakeries and Co.",
     email: 'JohnDoe@gmail.com',

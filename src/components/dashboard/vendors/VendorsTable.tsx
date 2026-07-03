@@ -41,9 +41,9 @@ export const VendorsTable: React.FC<VendorsTableProps> = ({
                 </td>
               </tr>
             ) : (
-              data.map((row) => (
+              data.map((row, index) => (
                 <tr
-                  key={row.id}
+                 key={`${row.id}-${index}`}
                   className="border-b border-neutral-100 last:border-none hover:bg-neutral-50/50 transition-colors"
                 >
                   <td className="px-4 sm:px-6 py-4 text-sm text-neutral-600 font-medium truncate max-w-[100px]">
