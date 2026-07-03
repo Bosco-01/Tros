@@ -4,19 +4,19 @@ import React from 'react';
 import { Search, X } from 'lucide-react';
 
 interface VendorFiltersProps {
-  search: string;
-  status: string;
-  onSearchChange: (value: string) => void;
-  onStatusChange: (value: string) => void;
-  onSubmit: () => void;
+  search?: string;
+  status?: string;
+  onSearchChange?: (value: string) => void;
+  onStatusChange?: (value: string) => void;
+  onSubmit?: () => void;
 }
 
 export const VendorFilters: React.FC<VendorFiltersProps> = ({
-  search,
-  status,
-  onSearchChange,
-  onStatusChange,
-  onSubmit,
+  search = '',
+  status = '',
+  onSearchChange = () => {},
+  onStatusChange = () => {},
+  onSubmit = () => {},
 }) => {
   const activeFilter = status ? `Status: ${status}` : search ? `Search: ${search}` : null;
 

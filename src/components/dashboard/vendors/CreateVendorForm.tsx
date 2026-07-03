@@ -52,8 +52,8 @@ export const CreateVendorForm: React.FC = () => {
       formData.append('state', 'Lagos'); // Default required values
       formData.append('city', 'Ikeja');
       formData.append('cac_registered_number', 'CAC-TEMP-1234');
-      formData.append('nin', nin);
-      formData.set('cac', cac);
+      formData.append('nin', ninFile as File);
+      formData.set('cac', cacFile as File);
 
       await apiFetch('/admin/vendors', {
         method: 'POST',
@@ -65,7 +65,7 @@ export const CreateVendorForm: React.FC = () => {
     } catch (err) {
       setError('Failed to create vendor account. Please verify backend service.');
     } finally {
-      setIsSending(false);
+      setIsSubmitting(false);
     }
   };
 
