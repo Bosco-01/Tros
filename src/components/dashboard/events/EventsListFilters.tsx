@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Search, ChevronDown, X } from 'lucide-react';
+import React from "react";
+import { Search, ChevronDown, X } from "lucide-react";
 
 interface EventsListFiltersProps {
   searchQuery: string;
@@ -24,10 +24,8 @@ export const EventsListFilters: React.FC<EventsListFiltersProps> = ({
 }) => {
   return (
     <div className="flex flex-col gap-6 mb-8 w-full max-w-[1100px] select-none animate-in fade-in duration-300">
-      
       {/* Search Input, Dropdown, and Button Controls */}
       <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
-        
         {/* Category Search Input */}
         <div className="relative flex-1 w-full">
           <span className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-500">
@@ -39,7 +37,7 @@ export const EventsListFilters: React.FC<EventsListFiltersProps> = ({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 e.preventDefault();
                 onSearchClick?.();
               }
@@ -72,18 +70,19 @@ export const EventsListFilters: React.FC<EventsListFiltersProps> = ({
         >
           Search
         </button>
-
       </div>
 
       {/* Filter Tag Bar */}
       {activeFilters.length > 0 && (
         <div className="w-full bg-white rounded-[24px] p-5 border border-neutral-100 flex items-center gap-4 shadow-sm shadow-neutral-100/50 flex-wrap">
-          <span className="text-base font-bold text-neutral-900 leading-none">Filter:</span>
-          
+          <span className="text-base font-bold text-neutral-900 leading-none">
+            Filter:
+          </span>
+
           <div className="flex flex-wrap items-center gap-3">
             {activeFilters.map((filter) => (
-              <div 
-                key={filter} 
+              <div
+                key={filter}
                 className="flex items-center gap-2 bg-white border border-neutral-200 px-4 py-2 rounded-xl text-sm font-bold text-neutral-900 select-none"
               >
                 <span>{filter}</span>
@@ -100,7 +99,6 @@ export const EventsListFilters: React.FC<EventsListFiltersProps> = ({
           </div>
         </div>
       )}
-
     </div>
   );
 };

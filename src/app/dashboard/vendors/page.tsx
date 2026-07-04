@@ -1,18 +1,22 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Topbar } from '@/components/layout/topbar'; // Note: Matches lowercase on-disk config
-import { VendorFilters } from '@/components/dashboard/vendors/VendorFilters';
-import { VendorsTable } from '@/components/dashboard/vendors/VendorsTable';
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { Topbar } from "@/components/layout/topbar"; // Note: Matches lowercase on-disk config
+import { VendorFilters } from "@/components/dashboard/vendors/VendorFilters";
+import { VendorsTable } from "@/components/dashboard/vendors/VendorsTable";
 // no local mock fallback - require real backend data
-import { apiFetch } from '@/services/apiClient';
-import type { AdminVendor, PaginatedResponse, VendorRowData } from '@/types/admin';
+import { apiFetch } from "@/services/apiClient";
+import type {
+  AdminVendor,
+  PaginatedResponse,
+  VendorRowData,
+} from "@/types/admin";
 
 export default function AllVendorsPage() {
   const [vendors, setVendors] = useState<VendorRowData[]>([]);
-  const [search, setSearch] = useState('');
-  const [status, setStatus] = useState('');
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
 
@@ -21,23 +25,29 @@ export default function AllVendorsPage() {
       setIsLoading(true);
       setUnauthorized(false);
       try {
-        const resp = await apiFetch<PaginatedResponse<AdminVendor>>('/admin/vendors?page=1&limit=50');
+        const resp = await apiFetch<PaginatedResponse<AdminVendor>>(
+          "/admin/vendors?page=1&limit=50",
+        );
         const obj = resp as unknown as Record<string, any>;
         let list: AdminVendor[] = [];
         if (Array.isArray(obj.vendors)) list = obj.vendors as AdminVendor[];
-        else if (obj.data && Array.isArray(obj.data.vendors)) list = obj.data.vendors as AdminVendor[];
+        else if (obj.data && Array.isArray(obj.data.vendors))
+          list = obj.data.vendors as AdminVendor[];
         else if (Array.isArray(obj.data)) list = obj.data as AdminVendor[];
         else if (Array.isArray(obj.items)) list = obj.items as AdminVendor[];
 
         const mapped: VendorRowData[] = list.map((v) => ({
-          id: v.vendor_id || (v as any).id || '',
-          fullName: v.full_name || v.fullName || '',
-          businessName: v.business_name || (v as any).businessName || '',
-          email: v.email || '',
-          subscription: (v.subscription_status as string) || '',
-          amount: (v.subscription_amount != null ? `₦ ${Number(v.subscription_amount).toLocaleString()}` : ''),
-          eventPost: (v.event_post_status as string) || '',
-          status: (v.verification_status as string) || '',
+          id: v.vendor_id || (v as any).id || "",
+          fullName: v.full_name || v.fullName || "",
+          businessName: v.business_name || (v as any).businessName || "",
+          email: v.email || "",
+          subscription: (v.subscription_status as string) || "",
+          amount:
+            v.subscription_amount != null
+              ? `₦ ${Number(v.subscription_amount).toLocaleString()}`
+              : "",
+          eventPost: (v.event_post_status as string) || "",
+          status: (v.verification_status as string) || "",
         }));
 
         setVendors(mapped);
@@ -47,7 +57,7 @@ export default function AllVendorsPage() {
           setUnauthorized(true);
           setVendors([]);
         } else {
-          console.error('Failed to load vendors:', err);
+          console.error("Failed to load vendors:", err);
           setVendors([]);
         }
       } finally {
@@ -63,28 +73,34 @@ export default function AllVendorsPage() {
     setUnauthorized(false);
     try {
       const q = new URLSearchParams();
-      if (search) q.set('search', search);
-      if (status) q.set('status', status);
-      q.set('page', '1');
-      q.set('limit', '50');
+      if (search) q.set("search", search);
+      if (status) q.set("status", status);
+      q.set("page", "1");
+      q.set("limit", "50");
 
-      const resp = await apiFetch<PaginatedResponse<AdminVendor>>(`/admin/vendors?${q.toString()}`);
+      const resp = await apiFetch<PaginatedResponse<AdminVendor>>(
+        `/admin/vendors?${q.toString()}`,
+      );
       const obj = resp as unknown as Record<string, any>;
       let list: AdminVendor[] = [];
       if (Array.isArray(obj.vendors)) list = obj.vendors as AdminVendor[];
-      else if (obj.data && Array.isArray(obj.data.vendors)) list = obj.data.vendors as AdminVendor[];
+      else if (obj.data && Array.isArray(obj.data.vendors))
+        list = obj.data.vendors as AdminVendor[];
       else if (Array.isArray(obj.data)) list = obj.data as AdminVendor[];
       else if (Array.isArray(obj.items)) list = obj.items as AdminVendor[];
 
       const mapped: VendorRowData[] = list.map((v) => ({
-        id: v.vendor_id || (v as any).id || '',
-        fullName: v.full_name || v.fullName || '',
-        businessName: v.business_name || (v as any).businessName || '',
-        email: v.email || '',
-        subscription: (v.subscription_status as string) || '',
-        amount: (v.subscription_amount != null ? `₦ ${Number(v.subscription_amount).toLocaleString()}` : ''),
-        eventPost: (v.event_post_status as string) || '',
-        status: (v.verification_status as string) || '',
+        id: v.vendor_id || (v as any).id || "",
+        fullName: v.full_name || v.fullName || "",
+        businessName: v.business_name || (v as any).businessName || "",
+        email: v.email || "",
+        subscription: (v.subscription_status as string) || "",
+        amount:
+          v.subscription_amount != null
+            ? `₦ ${Number(v.subscription_amount).toLocaleString()}`
+            : "",
+        eventPost: (v.event_post_status as string) || "",
+        status: (v.verification_status as string) || "",
       }));
 
       setVendors(mapped);
@@ -93,7 +109,7 @@ export default function AllVendorsPage() {
         setUnauthorized(true);
         setVendors([]);
       } else {
-        console.error('Vendor search failed:', err);
+        console.error("Vendor search failed:", err);
       }
     } finally {
       setIsLoading(false);
@@ -103,13 +119,12 @@ export default function AllVendorsPage() {
   return (
     <>
       <Topbar title="All Vendors" />
-      
+
       {/* 
         Main content wrapper with slightly grey background 
         so the pure white filter containers and table row states stand out.
       */}
       <main className="flex-1 p-8 bg-[#F8F9FA] overflow-y-auto custom-scrollbar">
-        
         {/* Header Title & Actions Row (Positioned Top Right below Admin Topbar panel) */}
         <div className="flex items-center justify-between gap-4 mb-8 w-full max-w-[1100px] select-none">
           <h2 className="text-xl md:text-[22px] font-bold text-neutral-900 tracking-tight">
@@ -140,7 +155,10 @@ export default function AllVendorsPage() {
           {unauthorized ? (
             <div className="w-full bg-white rounded-2xl sm:rounded-3xl border border-neutral-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] p-8 max-w-[1100px] text-center">
               <h3 className="text-lg font-bold mb-2">Not signed in</h3>
-              <p className="text-sm text-neutral-600">You must be signed in to view vendors. Please sign in via the admin login.</p>
+              <p className="text-sm text-neutral-600">
+                You must be signed in to view vendors. Please sign in via the
+                admin login.
+              </p>
             </div>
           ) : isLoading ? (
             <div className="w-full bg-white rounded-2xl sm:rounded-3xl border border-neutral-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] p-8 max-w-[1100px] text-center">
@@ -150,7 +168,6 @@ export default function AllVendorsPage() {
             <VendorsTable data={vendors} />
           )}
         </div>
-
       </main>
     </>
   );
