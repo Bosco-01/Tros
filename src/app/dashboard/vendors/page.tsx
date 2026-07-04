@@ -1,11 +1,105 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Topbar } from '@/components/layout/topbar'; // Note: Matches lowercase on-disk config
 import { VendorFilters } from '@/components/dashboard/vendors/VendorFilters';
 import { VendorsTable } from '@/components/dashboard/vendors/VendorsTable';
-import { mockVendors } from '@/data/vendors';
+// no local mock fallback - require real backend data
+import { apiFetch } from '@/services/apiClient';
+import type { AdminVendor, PaginatedResponse, VendorRowData } from '@/types/admin';
 
 export default function AllVendorsPage() {
+  const [vendors, setVendors] = useState<VendorRowData[]>([]);
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [unauthorized, setUnauthorized] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      setIsLoading(true);
+      setUnauthorized(false);
+      try {
+        const resp = await apiFetch<PaginatedResponse<AdminVendor>>('/admin/vendors?page=1&limit=50');
+        const obj = resp as unknown as Record<string, any>;
+        let list: AdminVendor[] = [];
+        if (Array.isArray(obj.vendors)) list = obj.vendors as AdminVendor[];
+        else if (obj.data && Array.isArray(obj.data.vendors)) list = obj.data.vendors as AdminVendor[];
+        else if (Array.isArray(obj.data)) list = obj.data as AdminVendor[];
+        else if (Array.isArray(obj.items)) list = obj.items as AdminVendor[];
+
+        const mapped: VendorRowData[] = list.map((v) => ({
+          id: v.vendor_id || (v as any).id || '',
+          fullName: v.full_name || v.fullName || '',
+          businessName: v.business_name || (v as any).businessName || '',
+          email: v.email || '',
+          subscription: (v.subscription_status as string) || '',
+          amount: (v.subscription_amount != null ? `₦ ${Number(v.subscription_amount).toLocaleString()}` : ''),
+          eventPost: (v.event_post_status as string) || '',
+          status: (v.verification_status as string) || '',
+        }));
+
+        setVendors(mapped);
+      } catch (err: any) {
+        // If unauthorized, show a clearer UI state instead of silently showing "No vendors"
+        if (err && err.status === 401) {
+          setUnauthorized(true);
+          setVendors([]);
+        } else {
+          console.error('Failed to load vendors:', err);
+          setVendors([]);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void load();
+  }, []);
+
+  const handleSearch = async () => {
+    setIsLoading(true);
+    setUnauthorized(false);
+    try {
+      const q = new URLSearchParams();
+      if (search) q.set('search', search);
+      if (status) q.set('status', status);
+      q.set('page', '1');
+      q.set('limit', '50');
+
+      const resp = await apiFetch<PaginatedResponse<AdminVendor>>(`/admin/vendors?${q.toString()}`);
+      const obj = resp as unknown as Record<string, any>;
+      let list: AdminVendor[] = [];
+      if (Array.isArray(obj.vendors)) list = obj.vendors as AdminVendor[];
+      else if (obj.data && Array.isArray(obj.data.vendors)) list = obj.data.vendors as AdminVendor[];
+      else if (Array.isArray(obj.data)) list = obj.data as AdminVendor[];
+      else if (Array.isArray(obj.items)) list = obj.items as AdminVendor[];
+
+      const mapped: VendorRowData[] = list.map((v) => ({
+        id: v.vendor_id || (v as any).id || '',
+        fullName: v.full_name || v.fullName || '',
+        businessName: v.business_name || (v as any).businessName || '',
+        email: v.email || '',
+        subscription: (v.subscription_status as string) || '',
+        amount: (v.subscription_amount != null ? `₦ ${Number(v.subscription_amount).toLocaleString()}` : ''),
+        eventPost: (v.event_post_status as string) || '',
+        status: (v.verification_status as string) || '',
+      }));
+
+      setVendors(mapped);
+    } catch (err: any) {
+      if (err && err.status === 401) {
+        setUnauthorized(true);
+        setVendors([]);
+      } else {
+        console.error('Vendor search failed:', err);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <Topbar title="All Vendors" />
@@ -33,11 +127,28 @@ export default function AllVendorsPage() {
         </div>
 
         {/* Rounded filter bar and tag bar */}
-        <VendorFilters />
+        <VendorFilters
+          search={search}
+          status={status}
+          onSearchChange={setSearch}
+          onStatusChange={setStatus}
+          onSubmit={handleSearch}
+        />
 
         {/* Dynamic Data Table */}
         <div className="w-full">
-          <VendorsTable data={mockVendors} />
+          {unauthorized ? (
+            <div className="w-full bg-white rounded-2xl sm:rounded-3xl border border-neutral-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] p-8 max-w-[1100px] text-center">
+              <h3 className="text-lg font-bold mb-2">Not signed in</h3>
+              <p className="text-sm text-neutral-600">You must be signed in to view vendors. Please sign in via the admin login.</p>
+            </div>
+          ) : isLoading ? (
+            <div className="w-full bg-white rounded-2xl sm:rounded-3xl border border-neutral-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] p-8 max-w-[1100px] text-center">
+              <p className="text-sm text-neutral-600">Loading vendors...</p>
+            </div>
+          ) : (
+            <VendorsTable data={vendors} />
+          )}
         </div>
 
       </main>

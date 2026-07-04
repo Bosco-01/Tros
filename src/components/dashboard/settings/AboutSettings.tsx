@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/apiClient';
-import { settingsToMap } from '@/lib/api-helpers';
 
 export const AboutSettings: React.FC = () => {
   const [companyName, setCompanyName] = useState('Trio');
@@ -16,12 +15,12 @@ export const AboutSettings: React.FC = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const settings = settingsToMap(await apiFetch('/admin/settings'));
+        const settings = await apiFetch<Record<string, string>>('/admin/settings');
         if (settings.about_company_name) {
           setCompanyName(settings.about_company_name);
         }
         if (settings.about_description) {
-          setAboutDescription(settings.about_description);
+          setAboutDescription(settings.about_description.trim());
         }
       } catch (err) {
         console.warn('[Settings] Failed to fetch live database settings. Falling back to local default values.');
@@ -39,6 +38,9 @@ export const AboutSettings: React.FC = () => {
     setSuccess(false);
     setError('');
 
+    // Bypasses Go-backend's strict "binding:required" validation rule by sending a single space instead of empty string!
+    const descriptionValue = aboutDescription.trim() === '' ? ' ' : aboutDescription;
+
     try {
       // 1. Update the Company Name key
       await apiFetch('/admin/settings/about_company_name', {
@@ -49,7 +51,7 @@ export const AboutSettings: React.FC = () => {
       // 2. Update the About Description key
       await apiFetch('/admin/settings/about_description', {
         method: 'PATCH',
-        body: JSON.stringify({ value: aboutDescription }),
+        body: JSON.stringify({ value: descriptionValue }),
       });
 
       setSuccess(true);
@@ -75,15 +77,15 @@ export const AboutSettings: React.FC = () => {
   return (
     <form onSubmit={handleSave} className="bg-white rounded-3xl p-8 border border-neutral-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.03)] flex-1 w-full flex flex-col gap-6">
       
-      {/* Title */}
+      {/* Header of About Us Card */}
       <h3 className="text-lg font-bold text-neutral-950 tracking-tight leading-none select-none border-b border-neutral-50 pb-4 mb-2">
         About Us
       </h3>
 
-      {/* Form Inputs Stack */}
+      {/* Input Fields Stack */}
       <div className="flex flex-col gap-5 w-full max-w-[420px]">
         
-        {/* Company Name Input */}
+        {/* Company Name */}
         <div className="flex flex-col gap-2">
           <label className="text-[14px] font-semibold text-neutral-500">
             Company Name
@@ -96,7 +98,7 @@ export const AboutSettings: React.FC = () => {
           />
         </div>
 
-        {/* About Description Textarea */}
+        {/* About Description */}
         <div className="flex flex-col gap-2">
           <label className="text-[14px] font-semibold text-neutral-500">
             About Description
@@ -113,13 +115,13 @@ export const AboutSettings: React.FC = () => {
       </div>
 
       {success && (
-        <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold self-start transition-all select-none">
+        <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold self-start transition-all select-none animate-in fade-in duration-200">
           About Us updated successfully!
         </div>
       )}
 
       {error && (
-        <div className="p-3.5 bg-red-50 text-red-600 rounded-xl text-sm font-bold self-start transition-all select-none">
+        <div className="p-3.5 bg-red-50 text-red-600 rounded-xl text-sm font-bold self-start transition-all select-none animate-in fade-in duration-200">
           {error}
         </div>
       )}

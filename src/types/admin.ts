@@ -2,11 +2,11 @@ export interface MetricData {
   id: string;
   title: string;
   value: string;
-  trend: 'up' | 'down';
+  trend: "up" | "down";
   trendValue: string;
   trendPeriod: string;
   iconBg: string;
-  iconType: 'users' | 'vendors' | 'events' | 'subscriptions';
+  iconType: "users" | "vendors" | "events" | "subscriptions";
 }
 
 export interface AppError {
@@ -34,7 +34,7 @@ export interface AdminProfile {
   id: string;
   name: string;
   email: string;
-  role: 'ADMIN' | 'SUPER_ADMIN' | string;
+  role: "ADMIN" | "SUPER_ADMIN" | string;
   is_active: boolean;
   avatar_url?: string;
 }
@@ -86,7 +86,7 @@ export interface AdminEvent {
   event_type: string;
   price: number;
   date_time: string;
-  status: 'active' | 'on_hold' | 'cancelled' | 'pending_cancellation' | string;
+  status: "active" | "on_hold" | "cancelled" | "pending_cancellation" | string;
   total_users: number;
   rating: number;
   review_count: number;
@@ -107,7 +107,7 @@ export interface AdminVendor {
   subscription_status: string;
   subscription_amount: number;
   event_post_status: string;
-  verification_status: 'pending' | 'approved' | 'rejected' | string;
+  verification_status: "pending" | "approved" | "rejected" | string;
   total_events: number;
 }
 
@@ -183,7 +183,7 @@ export interface CreateAdminRequest {
   name: string;
   email: string;
   password?: string;
-  role: 'ADMIN' | 'SUPER_ADMIN';
+  role: "ADMIN" | "SUPER_ADMIN";
 }
 
 export interface ChangeAdminPasswordRequest {
@@ -274,7 +274,7 @@ export interface DisputeRow {
   payment_title: string;
   amount: number;
   date: string;
-  status: 'pending' | 'resolved' | string;
+  status: "pending" | "resolved" | string;
   admin_note?: string;
 }
 
@@ -287,8 +287,8 @@ export interface SupportTicket {
   user_email?: string;
   user_phone?: string;
   subject: string;
-  priority: 'High' | 'Medium' | 'Low' | string;
-  status: 'open' | 'in_progress' | 'resolved' | 'closed' | string;
+  priority: "High" | "Medium" | "Low" | string;
+  status: "open" | "in_progress" | "resolved" | "closed" | string;
   complaint?: string;
   message?: string;
   dateTime?: string;
@@ -332,7 +332,7 @@ export interface WithdrawalRequestRow {
   account_number: string;
   bank_name: string;
   amount: number;
-  status: 'pending' | 'successful' | 'failed' | string;
+  status: "pending" | "successful" | "failed" | string;
   reference: string;
   date: string;
 }
@@ -357,7 +357,7 @@ export interface UserProfileData {
   email: string;
   phone: string;
   registeredDate: string;
-  status: 'Active' | 'Inactive';
+  status: "Active" | "Inactive";
   eventsCount: number;
   avatarUrl: string;
 }
@@ -401,7 +401,7 @@ export interface UserRowData {
   fullName: string;
   email: string;
   phone: string;
-  status: 'Active' | 'Inactive';
+  status: "Active" | "Inactive";
 }
 
 export interface VendorRowData {
@@ -413,4 +413,14 @@ export interface VendorRowData {
   amount: string;
   eventPost: string;
   status: string;
+}
+
+export interface AdminUserRow {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  role?: string;
+  is_active?: boolean;
+  jobTitle?: string;
 }

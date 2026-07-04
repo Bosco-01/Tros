@@ -1,6 +1,10 @@
-import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { BACKEND_API_URL, SESSION_COOKIE, USE_MOCK_FALLBACK } from '@/lib/config';
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import {
+  BACKEND_API_URL,
+  SESSION_COOKIE,
+  USE_MOCK_FALLBACK,
+} from "@/lib/config";
 
 // =========================================================================
 // RESILIENT LOCAL MOCK DATA DICTIONARY
@@ -8,12 +12,13 @@ import { BACKEND_API_URL, SESSION_COOKIE, USE_MOCK_FALLBACK } from '@/lib/config
 // =========================================================================
 const mockFallbacks: Record<string, any> = {
   profile: {
-    id: '001294',
-    name: 'Emmanuel Isiguzo',
-    email: 'emmanuel@gmail.com',
-    role: 'SUPER_ADMIN',
+    id: "001294",
+    name: "Emmanuel Isiguzo",
+    email: "emmanuel@gmail.com",
+    role: "SUPER_ADMIN",
     is_active: true,
-    avatar_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop',
+    avatar_url:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop",
   },
   dashboard: {
     total_events: 860,
@@ -32,18 +37,19 @@ const mockFallbacks: Record<string, any> = {
     recent_vendors: [],
   },
   settings: {
-    about_company_name: 'Trio',
-    about_description: 'Trios is a premier event ticketing and management platform.',
+    about_company_name: "Trio",
+    about_description:
+      "Trios is a premier event ticketing and management platform.",
   },
 };
 
 async function handleProxy(
   request: Request,
   context: { params: Promise<{ path: string[] }> },
-  method: string
+  method: string,
 ) {
   const { path } = await context.params;
-  const urlPath = path.join('/');
+  const urlPath = path.join("/");
   const { search } = new URL(request.url);
   const targetUrl = `${BACKEND_API_URL}/admin/${urlPath}${search}`;
 
@@ -53,9 +59,9 @@ async function handleProxy(
     const token = tokenObj?.value;
 
     const headers = new Headers();
-    headers.set('Accept', 'application/json');
+    headers.set("Accept", "application/json");
     if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
+      headers.set("Authorization", `Bearer ${token}`);
     }
 
     const requestOptions: RequestInit = {
@@ -63,16 +69,16 @@ async function handleProxy(
       headers,
     };
 
-    if (method !== 'GET' && method !== 'DELETE') {
-      const contentType = request.headers.get('content-type') || '';
-      if (contentType.includes('application/json')) {
+    if (method !== "GET" && method !== "DELETE") {
+      const contentType = request.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
         const bodyText = await request.text();
         requestOptions.body = bodyText;
-        headers.set('Content-Type', 'application/json');
+        headers.set("Content-Type", "application/json");
       } else {
         const bodyBlob = await request.blob();
         requestOptions.body = bodyBlob;
-        headers.set('Content-Type', contentType);
+        headers.set("Content-Type", contentType);
       }
     }
 
@@ -88,50 +94,70 @@ async function handleProxy(
     if (USE_MOCK_FALLBACK) {
       const cleanPath = urlPath.toLowerCase().trim();
 
-      if (cleanPath.startsWith('settings/') && method === 'PATCH') {
-        return NextResponse.json({ success: true, message: 'Mock patch succeeded' }, { status: 200 });
+      if (cleanPath.startsWith("settings/") && method === "PATCH") {
+        return NextResponse.json(
+          { success: true, message: "Mock patch succeeded" },
+          { status: 200 },
+        );
       }
 
-      if (cleanPath === 'vendors' && method === 'POST') {
+      if (cleanPath === "vendors" && method === "POST") {
         return NextResponse.json(
-          { success: true, message: 'Vendor manually onboarded successfully' },
-          { status: 201 }
+          { success: true, message: "Vendor manually onboarded successfully" },
+          { status: 201 },
         );
       }
 
       const fallbackKey = Object.keys(mockFallbacks).find(
         (key) =>
           cleanPath === key ||
-          cleanPath.endsWith('/' + key) ||
-          key.endsWith('/' + cleanPath)
+          cleanPath.endsWith("/" + key) ||
+          key.endsWith("/" + cleanPath),
       );
 
       if (fallbackKey && mockFallbacks[fallbackKey]) {
-        console.warn(`[Proxy Fallback] Endpoint unreachable. Returning simulation payload for: /admin/${urlPath}`);
+        console.warn(
+          `[Proxy Fallback] Endpoint unreachable. Returning simulation payload for: /admin/${urlPath}`,
+        );
         return NextResponse.json(mockFallbacks[fallbackKey], { status: 200 });
       }
     }
 
-    console.error('Server Proxy Error:', error);
+    console.error("Server Proxy Error:", error);
     return NextResponse.json(
-      { message: 'Failed to establish contact with the underlying backend services.' },
-      { status: 500 }
+      {
+        message:
+          "Failed to establish contact with the underlying backend services.",
+      },
+      { status: 500 },
     );
   }
 }
 
-export async function GET(request: Request, context: { params: Promise<{ path: string[] }> }) {
-  return handleProxy(request, context, 'GET');
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ path: string[] }> },
+) {
+  return handleProxy(request, context, "GET");
 }
 
-export async function POST(request: Request, context: { params: Promise<{ path: string[] }> }) {
-  return handleProxy(request, context, 'POST');
+export async function POST(
+  request: Request,
+  context: { params: Promise<{ path: string[] }> },
+) {
+  return handleProxy(request, context, "POST");
 }
 
-export async function PATCH(request: Request, context: { params: Promise<{ path: string[] }> }) {
-  return handleProxy(request, context, 'PATCH');
+export async function PATCH(
+  request: Request,
+  context: { params: Promise<{ path: string[] }> },
+) {
+  return handleProxy(request, context, "PATCH");
 }
 
-export async function DELETE(request: Request, context: { params: Promise<{ path: string[] }> }) {
-  return handleProxy(request, context, 'DELETE');
+export async function DELETE(
+  request: Request,
+  context: { params: Promise<{ path: string[] }> },
+) {
+  return handleProxy(request, context, "DELETE");
 }

@@ -1,18 +1,24 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { X, Upload, ChevronDown } from 'lucide-react';
 import { apiFetch } from '@/services/apiClient';
 
 export const CreateEventForm: React.FC = () => {
+  const router = useRouter();
   const [eventType, setEventType] = useState<'Booking Event' | 'Places to Visit'>('Booking Event');
   const [vendorName, setVendorName] = useState('');
   const [eventTitle, setEventTitle] = useState('');
   const [location, setLocation] = useState('');
   const [address, setAddress] = useState('');
+  
+  // Pricing dropdown state default value
   const [pricing, setPricing] = useState('Starting from ₦1,000');
-  const [dateTime, setDateTime] = useState('');
+  
+  // Adjusted dateTime state default to match standard HTML5 datetime-local value format (YYYY-MM-DDTHH:MM)
+  const [dateTime, setDateTime] = useState('2026-03-24T20:00');
   const [workingHours, setWorkingHours] = useState('Open now, closes 19:00');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
@@ -29,7 +35,6 @@ export const CreateEventForm: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedList = Array.from(e.target.files);
-      // Append selected files to state list
       setUploadedFiles((prev) => [...prev, ...selectedList]);
     }
   };
@@ -38,12 +43,32 @@ export const CreateEventForm: React.FC = () => {
     setUploadedFiles((prev) => prev.filter((_, idx) => idx !== index));
   };
 
+  const ticketPriceParser = (pricingString: string): number => {
+    const numbers = pricingString.replace(/[^0-9]/g, '');
+    return numbers ? parseInt(numbers, 10) : 0;
+  };
+
+  // Helper to format HTML5 datetime-local string to clean human readable display for local fallback storage
+  const formatDateTimeDisplay = (rawDateTime: string): { date: string; time: string } => {
+    try {
+      const dateObj = new Date(rawDateTime);
+      if (isNaN(dateObj.getTime())) {
+        return { date: '24th March 2026', time: '20:00' };
+      }
+      const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+      const dateStr = dateObj.toLocaleDateString('en-US', options);
+      const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+      return { date: dateStr, time: timeStr };
+    } catch {
+      return { date: '24th March 2026', time: '20:00' };
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
 
-    // Form Validations
     if (!vendorName.trim()) {
       setError('Please enter the Vendor Name.');
       return;
@@ -61,11 +86,11 @@ export const CreateEventForm: React.FC = () => {
       return;
     }
     if (!pricing.trim()) {
-      setError('Please enter the Pricing.');
+      setError('Please select the Pricing.');
       return;
     }
     if (eventType === 'Booking Event' && !dateTime.trim()) {
-      setError('Please specify the Date and Time.');
+      setError('Please select the Date and Time.');
       return;
     }
     if (eventType === 'Places to Visit' && !workingHours.trim()) {
@@ -73,7 +98,6 @@ export const CreateEventForm: React.FC = () => {
       return;
     }
     
-    // Strict verification check for minimum 3 media uploads
     if (uploadedFiles.length < 3) {
       setError('You must upload at least a minimum of 3 images for the event gallery.');
       return;
@@ -82,35 +106,64 @@ export const CreateEventForm: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Complete Event creation REST request payload
-      const formData = new FormData();
-      formData.append('title', eventTitle);
-      formData.append('description', `${eventType} onboarding manual upload`);
-      formData.append('venue_name', location);
-      formData.append('venue_address', address);
-      formData.append('category_id', 'temp-category-id-99');
-      formData.append('price', pricing);
+      const ticketPriceNumeric = pricing.toLowerCase().includes('free') ? 0 : ticketPriceParser(pricing);
 
-      // Append conditional fields
-      if (eventType === 'Booking Event') {
-        formData.append('start_date', dateTime);
-        formData.append('end_date', dateTime);
-      } else {
-        formData.append('working_hours', workingHours);
-      }
+      const payload = {
+        category_id: "001294-cat-id",
+        title: eventTitle,
+        description: `${eventType} created manually by Admin. Hosted by ${vendorName}.`,
+        start_date: eventType === 'Booking Event' ? new Date(dateTime).toISOString() : new Date().toISOString(),
+        end_date: eventType === 'Booking Event' ? new Date(dateTime).toISOString() : new Date().toISOString(),
+        venue_name: location,
+        venue_address: address,
+        ticket_types: JSON.stringify([
+          {
+            name: "Regular Ticket",
+            total_quantity: 500,
+            price: ticketPriceNumeric
+          }
+        ]),
+        "-": [
+          {
+            name: "Standard Pass",
+            price: ticketPriceNumeric,
+            total_quantity: 200,
+            description: "Default standard ticket access description"
+          }
+        ]
+      };
 
-      // Append all multiple media files
-      uploadedFiles.forEach((file) => {
-        formData.append('images', file);
-      });
-
-      await apiFetch('/admin/events', {
+      await apiFetch('/event/create', {
         method: 'POST',
-        body: formData,
+        body: JSON.stringify(payload),
       });
+
+      const formatted = formatDateTimeDisplay(dateTime);
+
+      const newEventRow = {
+        id: `#${Math.floor(100000 + Math.random() * 900000)}`,
+        category: (eventType === 'Booking Event' ? 'Nightlife' : 'Hotel') as any,
+        title: eventTitle,
+        eventType: (eventType === 'Booking Event' ? 'BOOK' : 'RSVP') as any,
+        price: pricing,
+        date: eventType === 'Booking Event' ? formatted.date : 'Open now',
+        time: eventType === 'Booking Event' ? formatted.time : 'Closes 19:00',
+        vendorName: vendorName,
+        vendorId: `# ${Math.floor(100000 + Math.random() * 900000)}`,
+        status: 'Active' as const
+      };
+
+      const stored = localStorage.getItem('trios_custom_events');
+      const customEvents = stored ? JSON.parse(stored) : [];
+      localStorage.setItem('trios_custom_events', JSON.stringify([newEventRow, ...customEvents]));
 
       setSuccess(true);
       resetForm();
+
+      setTimeout(() => {
+        router.push('/dashboard/events');
+      }, 1500);
+
     } catch (err) {
       setError('Failed to register the platform event. Please verify backend connection.');
     } finally {
@@ -124,15 +177,17 @@ export const CreateEventForm: React.FC = () => {
     setLocation('');
     setAddress('');
     setPricing('Starting from ₦1,000');
-    setDateTime('');
+    setDateTime('2026-03-24T20:00');
     setWorkingHours('Open now, closes 19:00');
     setUploadedFiles([]);
   };
 
+  // EXTRACTED STYLES: Keeps markup extremely clean and prevents long string build crashes
+  const selectStyles = "bg-white rounded-xl px-5 h-14 border border-neutral-300 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] appearance-none cursor-pointer pr-12";
+  const inputStyles = "bg-white rounded-xl px-5 h-14 border border-neutral-300 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1]";
+
   return (
     <div className="bg-[#F8F9FA] rounded-[24px] p-8 md:p-10 w-full max-w-[640px] shadow-[0_4px_30px_rgba(0,0,0,0.03)] border border-neutral-100 flex flex-col relative select-none">
-      
-      {/* Header containing X close cross button */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl md:text-2xl font-bold text-neutral-900 tracking-tight">
           Create Event
@@ -146,17 +201,14 @@ export const CreateEventForm: React.FC = () => {
         </Link>
       </div>
 
-      {/* Form Container */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        
-        {/* Event Type Select (Dropdown Trigger) */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Event Type</label>
           <div className="relative w-full">
             <select
               value={eventType}
               onChange={(e) => setEventType(e.target.value as any)}
-              className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all appearance-none cursor-pointer pr-12"
+              className={selectStyles}
             >
               <option value="Booking Event">Booking Event</option>
               <option value="Places to Visit">Places to Visit</option>
@@ -167,87 +219,101 @@ export const CreateEventForm: React.FC = () => {
           </div>
         </div>
 
-        {/* Vendor Name */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Vendor Name</label>
           <input
             type="text"
             value={vendorName}
             onChange={(e) => setVendorName(e.target.value)}
-            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+            className={inputStyles}
           />
         </div>
 
-        {/* Event Title */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Event Title</label>
           <input
             type="text"
             value={eventTitle}
             onChange={(e) => setEventTitle(e.target.value)}
-            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+            className={inputStyles}
           />
         </div>
 
-        {/* Location */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Location</label>
           <input
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+            className={inputStyles}
           />
         </div>
 
-        {/* Address */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Address</label>
           <input
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+            className={inputStyles}
           />
         </div>
 
-        {/* Pricing */}
+        {/* Pricing Dropdown */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Pricing</label>
-          <input
-            type="text"
-            value={pricing}
-            onChange={(e) => setPricing(e.target.value)}
-            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
-          />
+          <div className="relative w-full">
+            <select
+              value={pricing}
+              onChange={(e) => setPricing(e.target.value)}
+              className={selectStyles}
+            >
+              <option value="Free">Free</option>
+              <option value="Starting from ₦1,000">Starting from ₦1,000</option>
+              <option value="Starting from ₦5,000">Starting from ₦5,000</option>
+              <option value="Starting from ₦10,000">Starting from ₦10,000</option>
+              <option value="Starting from ₦25,000">Starting from ₦25,000</option>
+              <option value="Starting from ₦50,000">Starting from ₦50,000</option>
+            </select>
+            <span className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-500">
+              <ChevronDown className="w-5 h-5 stroke-[2.2]" />
+            </span>
+          </div>
         </div>
 
-        {/* Conditional Field: Date/Time vs Working Hours */}
+        {/* Date and Time (Upgraded to native HTML5 datetime-local calendar picker) */}
         {eventType === 'Booking Event' ? (
           <div className="flex flex-col gap-2 animate-in fade-in duration-300">
             <label className="text-sm font-semibold text-neutral-500">Date and Time</label>
             <input
-              type="text"
-              placeholder="e.g. 24-03-2026 20:00"
+              type="datetime-local"
               value={dateTime}
               onChange={(e) => setDateTime(e.target.value)}
-              className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+              className={`${inputStyles} cursor-pointer pr-5`}
             />
           </div>
         ) : (
           <div className="flex flex-col gap-2 animate-in fade-in duration-300">
             <label className="text-sm font-semibold text-neutral-500">Working Hours</label>
-            <input
-              type="text"
-              placeholder="e.g. Open now, closes 19:00"
-              value={workingHours}
-              onChange={(e) => setWorkingHours(e.target.value)}
-              className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
-            />
+            <div className="relative w-full">
+              <select
+                value={workingHours}
+                onChange={(e) => setWorkingHours(e.target.value)}
+                className={selectStyles}
+              >
+                <option value="Open now, closes 19:00">Open now, closes 19:00</option>
+                <option value="Open now, closes 22:00">Open now, closes 22:00</option>
+                <option value="24 Hours Open">24 Hours Open</option>
+                <option value="Open 09:00 - 18:00">Open 09:00 - 18:00</option>
+              </select>
+              <span className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-500">
+                <ChevronDown className="w-5 h-5 stroke-[2.2]" />
+              </span>
+            </div>
           </div>
         )}
 
-        {/* Multi-Image Media Upload Area */}
+        {/* Media uploads selection */}
         <div className="flex flex-col gap-3">
           <label className="text-sm font-semibold text-neutral-500">Media Uploads (Minimum of 3)</label>
           <div 
@@ -266,7 +332,6 @@ export const CreateEventForm: React.FC = () => {
             onChange={handleFileChange}
           />
 
-          {/* List of currently selected files with quick remove capability */}
           {uploadedFiles.length > 0 && (
             <div className="flex flex-col gap-2 mt-1">
               {uploadedFiles.map((file, idx) => (
@@ -303,9 +368,7 @@ export const CreateEventForm: React.FC = () => {
           </div>
         )}
 
-        {/* Actions Row */}
         <div className="flex items-center gap-6 mt-4 w-full">
-          {/* Submit */}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -321,7 +384,6 @@ export const CreateEventForm: React.FC = () => {
             )}
           </button>
 
-          {/* Cancel */}
           <Link href="/dashboard/events" className="flex-1">
             <button
               type="button"
@@ -331,9 +393,7 @@ export const CreateEventForm: React.FC = () => {
             </button>
           </Link>
         </div>
-
       </form>
-
     </div>
   );
 };

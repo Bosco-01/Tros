@@ -10,14 +10,14 @@ export interface EventReview {
 export interface EventDetailsData {
   id: string;
   category: string;
-  eventType: 'Booking Event' | 'Places to Visit';
+  eventType: string;
   title: string;
   vendorName: string;
   totalUsers: string;
   price: string; // If 'Free' or blank, displays as blank
   dateTime?: string;
   workingHours?: string;
-  status: 'Active' | 'Inactive';
+  status: string;
   rating: number;
   reviewsCount: number;
   bannerUrls: string[];

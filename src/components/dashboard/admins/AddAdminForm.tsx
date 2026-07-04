@@ -1,35 +1,63 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { X } from 'lucide-react';
-import { adminService } from '@/services/adminService';
+import { apiFetch } from '@/services/apiClient';
 
 export const AddAdminForm: React.FC = () => {
   const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'ADMIN' | 'SUPER_ADMIN'>('ADMIN');
-  const [jobTitle, setJobTitle] = useState('');
+  
   const [isAdding, setIsAdding] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsAdding(true);
-    setSuccess(false);
     setError('');
+    setSuccess(false);
+
+    if (!name.trim()) {
+      setError('Please enter the Name.');
+      return;
+    }
+    if (!email.trim()) {
+      setError('Please enter the E-mail.');
+      return;
+    }
+    if (!password.trim() || password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+
+    setIsAdding(true);
 
     try {
-      await adminService.createAdmin({ name, email, password, role });
+      // Calls POST /admin/admins exactly matching Swagger payload DTO
+      await apiFetch('/admin/admins', {
+        method: 'POST',
+        body: JSON.stringify({
+          email,
+          name,
+          password,
+          role,
+        }),
+      });
+
       setSuccess(true);
-      setTimeout(() => router.push('/dashboard/admins'), 1000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to add admin');
+      
+      // Redirect back to listings table on success
+      setTimeout(() => {
+        router.push('/dashboard/admins');
+      }, 1500);
+
+    } catch (err: any) {
+      setError(err.message || 'Failed to create admin account.');
     } finally {
       setIsAdding(false);
     }
@@ -38,7 +66,6 @@ export const AddAdminForm: React.FC = () => {
   return (
     <div className="bg-[#F8F9FA] rounded-[24px] p-8 md:p-10 w-full max-w-[640px] shadow-[0_4px_30px_rgba(0,0,0,0.03)] border border-neutral-100 flex flex-col relative select-none">
       
-      {/* Header row containing close cross icon */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl md:text-2xl font-bold text-neutral-900 tracking-tight">
           Add New User
@@ -52,10 +79,9 @@ export const AddAdminForm: React.FC = () => {
         </Link>
       </div>
 
-      {/* Form Fields container */}
       <form onSubmit={handleAdd} className="flex flex-col gap-6">
         
-        {/* Full Name */}
+        {/* Name */}
         <div className="flex flex-col gap-2">
           <label className="text-[14px] font-medium text-neutral-500">Name</label>
           <input
@@ -77,17 +103,6 @@ export const AddAdminForm: React.FC = () => {
           />
         </div>
 
-        {/* Phone Number */}
-        <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-neutral-500">Phone</label>
-          <input
-            type="text"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
-          />
-        </div>
-
         {/* Password */}
         <div className="flex flex-col gap-2">
           <label className="text-[14px] font-medium text-neutral-500">Password</label>
@@ -95,38 +110,27 @@ export const AddAdminForm: React.FC = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            placeholder="Minimum 8 characters"
             className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
           />
         </div>
 
-        {/* Administrative Role */}
+        {/* Administrative Role Dropdown */}
         <div className="flex flex-col gap-2">
           <label className="text-[14px] font-medium text-neutral-500">Role</label>
           <select
             value={role}
-            onChange={(e) => setRole(e.target.value as 'ADMIN' | 'SUPER_ADMIN')}
-            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+            onChange={(e) => setRole(e.target.value as any)}
+            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] cursor-pointer"
           >
-            <option value="ADMIN">Admin</option>
-            <option value="SUPER_ADMIN">Super Admin</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="SUPER_ADMIN">SUPER_ADMIN</option>
           </select>
-        </div>
-
-        {/* Job Title */}
-        <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-neutral-500">Job Title</label>
-          <input
-            type="text"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
-          />
         </div>
 
         {success && (
           <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold transition-all">
-            New Administrative User added successfully!
+            New Administrative User added successfully! Redirecting...
           </div>
         )}
 
@@ -136,9 +140,8 @@ export const AddAdminForm: React.FC = () => {
           </div>
         )}
 
-        {/* Action Buttons Row */}
+        {/* Actions */}
         <div className="flex items-center gap-6 mt-4 w-full">
-          {/* Add User Submit Button */}
           <button
             type="submit"
             disabled={isAdding}
@@ -154,7 +157,6 @@ export const AddAdminForm: React.FC = () => {
             )}
           </button>
 
-          {/* Cancel Button */}
           <Link href="/dashboard/admins" className="flex-1">
             <button
               type="button"

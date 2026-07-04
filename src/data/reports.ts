@@ -11,12 +11,20 @@ export interface ReportMetricData {
 
 export interface BarChartData {
   month: string;
-  value: number; // Max value 80
+  value: number;
 }
 
 export interface LineChartData {
   month: string;
-  value: number; // Max value 500,000
+  value: number;
+}
+
+export interface GeneratedReportRow {
+  id: string;
+  name: string;
+  generatedBy: string;
+  dateCreated: string;
+  status: 'Completed' | 'Processing';
 }
 
 export const mockReportMetrics: ReportMetricData[] = [
@@ -43,7 +51,7 @@ export const mockReportMetrics: ReportMetricData[] = [
   {
     id: '3',
     title: 'Total Revenue',
-    value: '# 900,000.00',
+    value: '₦ 900,000.00',
     trend: 'up',
     trendValue: '+ 5%',
     trendPeriod: 'this week',
@@ -52,7 +60,7 @@ export const mockReportMetrics: ReportMetricData[] = [
   {
     id: '4',
     title: 'Refunds Issued',
-    value: '# 45,000.00',
+    value: '₦ 45,000.00',
     trend: 'down',
     trendValue: '- 8%',
     trendPeriod: 'this week',
@@ -86,4 +94,28 @@ export const mockRevenueTrend: LineChartData[] = [
   { month: 'Sep', value: 50000 },
   { month: 'Oct', value: 0 },
   { month: 'Nov', value: 0 },
+];
+
+export const mockGeneratedReports: GeneratedReportRow[] = [
+  {
+    id: '#REP-9485',
+    name: 'Monthly Vendor Revenue Report',
+    generatedBy: 'System Scheduler',
+    dateCreated: 'Feb 28, 2026',
+    status: 'Completed',
+  },
+  {
+    id: '#REP-9486',
+    name: 'Event Booking & Ticket Summary',
+    generatedBy: 'Emmanuel Isiguzo',
+    dateCreated: 'Feb 24, 2026',
+    status: 'Completed',
+  },
+  {
+    id: '#REP-9487',
+    name: 'Active Vendor KYC Review Status',
+    generatedBy: 'System Scheduler',
+    dateCreated: 'Feb 20, 2026',
+    status: 'Processing',
+  },
 ];

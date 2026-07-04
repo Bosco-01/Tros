@@ -16,8 +16,8 @@ export const CreateVendorForm: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
-  const ninInputRef = useRef<HTMLInputElement>(null);
-  const cacInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRefNin = useRef<HTMLInputElement>(null);
+  const fileInputRefCac = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,16 +44,16 @@ export const CreateVendorForm: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Complete Vendor Profile API expects multipart/form-data payload
+      // Complete Vendor Profile REST API multipart payload
       const formData = new FormData();
       formData.append('business_name', vendorName);
       formData.append('address', address);
       formData.append('business_description', `${vendorType} onboarding profile`);
-      formData.append('state', 'Lagos'); // Default required values
+      formData.append('state', 'Lagos');
       formData.append('city', 'Ikeja');
       formData.append('cac_registered_number', 'CAC-TEMP-1234');
-      formData.append('nin', ninFile as File);
-      formData.set('cac', cacFile as File);
+      formData.append('nin', ninFile);
+      formData.append('cac', cacFile);
 
       await apiFetch('/admin/vendors', {
         method: 'POST',
@@ -61,7 +61,7 @@ export const CreateVendorForm: React.FC = () => {
       });
 
       setSuccess(true);
-      setResponseDataDefaults();
+      resetForm();
     } catch (err) {
       setError('Failed to create vendor account. Please verify backend service.');
     } finally {
@@ -70,8 +70,8 @@ export const CreateVendorForm: React.FC = () => {
   };
 
   const handleStartFileSelector = (field: 'nin' | 'cac') => {
-    const input = document.getElementById(field) as HTMLInputElement;
-    input?.click();
+    if (field === 'nin') fileInputRefNin.current?.click();
+    if (field === 'cac') fileInputRefCac.current?.click();
   };
 
   const handleFileChange = (field: 'nin' | 'cac', file: File | null) => {
@@ -79,7 +79,7 @@ export const CreateVendorForm: React.FC = () => {
     if (field === 'cac') setCacFile(file);
   };
 
-  const setResponseDataDefaults = () => {
+  const resetForm = () => {
     setVendorName('');
     setAddress('');
     setVendorType('Hotel');
@@ -91,10 +91,12 @@ export const CreateVendorForm: React.FC = () => {
     label,
     field,
     file,
+    inputRef,
   }: {
     label: string;
     field: 'nin' | 'cac';
     file: File | null;
+    inputRef: React.RefObject<HTMLInputElement | null>;
   }) => (
     <div className="flex flex-col gap-2">
       <label className="text-sm font-semibold text-neutral-500">{label}</label>
@@ -117,7 +119,7 @@ export const CreateVendorForm: React.FC = () => {
           Select File
         </button>
         <input
-          id={field}
+          ref={inputRef}
           type="file"
           accept=".pdf,.png,.jpg,.jpeg"
           className="hidden"
@@ -181,6 +183,7 @@ export const CreateVendorForm: React.FC = () => {
               <option value="Hotel">Hotel</option>
               <option value="Restaurant">Restaurant</option>
               <option value="Event">Event</option>
+              <option value="Others">Others</option> {/* Added Others option */}
             </select>
             <span className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-500">
               <ChevronDown className="w-5 h-5 stroke-[2.2]" />
@@ -189,10 +192,10 @@ export const CreateVendorForm: React.FC = () => {
         </div>
 
         {/* NIN Document Upload */}
-        <UploadBlock label="NIN Document" field="nin" file={ninFile} />
+        <UploadBlock label="NIN Document" field="nin" file={ninFile} inputRef={fileInputRefNin} />
 
         {/* CAC Document Upload */}
-        <UploadBlock label="CAC Document" field="cac" file={cacFile} />
+        <UploadBlock label="CAC Document" field="cac" file={cacFile} inputRef={fileInputRefCac} />
 
         {success && (
           <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold transition-all">
@@ -208,7 +211,7 @@ export const CreateVendorForm: React.FC = () => {
 
         {/* Action Buttons Row */}
         <div className="flex items-center gap-6 mt-4 w-full">
-          {/* Add User Submit Button */}
+          {/* Add Vendor Submit Button (Changed from Add User) */}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -220,7 +223,7 @@ export const CreateVendorForm: React.FC = () => {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
             ) : (
-              'Add User'
+              'Add Vendor' // Corrected CTA Label
             )}
           </button>
 

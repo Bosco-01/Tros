@@ -47,11 +47,24 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [profile, setProfile] = useState<AdminProfile | null>(null);
 
+  // Fetch the logged-in administrator's profile details on mount
   useEffect(() => {
     const fetchAdminProfile = async () => {
       try {
-        const data = await apiFetch<AdminProfile>('/admin/profile');
-        setProfile(data);
+        // Enforce secure Nest.js route proxy
+        const response = await apiFetch<{ user?: any }>('/admin/profile');
+        
+        // Correctly unwrap Go-backend's nested user object and full_name keys
+        if (response?.user) {
+          setProfile({
+            id: String(response.user.id),
+            name: response.user.full_name, // Map full_name correctly
+            email: response.user.email,
+            role: response.user.role,
+            is_active: response.user.is_active,
+            avatar_url: response.user.profilePicture || response.user.profile_picture
+          });
+        }
       } catch (error) {
         console.error('Failed to retrieve active administrator profile:', error);
       }
@@ -74,6 +87,7 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
     <>
       <header className="w-full h-[70px] md:h-[90px] px-4 md:px-8 flex items-center justify-between bg-[#FDFDFE] border-b border-neutral-50 lg:border-none sticky top-0 z-20">
         
+        {/* Left Side: Mobile Menu Button & Title */}
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
@@ -88,12 +102,15 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
           </h1>
         </div>
 
+        {/* Right Side: Toolbar Actions */}
         <div className="flex items-center gap-2.5 md:gap-4">
           
+          {/* Search */}
           <button className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border border-neutral-100 shadow-sm flex items-center justify-center text-neutral-600 hover:bg-neutral-50 transition-colors">
             <Search className="w-4 h-4 md:w-5 md:h-5" />
           </button>
 
+          {/* Theme Toggle */}
           <div className="h-10 md:h-11 flex items-center p-1 bg-white border border-neutral-100 shadow-sm rounded-full">
             <button className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#6312e1] text-white flex items-center justify-center shadow-sm">
               <Sun className="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" />
@@ -103,28 +120,32 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
             </button>
           </div>
 
+          {/* Notification */}
           <button className="relative w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border border-neutral-100 shadow-sm flex items-center justify-center text-neutral-600 hover:bg-neutral-50 transition-colors">
             <Bell className="w-4 h-4 md:w-5 md:h-5" />
             <span className="absolute top-2.5 right-3 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
           </button>
 
-          <div className="flex items-center gap-3 pl-1 md:pl-2 select-none">
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden relative bg-neutral-100 border border-neutral-100 flex-shrink-0">
-              <img
-                src={profile?.avatar_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop"}
-                alt={profile?.name || "Administrator"}
-                className="w-full h-full object-cover"
-              />
+          {/* Dynamic Admin Profile Info (Wrapped in Link to make it fully clickable) */}
+          <Link href="/dashboard/admins">
+            <div className="flex items-center gap-3 pl-1 md:pl-2 select-none cursor-pointer hover:opacity-85 transition-opacity">
+              <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden relative bg-neutral-100 border border-neutral-100 flex-shrink-0 animate-in fade-in">
+                <img
+                  src={profile?.avatar_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop"}
+                  alt={profile?.name || "Administrator"}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="hidden sm:flex flex-col text-left">
+                <span className="text-sm font-bold text-neutral-900 leading-tight">
+                  {profile ? profile.name : 'Loading Profile...'}
+                </span>
+                <span className="text-xs text-neutral-500 font-medium leading-normal">
+                  {profile ? profile.email : 'Connecting...'}
+                </span>
+              </div>
             </div>
-            <div className="hidden sm:flex flex-col text-left">
-              <span className="text-sm font-bold text-neutral-900 leading-tight">
-                {profile ? profile.name : 'Loading Profile...'}
-              </span>
-              <span className="text-xs text-neutral-500 font-medium leading-normal">
-                {profile ? profile.email : 'Connecting...'}
-              </span>
-            </div>
-          </div>
+          </Link>
 
         </div>
       </header>

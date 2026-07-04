@@ -1,0 +1,77 @@
+*** Begin Patch
+*** Update File: c:\Users\User\Desktop\Trios-Admin\src\app\dashboard\vendors\[id]\page.tsx
+@@
+-  const [kycData, setKycData] = useState<{ nin_doc_url?: string; cac_doc_url?: string } | null>(null);
+-  const [verificationStatus, setVerificationStatus] = useState<'pending' | 'approved' | 'rejected'>('pending');
+-  const [actionLoading, setActionLoading] = useState(false);
+-  const [success, setSuccess] = useState('');
++  const [kycData, setKycData] = useState<{ nin_doc_url?: string; cac_doc_url?: string } | null>(null);
++  const [verificationStatus, setVerificationStatus] = useState<'pending' | 'approved' | 'rejected'>('pending');
++  const [actionLoading, setActionLoading] = useState(false);
++  const [success, setSuccess] = useState('');
++  const [profile, setProfile] = useState<import('@/types/admin').AdminVendorDetail | import('@/types/admin').AdminVendor | null>(null);
++  const [events, setEvents] = useState<import('@/types/admin').AdminEvent[]>([]);
+@@
+-      try {
+-        // 1. Calls GET /admin/vendors/{vendorId}/kyc
+-        const kyc = await apiFetch<any>(`/admin/vendors/${vendorId}/kyc`);
+-        setKycData(kyc);
+-        
+-        // 2. Fetch the overall vendor profile to check verification_status
+-        const profile = await apiFetch<any>(`/admin/vendors/${vendorId}`);
+-        if (profile?.verification_status) {
+-          setVerificationStatus(profile.verification_status);
+-        }
+-      } catch (err) {
+-        console.warn('Backend /admin/vendors/kyc unreachable. Setting local defaults.');
+-        // Set fallback mockup KYC images
+-        setKycData({
+-          nin_doc_url: 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=600',
+-          cac_doc_url: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=600'
+-        });
+-      }
++      try {
++        // 1. Calls GET /admin/vendors/{vendorId}/kyc
++        const kyc = await apiFetch<import('@/types/admin').VendorKYC>(`/admin/vendors/${vendorId}/kyc`);
++        setKycData(kyc);
++      } catch (err) {
++        console.warn('Backend /admin/vendors/kyc unreachable. Setting local defaults.', err);
++        // Set fallback mockup KYC images
++        setKycData({
++          nin_doc_url: 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=600',
++          cac_doc_url: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=600'
++        });
++      }
++
++      // Fetch vendor profile and events
++      try {
++        const prof = await apiFetch<import('@/types/admin').AdminVendorDetail | import('@/types/admin').AdminVendor>(`/admin/vendors/${vendorId}`);
++        setProfile(prof);
++        if (prof?.verification_status) setVerificationStatus(prof.verification_status);
++      } catch (err) {
++        console.error('Failed to load vendor profile', err);
++        setProfile(null);
++      }
++
++      try {
++        // try vendor-specific events endpoint first
++        let evResp: import('@/types/admin').PaginatedResponse<import('@/types/admin').AdminEvent> | import('@/types/admin').AdminEvent[] | null = null;
++        try {
++          evResp = await apiFetch<import('@/types/admin').PaginatedResponse<import('@/types/admin').AdminEvent>>(`/admin/vendors/${vendorId}/events?page=1&limit=50`);
++        } catch (e) {
++          console.warn('Vendor-specific events endpoint failed, falling back to /admin/events', e);
++          evResp = await apiFetch<import('@/types/admin').PaginatedResponse<import('@/types/admin').AdminEvent>>(`/admin/events?page=1&limit=50&vendor_id=${vendorId}`);
++        }
++
++        const data = (evResp as any)?.data || evResp;
++        const list: import('@/types/admin').AdminEvent[] = Array.isArray((data as any)?.events)
++          ? (data as any).events
++          : Array.isArray(data)
++          ? (data as any)
++          : (data as any)?.items || [];
++        setEvents(list as import('@/types/admin').AdminEvent[]);
++      } catch (err) {
++        console.warn('Failed to fetch vendor events', err);
++        setEvents([]);
++      }
+*** End Patch
