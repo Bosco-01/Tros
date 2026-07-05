@@ -1,12 +1,15 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { X, Upload, ChevronDown } from 'lucide-react';
 import { apiFetch } from '@/services/apiClient';
 
 export const CreateVendorForm: React.FC = () => {
+  const router = useRouter();
   const [vendorName, setVendorName] = useState('');
+  const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [vendorType, setVendorType] = useState('Hotel');
   const [ninFile, setNinFile] = useState<File | null>(null);
@@ -28,6 +31,10 @@ export const CreateVendorForm: React.FC = () => {
       setError('Please enter the Vendor Name.');
       return;
     }
+    if (!email.trim() || !email.includes('@')) {
+      setError('Please enter a valid Email Address.');
+      return;
+    }
     if (!address.trim()) {
       setError('Please enter the Business Address.');
       return;
@@ -47,6 +54,7 @@ export const CreateVendorForm: React.FC = () => {
       // Complete Vendor Profile REST API multipart payload
       const formData = new FormData();
       formData.append('business_name', vendorName);
+      formData.append('email', email);
       formData.append('address', address);
       formData.append('business_description', `${vendorType} onboarding profile`);
       formData.append('state', 'Lagos');
@@ -60,10 +68,32 @@ export const CreateVendorForm: React.FC = () => {
         body: formData,
       });
 
+      // Save locally to simulate dynamic database listings additions immediately
+      const newVendorRow = {
+        id: `#${Math.floor(100000 + Math.random() * 900000)}`,
+        fullName: 'Admin-Created Onboard',
+        businessName: vendorName,
+        email: email,
+        subscription: 'Active' as const,
+        amount: '# 5,000',
+        eventPost: 'Active' as const,
+        status: 'Active' as const
+      };
+
+      const stored = localStorage.getItem('trios_custom_vendors');
+      const customVendors = stored ? JSON.parse(stored) : [];
+      localStorage.setItem('trios_custom_vendors', JSON.stringify([newVendorRow, ...customVendors]));
+
       setSuccess(true);
       resetForm();
+
+      // Redirect back to All Vendors directory after a brief delay
+      setTimeout(() => {
+        router.push('/dashboard/vendors');
+      }, 1500);
+
     } catch (err) {
-      setError('Failed to create vendor account. Please verify backend service.');
+      setError('Failed to create vendor account. Please verify backend connection.');
     } finally {
       setIsSubmitting(false);
     }
@@ -81,6 +111,7 @@ export const CreateVendorForm: React.FC = () => {
 
   const resetForm = () => {
     setVendorName('');
+    setEmail('');
     setAddress('');
     setVendorType('Hotel');
     setNinFile(null);
@@ -132,7 +163,6 @@ export const CreateVendorForm: React.FC = () => {
   return (
     <div className="bg-[#F8F9FA] rounded-[24px] p-8 md:p-10 w-full max-w-[640px] shadow-[0_4px_30px_rgba(0,0,0,0.03)] border border-neutral-100 flex flex-col relative select-none">
       
-      {/* Header containing the X close button */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl md:text-2xl font-bold text-neutral-900 tracking-tight">
           Create Vendor
@@ -146,7 +176,6 @@ export const CreateVendorForm: React.FC = () => {
         </Link>
       </div>
 
-      {/* Inputs container */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         
         {/* Vendor Name */}
@@ -160,6 +189,17 @@ export const CreateVendorForm: React.FC = () => {
           />
         </div>
 
+        {/* Email Address */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-semibold text-neutral-500">Email Address</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none"
+          />
+        </div>
+
         {/* Address */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Address</label>
@@ -167,7 +207,7 @@ export const CreateVendorForm: React.FC = () => {
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+            className="bg-white rounded-xl px-5 h-14 border border-neutral-100/50 font-bold text-neutral-900 text-[16px] w-full focus:outline-none"
           />
         </div>
 
@@ -183,7 +223,7 @@ export const CreateVendorForm: React.FC = () => {
               <option value="Hotel">Hotel</option>
               <option value="Restaurant">Restaurant</option>
               <option value="Event">Event</option>
-              <option value="Others">Others</option> {/* Added Others option */}
+              <option value="Others">Others</option>
             </select>
             <span className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-500">
               <ChevronDown className="w-5 h-5 stroke-[2.2]" />
@@ -199,7 +239,7 @@ export const CreateVendorForm: React.FC = () => {
 
         {success && (
           <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold transition-all">
-            Vendor manually onboarded successfully!
+            Vendor manually onboarded successfully! Redirecting...
           </div>
         )}
 
@@ -211,11 +251,10 @@ export const CreateVendorForm: React.FC = () => {
 
         {/* Action Buttons Row */}
         <div className="flex items-center gap-6 mt-4 w-full">
-          {/* Add Vendor Submit Button (Changed from Add User) */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 h-12 bg-[#BEF2CB] hover:bg-[#a6f0b8] text-[#168E33] font-bold text-[15px] rounded-xl transition-all shadow-sm shadow-[#168E33]/5 active:scale-[0.99] flex items-center justify-center select-none"
+            className="flex-1 h-12 bg-[#BEF2CB] hover:bg-[#a6f0b8] text-[#168E33] font-bold text-[15px] rounded-xl transition-all shadow-sm active:scale-[0.99] flex items-center justify-center select-none"
           >
             {isSubmitting ? (
               <svg className="animate-spin h-5 w-5 text-[#168E33]" fill="none" viewBox="0 0 24 24">
@@ -223,11 +262,10 @@ export const CreateVendorForm: React.FC = () => {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
             ) : (
-              'Add Vendor' // Corrected CTA Label
+              'Add Vendor'
             )}
           </button>
 
-          {/* Cancel Button */}
           <Link href="/dashboard/vendors" className="flex-1">
             <button
               type="button"

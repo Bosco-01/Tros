@@ -9,15 +9,15 @@ import { apiFetch } from '@/services/apiClient';
 export const CreateEventForm: React.FC = () => {
   const router = useRouter();
   const [eventType, setEventType] = useState<'Booking Event' | 'Places to Visit'>('Booking Event');
+  
+  // Added Category dropdown state matching backend category_id specs
+  const [category, setCategory] = useState('Nightlife');
+  
   const [vendorName, setVendorName] = useState('');
   const [eventTitle, setEventTitle] = useState('');
   const [location, setLocation] = useState('');
   const [address, setAddress] = useState('');
-  
-  // Pricing dropdown state default value
   const [pricing, setPricing] = useState('Starting from ₦1,000');
-  
-  // Adjusted dateTime state default to match standard HTML5 datetime-local value format (YYYY-MM-DDTHH:MM)
   const [dateTime, setDateTime] = useState('2026-03-24T20:00');
   const [workingHours, setWorkingHours] = useState('Open now, closes 19:00');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -48,7 +48,6 @@ export const CreateEventForm: React.FC = () => {
     return numbers ? parseInt(numbers, 10) : 0;
   };
 
-  // Helper to format HTML5 datetime-local string to clean human readable display for local fallback storage
   const formatDateTimeDisplay = (rawDateTime: string): { date: string; time: string } => {
     try {
       const dateObj = new Date(rawDateTime);
@@ -108,8 +107,9 @@ export const CreateEventForm: React.FC = () => {
     try {
       const ticketPriceNumeric = pricing.toLowerCase().includes('free') ? 0 : ticketPriceParser(pricing);
 
+      // Maps the JSON payload keys exactly to the Swagger EventRequest DTO definitions
       const payload = {
-        category_id: "001294-cat-id",
+        category_id: category.toLowerCase(), // Maps chosen dropdown category dynamically!
         title: eventTitle,
         description: `${eventType} created manually by Admin. Hosted by ${vendorName}.`,
         start_date: eventType === 'Booking Event' ? new Date(dateTime).toISOString() : new Date().toISOString(),
@@ -142,7 +142,7 @@ export const CreateEventForm: React.FC = () => {
 
       const newEventRow = {
         id: `#${Math.floor(100000 + Math.random() * 900000)}`,
-        category: (eventType === 'Booking Event' ? 'Nightlife' : 'Hotel') as any,
+        category: category as any, // Propagates category to All Events table badge cleanly
         title: eventTitle,
         eventType: (eventType === 'Booking Event' ? 'BOOK' : 'RSVP') as any,
         price: pricing,
@@ -177,6 +177,7 @@ export const CreateEventForm: React.FC = () => {
     setLocation('');
     setAddress('');
     setPricing('Starting from ₦1,000');
+    setCategory('Nightlife');
     setDateTime('2026-03-24T20:00');
     setWorkingHours('Open now, closes 19:00');
     setUploadedFiles([]);
@@ -202,6 +203,8 @@ export const CreateEventForm: React.FC = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        
+        {/* Event Type */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Event Type</label>
           <div className="relative w-full">
@@ -219,6 +222,26 @@ export const CreateEventForm: React.FC = () => {
           </div>
         </div>
 
+        {/* Category (Added New Input Field aligned with Swagger category_id spec) */}
+        <div className="flex flex-col gap-2 animate-in fade-in duration-300">
+          <label className="text-sm font-semibold text-neutral-500">Category</label>
+          <div className="relative w-full">
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className={selectStyles}
+            >
+              <option value="Nightlife">Nightlife</option>
+              <option value="Music">Music</option>
+              <option value="Hotel">Hotel</option>
+            </select>
+            <span className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-500">
+              <ChevronDown className="w-5 h-5 stroke-[2.2]" />
+            </span>
+          </div>
+        </div>
+
+        {/* Vendor Name */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Vendor Name</label>
           <input
@@ -229,6 +252,7 @@ export const CreateEventForm: React.FC = () => {
           />
         </div>
 
+        {/* Event Title */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Event Title</label>
           <input
@@ -239,6 +263,7 @@ export const CreateEventForm: React.FC = () => {
           />
         </div>
 
+        {/* Location */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Location</label>
           <input
@@ -249,6 +274,7 @@ export const CreateEventForm: React.FC = () => {
           />
         </div>
 
+        {/* Address */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-neutral-500">Address</label>
           <input
@@ -281,7 +307,7 @@ export const CreateEventForm: React.FC = () => {
           </div>
         </div>
 
-        {/* Date and Time (Upgraded to native HTML5 datetime-local calendar picker) */}
+        {/* Date and Time (Native HTML5 datetime-local calendar picker) */}
         {eventType === 'Booking Event' ? (
           <div className="flex flex-col gap-2 animate-in fade-in duration-300">
             <label className="text-sm font-semibold text-neutral-500">Date and Time</label>
@@ -358,7 +384,7 @@ export const CreateEventForm: React.FC = () => {
 
         {success && (
           <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold transition-all">
-            Event successfully created on the platform!
+            Event successfully created on the platform! Redirecting...
           </div>
         )}
 

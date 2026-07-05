@@ -3,10 +3,7 @@ import { cookies } from 'next/headers';
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL || 'https://api.trios.com';
 
-// =========================================================================
-// RESILIENT LOCAL MOCK DATA DICTIONARY
-// This acts as an offline simulation of your backend database!
-// =========================================================================
+// Resilient local fallback assets for offline testing
 const mockFallbacks: Record<string, any> = {
   'admin/profile': {
     id: '001294',
@@ -33,6 +30,26 @@ const mockFallbacks: Record<string, any> = {
   'admin/settings': {
     about_company_name: 'Trio',
     about_description: 'Trios is a premier event ticketing and management platform.'
+  },
+  'admin/reports': {
+    reports: [
+      { id: '#REP-9485', name: 'Monthly Vendor Revenue Report', generatedBy: 'System Scheduler', dateCreated: 'Feb 28, 2026', status: 'Completed' },
+      { id: '#REP-9486', name: 'Event Booking & Ticket Summary', generatedBy: 'Emmanuel Isiguzo', dateCreated: 'Feb 24, 2026', status: 'Completed' },
+      { id: '#REP-9487', name: 'Active Vendor KYC Review Status', generatedBy: 'System Scheduler', dateCreated: 'Feb 20, 2026', status: 'Processing' }
+    ]
+  },
+  'admin/subscription-plans': {
+    plans: [
+      { id: 'free', name: 'Free Plan', price: 1000, description: 'Default testing plan', max_events: 5, max_tickets_per_event: 100, can_access_reports: false, can_broadcast: false },
+      { id: 'basic', name: 'Basic Plan', price: 5000, description: 'Standard starter plan', max_events: 20, max_tickets_per_event: 500, can_access_reports: true, can_broadcast: false },
+      { id: 'premium', name: 'Premium Plan', price: 10000, description: 'Pro scale plan', max_events: 9999, max_tickets_per_event: 9999, can_access_reports: true, can_broadcast: true }
+    ]
+  },
+  'admin/subscriptions': {
+    subscriptions: [
+      { userId: '#001294', customerName: 'John Doe', plan: 'Basic Plan', status: 'Active' },
+      { userId: '#001294', customerName: 'John Doe', plan: 'Basic Plan', status: 'Active' }
+    ]
   }
 };
 
@@ -121,6 +138,19 @@ async function handleProxy(
     // Auto-approve event cancellation approvals when offline
     if (cleanPath.startsWith('admin/events/') && cleanPath.endsWith('/approve-cancellation') && method === 'POST') {
       return NextResponse.json({ success: true, message: 'Event cancellation approved and refunds queued' }, { status: 200 });
+    }
+
+    // Auto-approve dynamic subscription updates & creation when offline
+    if (cleanPath === 'admin/subscription-plans' && method === 'POST') {
+      return NextResponse.json({ success: true, message: 'Plan created successfully' }, { status: 201 });
+    }
+    if (cleanPath.startsWith('admin/subscription-plans/') && method === 'PATCH') {
+      return NextResponse.json({ success: true, message: 'Plan updated successfully' }, { status: 200 });
+    }
+
+    // TARGET FIXED: Corrected path validation check from 'vendors' to 'admin/vendors'
+    if (cleanPath === 'admin/vendors' && method === 'POST') {
+      return NextResponse.json({ success: true, message: 'Vendor successfully onboarded' }, { status: 201 });
     }
 
     const fallbackKey = Object.keys(mockFallbacks).find(key => 
