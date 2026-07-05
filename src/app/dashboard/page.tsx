@@ -24,8 +24,37 @@ const SubMetricCard = ({ title, value }: { title: string; value: string }) => (
   </div>
 );
 
+const resolveNumericValue = (value: unknown, fallback = 0) => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+
+  return fallback;
+};
+
+const formatMetricValue = (value: unknown) =>
+  resolveNumericValue(value).toLocaleString();
+
+const formatCurrencyValue = (value: unknown) =>
+  `₦ ${resolveNumericValue(value).toLocaleString()}`;
+
+const formatCountValue = (value: unknown) =>
+  resolveNumericValue(value).toString();
+
+const formatTrendValue = (value: unknown) => {
+  const numericValue = resolveNumericValue(value);
+  return `${numericValue >= 0 ? "+" : ""}${numericValue.toFixed(2)}%`;
+};
+
 export default function DashboardPage() {
-  const [stats, setStats] = useState<DashboardResponse | null>(null);
+  const [stats, setStats] = useState<Partial<DashboardResponse> | null>(null);
   const [users, setUsers] = useState<AppUser[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -34,8 +63,19 @@ export default function DashboardPage() {
     const loadDashboardData = async () => {
       try {
         // 1. Fetch real-time KPI totals from GET /admin/dashboard
-        const statsData = await apiFetch<DashboardResponse>("/admin/dashboard");
-        setStats(statsData);
+        const statsData = await apiFetch<
+          | DashboardResponse
+          | { data?: DashboardResponse; stats?: DashboardResponse }
+        >("/admin/dashboard");
+
+        const normalizedStats =
+          (statsData as { data?: DashboardResponse; stats?: DashboardResponse })
+            ?.data ??
+          (statsData as { data?: DashboardResponse; stats?: DashboardResponse })
+            ?.stats ??
+          statsData;
+
+        setStats(normalizedStats as Partial<DashboardResponse>);
 
         // 2. Fetch real-time paginated users list from GET /admin/users
         const usersData = await apiFetch<
@@ -99,10 +139,12 @@ export default function DashboardPage() {
         {
           id: "1",
           title: "Total Users",
-          value: stats.total_users.toLocaleString(),
+          value: formatMetricValue(stats.total_users),
           trend:
-            stats.users_trend_pct >= 0 ? ("up" as const) : ("down" as const),
-          trendValue: `${stats.users_trend_pct >= 0 ? "+" : ""}${stats.users_trend_pct.toFixed(2)}%`,
+            resolveNumericValue(stats.users_trend_pct) >= 0
+              ? ("up" as const)
+              : ("down" as const),
+          trendValue: formatTrendValue(stats.users_trend_pct),
           trendPeriod: "this week",
           iconBg: "bg-[#18392B]",
           iconType: "users" as const,
@@ -110,10 +152,12 @@ export default function DashboardPage() {
         {
           id: "2",
           title: "Total Vendors",
-          value: stats.total_vendors.toLocaleString(),
+          value: formatMetricValue(stats.total_vendors),
           trend:
-            stats.vendors_trend_pct >= 0 ? ("up" as const) : ("down" as const),
-          trendValue: `${stats.vendors_trend_pct >= 0 ? "+" : ""}${stats.vendors_trend_pct.toFixed(2)}%`,
+            resolveNumericValue(stats.vendors_trend_pct) >= 0
+              ? ("up" as const)
+              : ("down" as const),
+          trendValue: formatTrendValue(stats.vendors_trend_pct),
           trendPeriod: "this week",
           iconBg: "bg-[#A6681E]",
           iconType: "vendors" as const,
@@ -121,10 +165,12 @@ export default function DashboardPage() {
         {
           id: "3",
           title: "Total Events",
-          value: stats.total_events.toLocaleString(),
+          value: formatMetricValue(stats.total_events),
           trend:
-            stats.events_trend_pct >= 0 ? ("up" as const) : ("down" as const),
-          trendValue: `${stats.events_trend_pct >= 0 ? "+" : ""}${stats.events_trend_pct.toFixed(2)}%`,
+            resolveNumericValue(stats.events_trend_pct) >= 0
+              ? ("up" as const)
+              : ("down" as const),
+          trendValue: formatTrendValue(stats.events_trend_pct),
           trendPeriod: "this week",
           iconBg: "bg-[#1C222F]",
           iconType: "events" as const,
@@ -132,12 +178,12 @@ export default function DashboardPage() {
         {
           id: "4",
           title: "Total Subscriptions",
-          value: stats.total_subscriptions.toLocaleString(),
+          value: formatMetricValue(stats.total_subscriptions),
           trend:
-            stats.subscriptions_trend_pct >= 0
+            resolveNumericValue(stats.subscriptions_trend_pct) >= 0
               ? ("up" as const)
               : ("down" as const),
-          trendValue: `${stats.subscriptions_trend_pct >= 0 ? "+" : ""}${stats.subscriptions_trend_pct.toFixed(2)}%`,
+          trendValue: formatTrendValue(stats.subscriptions_trend_pct),
           trendPeriod: "this week",
           iconBg: "bg-[#D97706]",
           iconType: "subscriptions" as const,
@@ -178,21 +224,19 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 select-none animate-in fade-in duration-300">
             <SubMetricCard
               title="Total Bookings"
-              value={stats ? stats.total_bookings.toLocaleString() : "0"}
+              value={formatMetricValue(stats?.total_bookings)}
             />
             <SubMetricCard
               title="Total Revenue"
-              value={
-                stats ? `₦ ${stats.total_revenue.toLocaleString()}` : "₦ 0"
-              }
+              value={formatCurrencyValue(stats?.total_revenue)}
             />
             <SubMetricCard
               title="Pending Approvals"
-              value={stats ? stats.pending_approvals.toString() : "0"}
+              value={formatCountValue(stats?.pending_approvals)}
             />
             <SubMetricCard
               title="Pending Verifications"
-              value={stats ? stats.pending_verifications.toString() : "0"}
+              value={formatCountValue(stats?.pending_verifications)}
             />
           </div>
 

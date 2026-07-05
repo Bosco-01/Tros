@@ -36,19 +36,26 @@ export default function AllVendorsPage() {
         else if (Array.isArray(obj.data)) list = obj.data as AdminVendor[];
         else if (Array.isArray(obj.items)) list = obj.items as AdminVendor[];
 
-        const mapped: VendorRowData[] = list.map((v) => ({
-          id: v.vendor_id || (v as any).id || "",
-          fullName: v.full_name || v.fullName || "",
-          businessName: v.business_name || (v as any).businessName || "",
-          email: v.email || "",
-          subscription: (v.subscription_status as string) || "",
-          amount:
-            v.subscription_amount != null
-              ? `₦ ${Number(v.subscription_amount).toLocaleString()}`
-              : "",
-          eventPost: (v.event_post_status as string) || "",
-          status: (v.verification_status as string) || "",
-        }));
+        const mapped: VendorRowData[] = list.map((v) => {
+          const vendor = v as AdminVendor & {
+            fullName?: string;
+            businessName?: string;
+          };
+
+          return {
+            id: vendor.vendor_id || (vendor as any).id || "",
+            fullName: vendor.full_name || vendor.fullName || "",
+            businessName: vendor.business_name || vendor.businessName || "",
+            email: vendor.email || "",
+            subscription: (vendor.subscription_status as string) || "",
+            amount:
+              vendor.subscription_amount != null
+                ? `₦ ${Number(vendor.subscription_amount).toLocaleString()}`
+                : "",
+            eventPost: (vendor.event_post_status as string) || "",
+            status: (vendor.verification_status as string) || "",
+          };
+        });
 
         setVendors(mapped);
       } catch (err: any) {
@@ -89,19 +96,26 @@ export default function AllVendorsPage() {
       else if (Array.isArray(obj.data)) list = obj.data as AdminVendor[];
       else if (Array.isArray(obj.items)) list = obj.items as AdminVendor[];
 
-      const mapped: VendorRowData[] = list.map((v) => ({
-        id: v.vendor_id || (v as any).id || "",
-        fullName: v.full_name || v.fullName || "",
-        businessName: v.business_name || (v as any).businessName || "",
-        email: v.email || "",
-        subscription: (v.subscription_status as string) || "",
-        amount:
-          v.subscription_amount != null
-            ? `₦ ${Number(v.subscription_amount).toLocaleString()}`
-            : "",
-        eventPost: (v.event_post_status as string) || "",
-        status: (v.verification_status as string) || "",
-      }));
+      const mapped: VendorRowData[] = list.map((v) => {
+        const vendor = v as AdminVendor & {
+          fullName?: string;
+          businessName?: string;
+        };
+
+        return {
+          id: vendor.vendor_id || (vendor as any).id || "",
+          fullName: vendor.full_name || vendor.fullName || "",
+          businessName: vendor.business_name || vendor.businessName || "",
+          email: vendor.email || "",
+          subscription: (vendor.subscription_status as string) || "",
+          amount:
+            vendor.subscription_amount != null
+              ? `₦ ${Number(vendor.subscription_amount).toLocaleString()}`
+              : "",
+          eventPost: (vendor.event_post_status as string) || "",
+          status: (vendor.verification_status as string) || "",
+        };
+      });
 
       setVendors(mapped);
     } catch (err: any) {
