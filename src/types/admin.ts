@@ -37,6 +37,7 @@ export interface AdminProfile {
   role: "ADMIN" | "SUPER_ADMIN" | string;
   is_active: boolean;
   avatar_url?: string;
+  profile_picture?: string;
 }
 
 export interface AdminStaff {
@@ -134,14 +135,23 @@ export interface AdminVendorDetail extends AdminVendor {
   state: string;
   city: string;
   status: string;
+  profile_picture?: string;
+  logo_url?: string;
 }
 
 export interface VendorKYC {
+  id_document_url?: string;
+  cac_document_url?: string;
+  /** Legacy aliases used by older UI drafts */
   nin_url?: string;
   cac_url?: string;
+  nin_doc_url?: string;
+  cac_doc_url?: string;
   business_name?: string;
   cac_registered_number?: string;
   verification_status?: string;
+  logo_url?: string;
+  profile_picture?: string;
 }
 
 export interface DashboardResponse {

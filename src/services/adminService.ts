@@ -34,6 +34,20 @@ export const adminService = {
     });
   },
 
+  uploadAvatar: async (file: File) => {
+    const form = new FormData();
+    form.append('avatar', file);
+    const raw = await apiFetch<{
+      message?: string;
+      profile_picture?: string;
+      avatar_url?: string;
+    }>('/admin/profile/avatar', {
+      method: 'POST',
+      body: form,
+    });
+    return raw;
+  },
+
   getDashboardStats: (from?: string, to?: string, serverToken?: string) => {
     const query = new URLSearchParams();
     if (from) query.set('from', from);

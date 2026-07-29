@@ -1,3 +1,7 @@
+import type { SupportTicketRow } from '@/data/support';
+import type { TicketDetailsData } from '@/data/ticket-details';
+import { activeLabel, formatCurrency, formatDate, titleCase } from '@/lib/api-helpers';
+import { avatarOrPlaceholder } from '@/lib/media';
 import type {
   AppUser,
   UserRowData,
@@ -11,10 +15,8 @@ import type {
   TransactionRowData,
   EventRowData,
   SupportTicket,
+  AdminVendorDetail,
 } from '@/types/admin';
-import type { SupportTicketRow } from '@/data/support';
-import type { TicketDetailsData } from '@/data/ticket-details';
-import { activeLabel, formatCurrency, formatDate, titleCase } from '@/lib/api-helpers';
 
 function normalizePriority(p?: string): SupportTicketRow['priority'] {
   const v = String(p || '').toLowerCase();
@@ -85,32 +87,31 @@ export function mapUserToProfile(user: AppUser, bookingsCount = 0): UserProfileD
     registeredDate: formatDate(user.created_at),
     status: activeLabel(user.is_active, user.status),
     eventsCount: bookingsCount,
-    avatarUrl:
-      user.profile_picture ||
-      'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=400&h=400&fit=crop&crop=faces',
+    avatarUrl: avatarOrPlaceholder(user.profile_picture),
   };
 }
 
 export function mapVendorToProfile(
-  vendor: AdminVendor & Partial<VendorProfileData>,
+  vendor: AdminVendorDetail | (AdminVendor & Partial<VendorProfileData>),
   eventsCount = 0,
 ): VendorProfileData {
+  const detail = vendor as AdminVendorDetail;
   return {
     id: vendor.vendor_id,
     fullName: vendor.full_name,
     businessName: vendor.business_name,
     email: vendor.email,
-    phone: (vendor as { phone_number?: string }).phone_number || '—',
-    registeredDate: formatDate((vendor as { registered_date?: string }).registered_date),
-    status: (vendor as { status?: string }).status || vendor.verification_status || 'pending',
+    phone: detail.phone_number || '—',
+    registeredDate: formatDate(detail.registered_date),
+    status: detail.status || vendor.verification_status || 'pending',
     verificationStatus: vendor.verification_status || 'pending',
     subscriptionStatus: vendor.subscription_status || '—',
-    planName: (vendor as { plan_name?: string }).plan_name || '—',
-    address: (vendor as { address?: string }).address || '—',
-    state: (vendor as { state?: string }).state || '—',
-    city: (vendor as { city?: string }).city || '—',
+    planName: detail.plan_name || '—',
+    address: detail.address || '—',
+    state: detail.state || '—',
+    city: detail.city || '—',
     eventsCount,
-    avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop',
+    avatarUrl: avatarOrPlaceholder(detail.profile_picture || detail.logo_url),
   };
 }
 

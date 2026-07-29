@@ -36,6 +36,7 @@ export default function ManageAdminsPage() {
           email: admin.email || '',
           role: admin.role || '',
           jobTitle: (admin as { job_title?: string }).job_title || admin.role || '',
+          avatarUrl: admin.avatar_url || admin.profile_picture || '',
         });
       } catch (err) {
         if (cancelled) return;

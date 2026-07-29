@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { adminService } from '@/services/adminService';
 import { AdminProfile } from '@/types/admin';
+import { AVATAR_PLACEHOLDER, avatarOrPlaceholder } from '@/lib/media';
 
 interface TopbarProps {
   title: string;
@@ -62,10 +63,9 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
           email: admin.email || '',
           role: admin.role || 'ADMIN',
           is_active: admin.is_active ?? true,
-          avatar_url:
-            admin.avatar_url ||
-            (admin as { profile_picture?: string }).profile_picture ||
-            undefined,
+          avatar_url: avatarOrPlaceholder(
+            admin.avatar_url || admin.profile_picture,
+          ),
         });
         setProfileError(false);
       } catch (error) {
@@ -75,8 +75,19 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
     };
 
     void fetchAdminProfile();
+
+    const onAvatarUpdated = (event: Event) => {
+      const detail = (event as CustomEvent<{ url?: string }>).detail;
+      if (!detail?.url) return;
+      setProfile((prev) =>
+        prev ? { ...prev, avatar_url: avatarOrPlaceholder(detail.url) } : prev,
+      );
+    };
+    window.addEventListener('admin-avatar-updated', onAvatarUpdated);
+
     return () => {
       cancelled = true;
+      window.removeEventListener('admin-avatar-updated', onAvatarUpdated);
     };
   }, []);
 
@@ -137,10 +148,15 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
           <Link href="/dashboard/admins">
             <div className="flex items-center gap-3 pl-1 md:pl-2 select-none cursor-pointer hover:opacity-85 transition-opacity">
               <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden relative bg-neutral-100 border border-neutral-100 flex-shrink-0 animate-in fade-in">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={profile?.avatar_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop"}
+                  src={profile?.avatar_url || AVATAR_PLACEHOLDER}
                   alt={profile?.name || "Administrator"}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = AVATAR_PLACEHOLDER;
+                  }}
                 />
               </div>
               <div className="hidden sm:flex flex-col text-left">
