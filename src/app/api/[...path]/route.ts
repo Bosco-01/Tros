@@ -3,7 +3,10 @@ import { cookies } from 'next/headers';
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL || 'https://api.trios.com';
 
-// Resilient local fallback assets for offline testing
+// =========================================================================
+// RESILIENT LOCAL MOCK DATA DICTIONARY
+// This acts as an offline simulation of your backend database!
+// =========================================================================
 const mockFallbacks: Record<string, any> = {
   'admin/profile': {
     id: '001294',
@@ -29,27 +32,18 @@ const mockFallbacks: Record<string, any> = {
   },
   'admin/settings': {
     about_company_name: 'Trio',
-    about_description: 'Trios is a premier event ticketing and management platform.'
-  },
-  'admin/reports': {
-    reports: [
-      { id: '#REP-9485', name: 'Monthly Vendor Revenue Report', generatedBy: 'System Scheduler', dateCreated: 'Feb 28, 2026', status: 'Completed' },
-      { id: '#REP-9486', name: 'Event Booking & Ticket Summary', generatedBy: 'Emmanuel Isiguzo', dateCreated: 'Feb 24, 2026', status: 'Completed' },
-      { id: '#REP-9487', name: 'Active Vendor KYC Review Status', generatedBy: 'System Scheduler', dateCreated: 'Feb 20, 2026', status: 'Processing' }
-    ]
-  },
-  'admin/subscription-plans': {
-    plans: [
-      { id: 'free', name: 'Free Plan', price: 1000, description: 'Default testing plan', max_events: 5, max_tickets_per_event: 100, can_access_reports: false, can_broadcast: false },
-      { id: 'basic', name: 'Basic Plan', price: 5000, description: 'Standard starter plan', max_events: 20, max_tickets_per_event: 500, can_access_reports: true, can_broadcast: false },
-      { id: 'premium', name: 'Premium Plan', price: 10000, description: 'Pro scale plan', max_events: 9999, max_tickets_per_event: 9999, can_access_reports: true, can_broadcast: true }
-    ]
-  },
-  'admin/subscriptions': {
-    subscriptions: [
-      { userId: '#001294', customerName: 'John Doe', plan: 'Basic Plan', status: 'Active' },
-      { userId: '#001294', customerName: 'John Doe', plan: 'Basic Plan', status: 'Active' }
-    ]
+    about_description: 'Trios is a premier event ticketing and management platform.',
+    referral_bonus_amount: '# 5,000.00',
+    minimum_referral_bonus: '3',
+    footer_text: '2026 Trio app. All rights reserved.',
+    social_facebook: 'https://facebook.com/Your page',
+    social_x: 'https://X.com/Your handle',
+    social_instagram: 'https://Instagram.com/Your page',
+    social_linkedin: 'https://LinkedIn.com/Your page',
+    reviews_enabled: 'true',
+    comments_moderate: 'true',
+    privacy_policy: '',
+    terms_conditions: ''
   }
 };
 
@@ -148,14 +142,14 @@ async function handleProxy(
       return NextResponse.json({ success: true, message: 'Plan updated successfully' }, { status: 200 });
     }
 
-    // TARGET FIXED: Corrected path validation check from 'vendors' to 'admin/vendors'
+    // Auto-approve vendor creation when database is offline
     if (cleanPath === 'admin/vendors' && method === 'POST') {
       return NextResponse.json({ success: true, message: 'Vendor successfully onboarded' }, { status: 201 });
     }
 
-    const fallbackKey = Object.keys(mockFallbacks).find(key => 
-      cleanPath === key || 
-      cleanPath.endsWith('/' + key) || 
+    const fallbackKey = Object.keys(mockFallbacks).find(key =>
+      cleanPath === key ||
+      cleanPath.endsWith('/' + key) ||
       key.endsWith('/' + cleanPath)
     );
 

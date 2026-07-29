@@ -24,22 +24,30 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data }) =>
   ];
 
   // Map data to SVG line string path
-  const points = data.map((d, idx) => {
-    const colWidth = innerWidth / (data.length - 1);
-    const x = paddingLeft + idx * colWidth;
-    
+  const points = (data || []).map((d, idx) => {
+    const totalItems = data.length;
+    const colWidth = totalItems > 1 ? innerWidth / (totalItems - 1) : 0;
+    const x = totalItems === 1
+      ? paddingLeft + innerWidth / 2
+      : paddingLeft + idx * colWidth;
+
+    const val = typeof d.value === 'number' && !Number.isNaN(d.value) ? d.value : 0;
+
     // Non-linear visual scale adjustment to match the layout grid accurately
     let scalePercent = 0;
-    if (d.value <= 100000) {
-      scalePercent = (d.value / 100000) * 0.33; // 0 to 100k takes bottom 33% height
-    } else if (d.value <= 200000) {
-      scalePercent = 0.33 + ((d.value - 100000) / 100000) * 0.33; // 100k to 200k takes middle 33%
+    if (val <= 100000) {
+      scalePercent = (val / 100000) * 0.33; // 0 to 100k takes bottom 33% height
+    } else if (val <= 200000) {
+      scalePercent = 0.33 + ((val - 100000) / 100000) * 0.33; // 100k to 200k takes middle 33%
     } else {
-      scalePercent = 0.66 + ((d.value - 200000) / 300000) * 0.34; // 200k to 500k takes top 34%
+      scalePercent = 0.66 + ((val - 200000) / 300000) * 0.34; // 200k to 500k takes top 34%
     }
 
     const y = innerHeight + paddingTop - scalePercent * innerHeight;
-    return { x, y, val: d.value, month: d.month };
+    const safeX = Number.isNaN(x) ? paddingLeft : x;
+    const safeY = Number.isNaN(y) ? innerHeight + paddingTop : y;
+
+    return { x: safeX, y: safeY, val, month: d.month || '' };
   });
 
   // Calculate standard SVG smooth bezier path
@@ -96,18 +104,20 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data }) =>
           })}
 
           {/* Solid line trend line */}
-          <path
-            d={pathData}
-            fill="none"
-            stroke="#FF5C00"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
+          {pathData && (
+            <path
+              d={pathData}
+              fill="none"
+              stroke="#FF5C00"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+          )}
 
           {/* Render circular orange dots & month indicators */}
           {points.map((p, idx) => {
             // Only draw dots for values larger than 0 (Jan - Sept in the spec screenshot)
-            const showDot = p.val > 0;
+            const showDot = p.val > 0 && !Number.isNaN(p.x) && !Number.isNaN(p.y);
             return (
               <g key={idx} className="group cursor-pointer">
                 <title>{`${p.month}: # ${p.val.toLocaleString()}`}</title>
@@ -141,4 +151,4 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data }) =>
       </div>
     </div>
   );
-};
+};

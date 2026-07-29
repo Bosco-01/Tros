@@ -1,49 +1,57 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { adminService } from '@/services/adminService';
-import type { ReferralConfig } from '@/data/referrals';
+import React, { useState, useEffect } from 'react';
+import { apiFetch } from '@/services/apiClient';
 
 export const ReferralSettings: React.FC = () => {
-  const [config, setConfig] = useState<ReferralConfig>({ bonusAmount: '', minReferrals: '' });
+  const [bonusAmount, setBonusAmount] = useState('# 5,000.00');
+  const [minReferrals, setMinReferrals] = useState('3');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const load = async () => {
+    const loadSettings = async () => {
       try {
-        const settings = await adminService.getSettings();
-        setConfig({
-          bonusAmount: settings.referral_bonus_amount || '',
-          minReferrals: settings.referral_min_count || '',
-        });
-      } catch {
-        setError('Failed to load referral settings');
+        const settings = await apiFetch<Record<string, string>>('/admin/settings');
+        if (settings.referral_bonus_amount) {
+          setBonusAmount(settings.referral_bonus_amount);
+        }
+        if (settings.minimum_referral_bonus) {
+          setMinReferrals(settings.minimum_referral_bonus);
+        }
+      } catch (err) {
+        console.warn('[Settings] Failed to fetch referrals settings.');
       } finally {
         setIsLoading(false);
       }
     };
-    void load();
-  }, []);
 
-  const handleInputChange = (field: keyof ReferralConfig, value: string) => {
-    setConfig({ ...config, [field]: value });
-  };
+    loadSettings();
+  }, []);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
     setSuccess(false);
     setError('');
+
     try {
-      await adminService.updateSetting('referral_bonus_amount', config.bonusAmount);
-      await adminService.updateSetting('referral_min_count', config.minReferrals);
+      await apiFetch('/admin/settings/referral_bonus_amount', {
+        method: 'PATCH',
+        body: JSON.stringify({ value: bonusAmount }),
+      });
+
+      await apiFetch('/admin/settings/minimum_referral_bonus', {
+        method: 'PATCH',
+        body: JSON.stringify({ value: minReferrals }),
+      });
+
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2000);
-    } catch {
-      setError('Failed to save referral settings');
+    } catch (err) {
+      setError('Failed to save changes. Please verify backend connection.');
     } finally {
       setIsSaving(false);
     }
@@ -51,10 +59,10 @@ export const ReferralSettings: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-3xl p-8 border border-neutral-100 flex-1 w-full flex items-center justify-center h-64">
+      <div className="bg-white rounded-3xl p-8 border border-neutral-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.03)] flex-1 w-full flex items-center justify-center h-64 select-none">
         <svg className="animate-spin h-8 w-8 text-[#6312E1]" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
         </svg>
       </div>
     );
@@ -68,42 +76,45 @@ export const ReferralSettings: React.FC = () => {
 
       <div className="flex flex-col gap-5 w-full max-w-[420px]">
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-semibold text-neutral-500">Referral Bonus Amount</label>
+          <label className="text-sm font-semibold text-neutral-500">Referral Bonus Amount</label>
           <input
             type="text"
-            value={config.bonusAmount}
-            onChange={(e) => handleInputChange('bonusAmount', e.target.value)}
-            className="h-14 px-5 bg-white border border-neutral-300 rounded-xl text-sm font-bold text-neutral-900 w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+            value={bonusAmount}
+            onChange={(e) => setBonusAmount(e.target.value)}
+            className="h-14 px-5 bg-white border border-neutral-300 rounded-xl text-sm font-bold text-neutral-900 w-full focus:outline-none focus:border-[#6312E1]"
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-semibold text-neutral-500">Minimum Referrals Required</label>
+          <label className="text-sm font-semibold text-neutral-500">Minimum Referral of Bonus</label>
           <input
             type="text"
-            value={config.minReferrals}
-            onChange={(e) => handleInputChange('minReferrals', e.target.value)}
-            className="h-14 px-5 bg-white border border-neutral-300 rounded-xl text-sm font-bold text-neutral-900 w-full focus:outline-none focus:border-[#6312E1] focus:ring-1 focus:ring-[#6312E1] transition-all"
+            value={minReferrals}
+            onChange={(e) => setMinReferrals(e.target.value)}
+            className="h-14 px-5 bg-white border border-neutral-300 rounded-xl text-sm font-bold text-neutral-900 w-full focus:outline-none focus:border-[#6312E1]"
           />
         </div>
       </div>
 
       {success && (
-        <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-bold self-start">Settings updated successfully!</div>
-      )}
-      {error && (
-        <div className="p-3.5 bg-red-50 text-red-600 rounded-xl text-sm font-bold self-start">{error}</div>
+        <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-bold self-start animate-in fade-in duration-200">
+          Referrals settings updated successfully!
+        </div>
       )}
 
-      <div className="flex items-center mt-4">
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="h-11 px-10 bg-[#6312E1] hover:bg-[#520cbd] disabled:opacity-60 text-white font-bold text-[15px] rounded-xl transition-all shadow-sm shadow-[#6312E1]/10 select-none active:scale-[0.99] flex items-center justify-center min-w-[140px]"
-        >
-          {isSaving ? 'Saving...' : 'Save Changes'}
-        </button>
-      </div>
+      {error && (
+        <div className="p-3.5 bg-red-50 text-red-600 rounded-xl text-xs font-bold self-start animate-in fade-in duration-200">
+          {error}
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={isSaving}
+        className="h-11 px-10 bg-[#6312E1] hover:bg-[#520cbd] text-white font-bold text-[15px] rounded-xl transition-all self-start"
+      >
+        {isSaving ? 'Saving...' : 'Save Changes'}
+      </button>
     </form>
   );
 };

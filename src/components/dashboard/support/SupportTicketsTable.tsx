@@ -51,7 +51,7 @@ export const SupportTicketsTable: React.FC<SupportTicketsTableProps> = ({ data }
           <tbody>
             {data.map((row, index) => {
               const priorityConfig = getPriorityStylesAndLabel(row.priority);
-              
+
               // Standardizes ID string for navigation path formatting
               const cleanedId = row.ticketId.replace('#', '').trim();
 
@@ -67,7 +67,7 @@ export const SupportTicketsTable: React.FC<SupportTicketsTableProps> = ({ data }
                   <td className="px-6 py-5 text-[15px] text-neutral-600 font-medium truncate max-w-[150px]" title={row.subject}>
                     {row.subject}
                   </td>
-                  
+
                   <td className="px-6 py-5">
                     <span className={`inline-flex px-4 py-1.5 rounded-lg text-xs font-bold leading-none ${priorityConfig.className}`}>
                       {priorityConfig.label}

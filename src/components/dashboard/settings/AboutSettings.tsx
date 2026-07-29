@@ -76,7 +76,7 @@ export const AboutSettings: React.FC = () => {
 
   return (
     <form onSubmit={handleSave} className="bg-white rounded-3xl p-8 border border-neutral-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.03)] flex-1 w-full flex flex-col gap-6">
-      
+
       {/* Header of About Us Card */}
       <h3 className="text-lg font-bold text-neutral-950 tracking-tight leading-none select-none border-b border-neutral-50 pb-4 mb-2">
         About Us
@@ -84,7 +84,7 @@ export const AboutSettings: React.FC = () => {
 
       {/* Input Fields Stack */}
       <div className="flex flex-col gap-5 w-full max-w-[420px]">
-        
+
         {/* Company Name */}
         <div className="flex flex-col gap-2">
           <label className="text-[14px] font-semibold text-neutral-500">

@@ -332,4 +332,59 @@ export const adminService = {
       body: JSON.stringify({ value }),
     });
   },
+
+  listCategories: (serverToken?: string) => {
+    return apiFetch<T.CategoryItem[] | T.PaginatedResponse<T.CategoryItem>>('/admin/categories', {}, serverToken);
+  },
+
+  createCategory: (data: T.CreateCategoryRequest) => {
+    return apiFetch<T.MessageResponse>('/admin/categories', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  updateCategory: (categoryId: string, data: T.UpdateCategoryRequest) => {
+    return apiFetch<T.MessageResponse>(`/admin/categories/${categoryId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  deleteCategory: (categoryId: string) => {
+    return apiFetch<T.MessageResponse>(`/admin/categories/${categoryId}`, { method: 'DELETE' });
+  },
+
+  getEventFormOptions: (serverToken?: string) => {
+    return apiFetch<T.EventFormOptionsResponse>('/admin/events/form-options', {}, serverToken);
+  },
+
+  createEvent: (data: T.AdminCreateEventRequest) => {
+    return apiFetch<T.MessageResponse>('/admin/events', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  blockEvent: (eventId: string, data: T.BlockEventRequest) => {
+    return apiFetch<T.MessageResponse>(`/admin/events/${eventId}/block`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  updateEventImages: (eventId: string, data: T.UpdateEventImagesRequest) => {
+    return apiFetch<T.MessageResponse>(`/admin/events/${eventId}/images`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  blockVendor: (vendorId: string, data: T.BlockVendorRequest) => {
+    return apiFetch<T.MessageResponse>(`/admin/vendors/${vendorId}/block`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
 };
+

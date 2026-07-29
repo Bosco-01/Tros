@@ -33,7 +33,7 @@ function mapPlanToCard(plan: SubscriptionPlan, index: number): SubscriptionPacka
 }
 
 export default function SubscriptionsPage() {
-  const [packages, setPackages] = useState<SubscriptionPackage[]>([]);
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [subscriptions, setSubscriptions] = useState<UserSubscriptionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -46,8 +46,8 @@ export default function SubscriptionsPage() {
         adminService.listSubscriptionPlans(),
         adminService.listVendorSubscriptions(1, 50),
       ]);
-      const plans = unwrapList<SubscriptionPlan>(plansRes);
-      setPackages(plans.map(mapPlanToCard));
+      const fetchedPlans = unwrapList<SubscriptionPlan>(plansRes);
+      setPlans(fetchedPlans);
       setSubscriptions(
         unwrapList<VendorSubscription>(subsRes).map((s, i) => ({
           userId: String(s.vendor_name || s.subscription_id || i),
@@ -79,8 +79,22 @@ export default function SubscriptionsPage() {
           <>
             <SubscriptionHeader />
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10 w-full max-w-[1100px]">
-              {packages.map((pack) => (
-                <PackageCard key={pack.id} data={pack} />
+              {plans.map((plan, idx) => (
+                <PackageCard
+                  key={plan.plan_id || plan.id || idx}
+                  data={{
+                    id: plan.plan_id || plan.id || String(idx),
+                    name: plan.name,
+                    price: typeof plan.price === 'number' ? plan.price : Number(plan.price) || 0,
+                    description: plan.description,
+                    max_events: plan.max_events ?? 0,
+                    max_tickets_per_event: plan.max_tickets_per_event ?? 0,
+                    can_access_reports: plan.can_access_reports,
+                    can_broadcast: plan.can_broadcast,
+                    is_active: plan.is_active,
+                  }}
+                  onRefresh={load}
+                />
               ))}
             </div>
             <UserSubscriptionsList data={subscriptions} />
@@ -90,3 +104,4 @@ export default function SubscriptionsPage() {
     </>
   );
 }
+

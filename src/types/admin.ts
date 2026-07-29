@@ -163,10 +163,10 @@ export interface ReportsAnalyticsResponse {
   active_vendors: number;
   total_revenue: number;
   refunds_issued: number;
-  events_declined: number;
-  vendors_declined: number;
-  event_approvals: MonthlyCountItem[];
-  revenue_trend: MonthlyAmountItem[];
+  events_declined?: number;
+  vendors_declined?: number;
+  event_approvals?: MonthlyCountItem[];
+  revenue_trend?: MonthlyAmountItem[];
   message?: string;
 }
 
@@ -174,9 +174,13 @@ export interface ReportListItem {
   report_id?: string;
   id?: string;
   title?: string;
+  name?: string;
   type?: string;
+  generated_by?: string;
   generated_at?: string;
-  status?: string;
+  created_at?: string;
+  status?: 'Completed' | 'Processing' | 'Failed' | string;
+  file_url?: string;
 }
 
 export interface CreateAdminRequest {
@@ -424,3 +428,75 @@ export interface AdminUserRow {
   is_active?: boolean;
   jobTitle?: string;
 }
+
+export interface CategoryItem {
+  id?: string;
+  category_id?: string;
+  name: string;
+  slug?: string;
+  icon_url?: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CreateCategoryRequest {
+  name: string;
+  slug?: string;
+  icon_url?: string;
+  is_active?: boolean;
+}
+
+export interface UpdateCategoryRequest {
+  name: string;
+  slug?: string;
+  icon_url?: string;
+  is_active?: boolean;
+}
+
+export interface SelectOption {
+  label: string;
+  value: string;
+}
+
+export interface VendorSelectOption {
+  id: string;
+  business_name: string;
+  full_name?: string;
+}
+
+export interface EventFormOptionsResponse {
+  categories?: CategoryItem[];
+  event_types?: SelectOption[];
+  vendors?: VendorSelectOption[];
+  message?: string;
+}
+
+export interface BlockVendorRequest {
+  reason?: string;
+  is_blocked: boolean;
+}
+
+export interface BlockEventRequest {
+  reason?: string;
+  is_blocked: boolean;
+}
+
+export interface UpdateEventImagesRequest {
+  add_images?: string[];
+  delete_images?: string[];
+}
+
+export interface AdminCreateEventRequest {
+  vendor_id: string;
+  title: string;
+  description: string;
+  category: string;
+  event_type: string;
+  venue_name: string;
+  venue_address: string;
+  date_time: string;
+  price: number;
+  cover_image_url?: string;
+}
+

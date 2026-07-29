@@ -56,17 +56,22 @@ export const EventApprovalsChart: React.FC<EventApprovalsChartProps> = ({ data }
           })}
 
           {/* Render Bars */}
-          {data.map((d, idx) => {
-            const colWidth = innerWidth / data.length;
+          {(data || []).map((d, idx) => {
+            const totalItems = data.length;
+            const colWidth = totalItems > 0 ? innerWidth / totalItems : 0;
             const barWidth = 14;
-            const x = paddingLeft + idx * colWidth + (colWidth - barWidth) / 2;
-            const barHeight = (d.value / 80) * innerHeight;
-            const y = innerHeight + paddingTop - barHeight;
+            const rawX = paddingLeft + idx * colWidth + (colWidth - barWidth) / 2;
+            const val = typeof d.value === 'number' && !Number.isNaN(d.value) ? d.value : 0;
+            const barHeight = (val / 80) * innerHeight;
+            const rawY = innerHeight + paddingTop - barHeight;
+
+            const x = Number.isNaN(rawX) ? paddingLeft : rawX;
+            const y = Number.isNaN(rawY) ? innerHeight + paddingTop : rawY;
 
             return (
               <g key={idx} className="group cursor-pointer">
                 {/* Hover Tooltip Overlay */}
-                <title>{`${d.month}: ${d.value} Approvals`}</title>
+                <title>{`${d.month || ''}: ${val} Approvals`}</title>
 
                 {/* Rounded Top Bar */}
                 <rect
@@ -88,12 +93,13 @@ export const EventApprovalsChart: React.FC<EventApprovalsChartProps> = ({ data }
                   textAnchor="middle"
                   className="font-semibold"
                 >
-                  {d.month}
+                  {d.month || ''}
                 </text>
               </g>
             );
           })}
         </svg>
+
       </div>
     </div>
   );

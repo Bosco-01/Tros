@@ -55,7 +55,7 @@ export const CreateVendorForm: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Complete Vendor Profile REST API multipart payload
+      // Complete Vendor Profile REST API multipart payload (POST /vendor/profile/complete)
       const formData = new FormData();
       formData.append("business_name", vendorName);
       formData.append("email", email);
@@ -70,19 +70,27 @@ export const CreateVendorForm: React.FC = () => {
       formData.append("nin", ninFile);
       formData.append("cac", cacFile);
 
-      await apiFetch("/admin/vendors", {
-        method: "POST",
-        body: formData,
-      });
+      try {
+        await apiFetch("/vendor/profile/complete", {
+          method: "POST",
+          body: formData,
+        });
+      } catch (e) {
+        // Fallback to /admin/vendors if server responds to /admin/vendors
+        await apiFetch("/admin/vendors", {
+          method: "POST",
+          body: formData,
+        });
+      }
 
-      // Save locally to simulate dynamic database listings additions immediately
+      // Save locally so the new vendor appears immediately on the All Vendors list
       const newVendorRow = {
         id: `#${Math.floor(100000 + Math.random() * 900000)}`,
-        fullName: "Admin-Created Onboard",
+        fullName: vendorName,
         businessName: vendorName,
         email: email,
         subscription: "Active" as const,
-        amount: "# 5,000",
+        amount: "₦ 5,000",
         eventPost: "Active" as const,
         status: "Active" as const,
       };
@@ -100,10 +108,13 @@ export const CreateVendorForm: React.FC = () => {
       // Redirect back to All Vendors directory after a brief delay
       setTimeout(() => {
         router.push("/dashboard/vendors");
-      }, 1500);
+      }, 1200);
     } catch (err) {
+      console.error("Failed to create vendor account:", err);
       setError(
-        "Failed to create vendor account. Please verify backend connection.",
+        err instanceof Error && err.message
+          ? err.message
+          : "Failed to create vendor account. Please verify backend connection.",
       );
     } finally {
       setIsSubmitting(false);
