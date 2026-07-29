@@ -3,10 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/apiClient';
 import { settingsToMap } from '@/lib/api-helpers';
-import { FooterLinksConfig, mockFooterLinksConfig } from '@/data/footer-links';
+import { FooterLinksConfig } from '@/data/footer-links';
+
+const EMPTY_FOOTER: FooterLinksConfig = {
+  footerText: '',
+  facebookUrl: '',
+  xUrl: '',
+  instagramUrl: '',
+  linkedInUrl: '',
+};
 
 export const FooterSettings: React.FC = () => {
-  const [config, setConfig] = useState<FooterLinksConfig>(mockFooterLinksConfig);
+  const [config, setConfig] = useState<FooterLinksConfig>(EMPTY_FOOTER);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -18,14 +26,16 @@ export const FooterSettings: React.FC = () => {
       try {
         const settings = settingsToMap(await apiFetch('/admin/settings'));
         setConfig({
-          footerText: settings.footer_text || mockFooterLinksConfig.footerText,
-          facebookUrl: settings.social_facebook || mockFooterLinksConfig.facebookUrl,
-          xUrl: settings.social_x || mockFooterLinksConfig.xUrl,
-          instagramUrl: settings.social_instagram || mockFooterLinksConfig.instagramUrl,
-          linkedInUrl: settings.social_linkedin || mockFooterLinksConfig.linkedInUrl,
+          footerText: settings.footer_text || '',
+          facebookUrl: settings.social_facebook || '',
+          xUrl: settings.social_x || '',
+          instagramUrl: settings.social_instagram || '',
+          linkedInUrl: settings.social_linkedin || '',
         });
       } catch (err) {
-        console.warn('[Settings] Failed to fetch live footer settings. Falling back to local default values.');
+        console.warn('[Settings] Failed to fetch live footer settings.');
+        setConfig(EMPTY_FOOTER);
+        setError('Failed to load footer settings.');
       } finally {
         setIsLoading(false);
       }

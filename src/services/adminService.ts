@@ -199,6 +199,14 @@ export const adminService = {
     return unwrapEntity<T.AdminEventDetail>(raw);
   },
 
+  listEventBookings: (eventId: string, page = 1, limit = 50, serverToken?: string) => {
+    return apiFetch<T.PaginatedResponse<T.AdminEventBooking>>(
+      `/admin/events/${eventId}/bookings?page=${page}&limit=${limit}`,
+      {},
+      serverToken,
+    );
+  },
+
   approveEventCancellation: (eventId: string) => {
     return apiFetch<T.MessageResponse>(`/admin/events/${eventId}/approve-cancellation`, {
       method: 'POST',

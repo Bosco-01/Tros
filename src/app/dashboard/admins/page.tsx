@@ -1,34 +1,67 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Topbar } from '@/components/layout/topbar'; // Note: Matches lowercase filename on disk
+import { Topbar } from '@/components/layout/topbar';
 import { AdminForm } from '@/components/dashboard/admins/AdminForm';
 import { AdminUsersTable } from '@/components/dashboard/admins/AdminUsersTable';
 import { PinSettings } from '@/components/dashboard/admins/PinSettings';
-import { AdminBroadcasts } from '@/components/dashboard/admins/AdminBroadcasts'; // Imported new tab
-import { mockAdminProfile, mockAdminUsers } from '@/data/admins';
+import { AdminBroadcasts } from '@/components/dashboard/admins/AdminBroadcasts';
+import { adminService } from '@/services/adminService';
+import type { AdminProfileData } from '@/data/admins';
+import { LoadingState, ErrorState } from '@/components/ui/AsyncStates';
 
 export default function ManageAdminsPage() {
-  const [activeTab, setActiveTab] = useState<'Profile' | 'Users' | 'Role' | 'Transaction PIN' | 'Broadcasts'>('Profile');
+  const [activeTab, setActiveTab] = useState<
+    'Profile' | 'Users' | 'Role' | 'Transaction PIN' | 'Broadcasts'
+  >('Profile');
+  const [profile, setProfile] = useState<AdminProfileData | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [profileError, setProfileError] = useState('');
+
+  useEffect(() => {
+    if (activeTab !== 'Profile') return;
+    let cancelled = false;
+    const load = async () => {
+      setLoadingProfile(true);
+      setProfileError('');
+      try {
+        const admin = await adminService.getProfile();
+        if (cancelled) return;
+        setProfile({
+          name: admin.name || '',
+          phone: (admin as { phone?: string; phone_number?: string }).phone ||
+            (admin as { phone_number?: string }).phone_number ||
+            '',
+          email: admin.email || '',
+          role: admin.role || '',
+          jobTitle: (admin as { job_title?: string }).job_title || admin.role || '',
+        });
+      } catch (err) {
+        if (cancelled) return;
+        setProfile(null);
+        setProfileError(err instanceof Error ? err.message : 'Failed to load profile');
+      } finally {
+        if (!cancelled) setLoadingProfile(false);
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTab]);
 
   return (
     <>
       <Topbar title="Manage Admins" />
-      
-      {/* 
-        Main content wrapper with slightly grey background 
-        so the pure white layout inputs and tab blocks stand out.
-      */}
+
       <main className="flex-1 p-8 bg-[#F8F9FA] overflow-y-auto custom-scrollbar">
         <div className="max-w-[1100px] flex flex-col gap-8">
-          
-          {/* Switcher Tab row with aligned Add New User button */}
           <div className="flex items-center justify-between gap-4 w-full select-none">
-            
-            {/* Switcher Tab State Pills */}
             <div className="flex flex-wrap gap-4">
-              {(['Profile', 'Users', 'Role', 'Transaction PIN', 'Broadcasts'] as const).map((tab) => (
+              {(
+                ['Profile', 'Users', 'Role', 'Transaction PIN', 'Broadcasts'] as const
+              ).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -38,12 +71,11 @@ export default function ManageAdminsPage() {
                       : 'bg-white border-neutral-100 text-neutral-700 hover:bg-neutral-50 shadow-sm shadow-neutral-100/50'
                   }`}
                 >
-                  {tab === 'Transaction PIN' ? 'Transaction PIN' : tab}
+                  {tab}
                 </button>
               ))}
             </div>
 
-            {/* [+] Add New User Button (Only visible on Users Tab) */}
             {activeTab === 'Users' && (
               <Link href="/dashboard/admins/add">
                 <button className="flex items-center gap-2.5 px-5 py-2.5 bg-white border border-neutral-100 shadow-sm shadow-neutral-100/30 rounded-full hover:bg-neutral-50 transition-colors focus:outline-none">
@@ -54,34 +86,34 @@ export default function ManageAdminsPage() {
                 </button>
               </Link>
             )}
-
           </div>
 
-          {/* Render Active Tab */}
-          {activeTab === 'Profile' && (
-            <AdminForm initialData={mockAdminProfile} />
-          )}
+          {activeTab === 'Profile' &&
+            (loadingProfile ? (
+              <LoadingState />
+            ) : profileError || !profile ? (
+              <ErrorState message={profileError || 'Profile not found'} />
+            ) : (
+              <AdminForm initialData={profile} readOnlyProfile />
+            ))}
 
-          {activeTab === 'Users' && (
-            <AdminUsersTable data={mockAdminUsers} />
-          )}
+          {activeTab === 'Users' && <AdminUsersTable />}
 
-          {activeTab === 'Transaction PIN' && (
-            <PinSettings />
-          )}
+          {activeTab === 'Transaction PIN' && <PinSettings />}
 
-          {activeTab === 'Broadcasts' && (
-            <AdminBroadcasts />
-          )}
+          {activeTab === 'Broadcasts' && <AdminBroadcasts />}
 
           {activeTab === 'Role' && (
-            // Placeholder layout for Role tab
             <div className="w-full bg-white rounded-3xl p-12 border border-neutral-100 text-center select-none shadow-sm shadow-neutral-100/40">
-              <h3 className="text-lg font-bold text-neutral-900 mb-1">Role Management Directory</h3>
-              <p className="text-sm text-neutral-500">Configure administrative access structures and role security models.</p>
+              <h3 className="text-lg font-bold text-neutral-900 mb-1">
+                Role Management Directory
+              </h3>
+              <p className="text-sm text-neutral-500">
+                Role configuration is not available via the admin API yet. Staff roles are
+                assigned when creating an admin account.
+              </p>
             </div>
           )}
-
         </div>
       </main>
     </>

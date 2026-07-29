@@ -11,18 +11,27 @@ import { GeneratedReportsTable } from '@/components/dashboard/reports/GeneratedR
 import { adminService } from '@/services/adminService';
 import { unwrapList } from '@/lib/api-helpers';
 import type { ReportsAnalyticsResponse, ReportListItem } from '@/types/admin';
-import {
-  mockReportMetrics,
-  mockEventApprovals,
-  mockRevenueTrend,
-  mockGeneratedReports,
+import type {
   GeneratedReportRow,
   ReportMetricData,
+  BarChartData,
+  LineChartData,
 } from '@/data/reports';
-import { LoadingState, ErrorState } from '@/components/ui/AsyncStates';
+import { LoadingState, ErrorState, EmptyState } from '@/components/ui/AsyncStates';
+
+function formatTrend(pct?: number): { trend: 'up' | 'down'; trendValue: string } {
+  if (typeof pct !== 'number' || Number.isNaN(pct)) {
+    return { trend: 'up', trendValue: '—' };
+  }
+  const sign = pct >= 0 ? '+' : '';
+  return {
+    trend: pct >= 0 ? 'up' : 'down',
+    trendValue: `${sign}${pct.toFixed(0)}%`,
+  };
+}
 
 export default function ReportsPage() {
-  const [reports, setReports] = useState<GeneratedReportRow[]>(mockGeneratedReports);
+  const [reports, setReports] = useState<GeneratedReportRow[]>([]);
   const [analytics, setAnalytics] = useState<ReportsAnalyticsResponse | null>(null);
   const [activeTab, setActiveTab] = useState<'Weekly' | 'Monthly' | 'Yearly'>('Monthly');
   const [fromDate, setFromDate] = useState('');
@@ -34,27 +43,33 @@ export default function ReportsPage() {
     setLoading(true);
     setError('');
     try {
-      // 1. Fetch generated reports directory (GET /admin/reports)
       const reportsRes = await adminService.getReportsList(1, 20);
       const list = unwrapList<ReportListItem | GeneratedReportRow>(reportsRes);
-      if (list && list.length > 0) {
-        setReports(
-          list.map((r, i) => ({
-            id: (r as ReportListItem).report_id || (r as GeneratedReportRow).id || `#REP-${9485 + i}`,
-            name: (r as GeneratedReportRow).name || (r as ReportListItem).title || 'Analytics Report',
-            generatedBy: (r as GeneratedReportRow).generatedBy || 'System Scheduler',
-            dateCreated: (r as GeneratedReportRow).dateCreated || (r as ReportListItem).generated_at || 'Feb 2026',
-            status: ((r as GeneratedReportRow).status || (r as ReportListItem).status || 'Completed') as GeneratedReportRow['status'],
-          }))
-        );
-      }
+      setReports(
+        list.map((r, i) => ({
+          id: (r as ReportListItem).report_id || (r as GeneratedReportRow).id || `report-${i}`,
+          name: (r as GeneratedReportRow).name || (r as ReportListItem).title || 'Analytics Report',
+          generatedBy: (r as GeneratedReportRow).generatedBy || (r as ReportListItem).generated_by || 'System',
+          dateCreated:
+            (r as GeneratedReportRow).dateCreated ||
+            (r as ReportListItem).generated_at ||
+            (r as ReportListItem).created_at ||
+            '',
+          status: ((r as GeneratedReportRow).status ||
+            (r as ReportListItem).status ||
+            'Completed') as GeneratedReportRow['status'],
+        })),
+      );
 
-      // 2. Fetch live KPI card metrics and chart data series (GET /admin/reports/analytics?from=...&to=...)
-      const analyticsRes = await adminService.getReportsAnalytics(fromDate || undefined, toDate || undefined);
+      const analyticsRes = await adminService.getReportsAnalytics(
+        fromDate || undefined,
+        toDate || undefined,
+      );
       setAnalytics(analyticsRes);
-
     } catch (err) {
-      console.warn('Backend Reports Analytics unreachable. Displaying simulation database entries.');
+      setReports([]);
+      setAnalytics(null);
+      setError(err instanceof Error ? err.message : 'Failed to load reports');
     } finally {
       setLoading(false);
     }
@@ -64,56 +79,61 @@ export default function ReportsPage() {
     void fetchReportsData();
   }, [fetchReportsData]);
 
-  // Format database stats into the exact UI metrics card schema dynamically
-  const metricsData: ReportMetricData[] = analytics ? [
-    {
-      id: '1',
-      title: 'Registered Events',
-      value: (analytics.registered_events ?? 0).toLocaleString(),
-      trend: 'up',
-      trendValue: '+ 15%',
-      trendPeriod: 'this week',
-      iconType: 'events',
-      footerNote: `${analytics.events_declined ?? 0} event requests declined`,
-    },
-    {
-      id: '2',
-      title: 'Active Vendors',
-      value: (analytics.active_vendors ?? 0).toLocaleString(),
-      trend: 'up',
-      trendValue: '+ 8%',
-      trendPeriod: 'this week',
-      iconType: 'vendors',
-      footerNote: `${analytics.vendors_declined ?? 0} Vendor requests declined`,
-    },
-    {
-      id: '3',
-      title: 'Total Revenue',
-      value: `₦ ${(analytics.total_revenue ?? 0).toLocaleString()}`,
-      trend: 'up',
-      trendValue: '+ 5%',
-      trendPeriod: 'this week',
-      iconType: 'revenue',
-    },
-    {
-      id: '4',
-      title: 'Refunds Issued',
-      value: `₦ ${(analytics.refunds_issued ?? 0).toLocaleString()}`,
-      trend: 'down',
-      trendValue: '- 8%',
-      trendPeriod: 'this week',
-      iconType: 'refunds',
-    },
-  ] : mockReportMetrics;
+  const eventsTrend = formatTrend((analytics as { events_trend_pct?: number } | null)?.events_trend_pct);
+  const vendorsTrend = formatTrend((analytics as { vendors_trend_pct?: number } | null)?.vendors_trend_pct);
+  const revenueTrendPct = formatTrend((analytics as { revenue_trend_pct?: number } | null)?.revenue_trend_pct);
+  const refundsTrend = formatTrend((analytics as { refunds_trend_pct?: number } | null)?.refunds_trend_pct);
 
-  // Format database arrays to match SVG charts components
-  const eventApprovals = analytics?.event_approvals 
-    ? analytics.event_approvals.map(item => ({ month: item.month, value: item.count }))
-    : mockEventApprovals;
+  const metricsData: ReportMetricData[] = analytics
+    ? [
+        {
+          id: '1',
+          title: 'Registered Events',
+          value: (analytics.registered_events ?? 0).toLocaleString(),
+          trend: eventsTrend.trend,
+          trendValue: eventsTrend.trendValue,
+          trendPeriod: 'vs prior period',
+          iconType: 'events',
+          footerNote: `${analytics.events_declined ?? 0} event requests declined`,
+        },
+        {
+          id: '2',
+          title: 'Active Vendors',
+          value: (analytics.active_vendors ?? 0).toLocaleString(),
+          trend: vendorsTrend.trend,
+          trendValue: vendorsTrend.trendValue,
+          trendPeriod: 'vs prior period',
+          iconType: 'vendors',
+          footerNote: `${analytics.vendors_declined ?? 0} Vendor requests declined`,
+        },
+        {
+          id: '3',
+          title: 'Total Revenue',
+          value: `₦ ${(analytics.total_revenue ?? 0).toLocaleString()}`,
+          trend: revenueTrendPct.trend,
+          trendValue: revenueTrendPct.trendValue,
+          trendPeriod: 'vs prior period',
+          iconType: 'revenue',
+        },
+        {
+          id: '4',
+          title: 'Refunds Issued',
+          value: `₦ ${(analytics.refunds_issued ?? 0).toLocaleString()}`,
+          trend: refundsTrend.trend,
+          trendValue: refundsTrend.trendValue,
+          trendPeriod: 'vs prior period',
+          iconType: 'refunds',
+        },
+      ]
+    : [];
 
-  const revenueTrend = analytics?.revenue_trend
-    ? analytics.revenue_trend.map(item => ({ month: item.month, value: item.amount }))
-    : mockRevenueTrend;
+  const eventApprovals: BarChartData[] = analytics?.event_approvals
+    ? analytics.event_approvals.map((item) => ({ month: item.month, value: item.count }))
+    : [];
+
+  const revenueTrend: LineChartData[] = analytics?.revenue_trend
+    ? analytics.revenue_trend.map((item) => ({ month: item.month, value: item.amount }))
+    : [];
 
   if (loading) {
     return (
@@ -126,10 +146,8 @@ export default function ReportsPage() {
   return (
     <>
       <Topbar title="Reports" />
-      
+
       <main className="flex-1 p-8 bg-[#F8F9FA] overflow-y-auto custom-scrollbar">
-        
-        {/* Weekly/Monthly/Yearly Switchers */}
         <ReportFilters
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -144,23 +162,27 @@ export default function ReportsPage() {
           <ErrorState message={error} onRetry={() => void fetchReportsData()} />
         ) : (
           <>
-            {/* 4 Metrics Cards loaded from live REST API */}
-            <ReportMetrics data={metricsData} />
+            {metricsData.length > 0 ? (
+              <ReportMetrics data={metricsData} />
+            ) : (
+              <EmptyState message="No analytics data available for this period." />
+            )}
 
-            {/* 2 Custom Visual SVG Charts loaded from live REST API */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full max-w-[1100px] mb-8">
               <EventApprovalsChart data={eventApprovals} />
               <RevenueTrendChart data={revenueTrend} />
             </div>
 
-            {/* Generated PDF Reports Directory */}
             <div className="w-full">
-              <GeneratedReportsTable data={reports} />
+              {reports.length === 0 ? (
+                <EmptyState message="No generated reports yet." />
+              ) : (
+                <GeneratedReportsTable data={reports} />
+              )}
             </div>
           </>
         )}
-
       </main>
     </>
   );
-}
+}

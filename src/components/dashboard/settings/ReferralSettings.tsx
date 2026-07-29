@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/apiClient';
+import { settingsToMap } from '@/lib/api-helpers';
 
 export const ReferralSettings: React.FC = () => {
-  const [bonusAmount, setBonusAmount] = useState('# 5,000.00');
-  const [minReferrals, setMinReferrals] = useState('3');
+  const [bonusAmount, setBonusAmount] = useState('');
+  const [minReferrals, setMinReferrals] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -14,15 +15,12 @@ export const ReferralSettings: React.FC = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const settings = await apiFetch<Record<string, string>>('/admin/settings');
-        if (settings.referral_bonus_amount) {
-          setBonusAmount(settings.referral_bonus_amount);
-        }
-        if (settings.minimum_referral_bonus) {
-          setMinReferrals(settings.minimum_referral_bonus);
-        }
+        const settings = settingsToMap(await apiFetch('/admin/settings'));
+        setBonusAmount(settings.referral_bonus_amount || '');
+        setMinReferrals(settings.minimum_referral_bonus || '');
       } catch (err) {
         console.warn('[Settings] Failed to fetch referrals settings.');
+        setError('Failed to load referral settings.');
       } finally {
         setIsLoading(false);
       }

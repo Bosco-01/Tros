@@ -20,16 +20,13 @@ export const DisputesTable: React.FC<DisputesTableProps> = ({ data }) => {
 
   const fetchDisputes = async () => {
     try {
-      // Calls GET /admin/disputes
-      const response = await apiFetch<{ disputes?: DisputeRowData[] }>('/admin/disputes?page=1&limit=20');
-      if (response.disputes && response.disputes.length > 0) {
-        setDisputes(response.disputes);
-      } else {
-        setDisputes(data);
-      }
+      const response = await apiFetch<{ disputes?: DisputeRowData[] }>(
+        '/admin/disputes?page=1&limit=50',
+      );
+      setDisputes(Array.isArray(response.disputes) ? response.disputes : []);
     } catch (error) {
-      console.warn('Backend /admin/disputes unreachable. Falling back to local data.');
-      setDisputes(data);
+      console.warn('Backend /admin/disputes unreachable.');
+      setDisputes(data.length ? data : []);
     } finally {
       setLoading(false);
     }

@@ -12,7 +12,7 @@ import { PolicyTermsSettings } from '@/components/dashboard/settings/PolicyTerms
 import { BroadcastSettings } from '@/components/dashboard/settings/BroadcastSettings';
 import { apiFetch } from '@/services/apiClient';
 import { settingsToMap } from '@/lib/api-helpers';
-import { mockReviewsCommentsConfig, ReviewsCommentsConfig } from '@/data/reviews-comments';
+import { ReviewsCommentsConfig } from '@/data/reviews-comments';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('Policy & Terms');
@@ -40,8 +40,13 @@ export default function SettingsPage() {
   );
 }
 
+const EMPTY_REVIEWS: ReviewsCommentsConfig = {
+  enableReviews: false,
+  moderateComments: false,
+};
+
 const ReviewsCommentsSettings: React.FC = () => {
-  const [config, setConfig] = useState<ReviewsCommentsConfig>(mockReviewsCommentsConfig);
+  const [config, setConfig] = useState<ReviewsCommentsConfig>(EMPTY_REVIEWS);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -57,6 +62,8 @@ const ReviewsCommentsSettings: React.FC = () => {
         });
       } catch {
         console.warn('[Settings] Failed to fetch live reviews settings.');
+        setConfig(EMPTY_REVIEWS);
+        setError('Failed to load reviews settings.');
       } finally {
         setIsLoading(false);
       }

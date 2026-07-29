@@ -71,41 +71,21 @@ export const CreateVendorForm: React.FC = () => {
       formData.append("cac", cacFile);
 
       try {
-        await apiFetch("/vendor/profile/complete", {
-          method: "POST",
-          body: formData,
-        });
-      } catch (e) {
-        // Fallback to /admin/vendors if server responds to /admin/vendors
         await apiFetch("/admin/vendors", {
           method: "POST",
           body: formData,
         });
+      } catch (e) {
+        throw e instanceof Error
+          ? e
+          : new Error(
+              "Admin cannot create vendor accounts yet. Vendors must register and complete their profile in the Trios app.",
+            );
       }
-
-      // Save locally so the new vendor appears immediately on the All Vendors list
-      const newVendorRow = {
-        id: `#${Math.floor(100000 + Math.random() * 900000)}`,
-        fullName: vendorName,
-        businessName: vendorName,
-        email: email,
-        subscription: "Active" as const,
-        amount: "₦ 5,000",
-        eventPost: "Active" as const,
-        status: "Active" as const,
-      };
-
-      const stored = localStorage.getItem("trios_custom_vendors");
-      const customVendors = stored ? JSON.parse(stored) : [];
-      localStorage.setItem(
-        "trios_custom_vendors",
-        JSON.stringify([newVendorRow, ...customVendors]),
-      );
 
       setSuccess(true);
       resetForm();
 
-      // Redirect back to All Vendors directory after a brief delay
       setTimeout(() => {
         router.push("/dashboard/vendors");
       }, 1200);

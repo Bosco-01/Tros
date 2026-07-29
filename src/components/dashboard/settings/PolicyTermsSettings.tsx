@@ -3,10 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/apiClient';
 import { settingsToMap } from '@/lib/api-helpers';
-import { PolicyTermsConfig, mockPolicyTermsConfig } from '@/data/policy-terms';
+import { PolicyTermsConfig } from '@/data/policy-terms';
+
+const EMPTY_POLICY: PolicyTermsConfig = {
+  privacyPolicy: '',
+  termsConditions: '',
+};
 
 export const PolicyTermsSettings: React.FC = () => {
-  const [config, setConfig] = useState<PolicyTermsConfig>(mockPolicyTermsConfig);
+  const [config, setConfig] = useState<PolicyTermsConfig>(EMPTY_POLICY);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -18,11 +23,13 @@ export const PolicyTermsSettings: React.FC = () => {
       try {
         const settings = settingsToMap(await apiFetch('/admin/settings'));
         setConfig({
-          privacyPolicy: settings.privacy_policy || mockPolicyTermsConfig.privacyPolicy,
-          termsConditions: settings.terms_conditions || mockPolicyTermsConfig.termsConditions,
+          privacyPolicy: settings.privacy_policy || '',
+          termsConditions: settings.terms_conditions || '',
         });
       } catch (err) {
-        console.warn('[Settings] Failed to fetch live policy settings. Falling back to local default values.');
+        console.warn('[Settings] Failed to fetch live policy settings.');
+        setConfig(EMPTY_POLICY);
+        setError('Failed to load policy settings.');
       } finally {
         setIsLoading(false);
       }

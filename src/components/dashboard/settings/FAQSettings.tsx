@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/apiClient';
-import { FAQItemData, mockFAQs } from '@/data/faqs';
+import { FAQItemData } from '@/data/faqs';
 
 export const FAQSettings: React.FC = () => {
   const [faqs, setFaqs] = useState<FAQItemData[]>([]);
@@ -24,12 +24,12 @@ export const FAQSettings: React.FC = () => {
       if (response.faqs && response.faqs.length > 0) {
         setFaqs(response.faqs);
       } else {
-        // Fallback to mock FAQs if database list is empty
-        setFaqs(mockFAQs);
+        setFaqs([]);
       }
     } catch (err) {
-      console.warn('Backend /admin/faqs unreachable. Displaying fallback mock FAQs.');
-      setFaqs(mockFAQs);
+      console.warn('Backend /admin/faqs unreachable.');
+      setFaqs([]);
+      setError('Failed to load FAQs from the backend.');
     } finally {
       setLoading(false);
     }

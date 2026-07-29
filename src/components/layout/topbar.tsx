@@ -22,7 +22,7 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react';
-import { apiFetch } from '@/services/apiClient';
+import { adminService } from '@/services/adminService';
 import { AdminProfile } from '@/types/admin';
 
 interface TopbarProps {
@@ -46,36 +46,41 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [profile, setProfile] = useState<AdminProfile | null>(null);
+  const [profileError, setProfileError] = useState(false);
 
-  // Fetch the logged-in administrator's profile details on mount
   useEffect(() => {
+    let cancelled = false;
     const fetchAdminProfile = async () => {
       try {
-        // Enforce secure Nest.js route proxy
-        const response = await apiFetch<{ user?: any }>('/admin/profile');
-        
-        // Correctly unwrap Go-backend's nested user object and full_name keys
-        if (response?.user) {
-          setProfile({
-            id: String(response.user.id),
-            name: response.user.full_name, // Map full_name correctly
-            email: response.user.email,
-            role: response.user.role,
-            is_active: response.user.is_active,
-            avatar_url: response.user.profilePicture || response.user.profile_picture
-          });
-        }
+        const admin = await adminService.getProfile();
+        if (cancelled) return;
+        setProfile({
+          id: String(admin.id || ''),
+          name: admin.name || 'Administrator',
+          email: admin.email || '',
+          role: admin.role || 'ADMIN',
+          is_active: admin.is_active ?? true,
+          avatar_url:
+            admin.avatar_url ||
+            (admin as { profile_picture?: string }).profile_picture ||
+            undefined,
+        });
+        setProfileError(false);
       } catch (error) {
         console.error('Failed to retrieve active administrator profile:', error);
+        if (!cancelled) setProfileError(true);
       }
     };
-    
-    fetchAdminProfile();
-  }, [router]);
+
+    void fetchAdminProfile();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch('/api/admin/logout', { method: 'POST' });
     } catch (error) {
       console.error('Failed to log out safely:', error);
     } finally {
@@ -138,10 +143,18 @@ export const Topbar: React.FC<TopbarProps> = ({ title }) => {
               </div>
               <div className="hidden sm:flex flex-col text-left">
                 <span className="text-sm font-bold text-neutral-900 leading-tight">
-                  {profile ? profile.name : 'Loading Profile...'}
+                  {profile
+                    ? profile.name
+                    : profileError
+                      ? 'Admin'
+                      : 'Loading Profile...'}
                 </span>
                 <span className="text-xs text-neutral-500 font-medium leading-normal">
-                  {profile ? profile.email : 'Connecting...'}
+                  {profile
+                    ? profile.email
+                    : profileError
+                      ? 'Signed in'
+                      : 'Connecting...'}
                 </span>
               </div>
             </div>

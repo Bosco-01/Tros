@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/apiClient';
+import { settingsToMap } from '@/lib/api-helpers';
 
 export const AboutSettings: React.FC = () => {
-  const [companyName, setCompanyName] = useState('Trio');
+  const [companyName, setCompanyName] = useState('');
   const [aboutDescription, setAboutDescription] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -15,15 +16,12 @@ export const AboutSettings: React.FC = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const settings = await apiFetch<Record<string, string>>('/admin/settings');
-        if (settings.about_company_name) {
-          setCompanyName(settings.about_company_name);
-        }
-        if (settings.about_description) {
-          setAboutDescription(settings.about_description.trim());
-        }
+        const settings = settingsToMap(await apiFetch('/admin/settings'));
+        setCompanyName(settings.about_company_name || '');
+        setAboutDescription((settings.about_description || '').trim());
       } catch (err) {
-        console.warn('[Settings] Failed to fetch live database settings. Falling back to local default values.');
+        console.warn('[Settings] Failed to fetch live database settings.');
+        setError('Failed to load about settings.');
       } finally {
         setIsLoading(false);
       }

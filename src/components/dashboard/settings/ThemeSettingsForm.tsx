@@ -1,8 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ThemeColorConfig, mockThemeConfig } from '@/data/settings';
+import { ThemeColorConfig } from '@/data/settings';
 import { adminService } from '@/services/adminService';
+
+const EMPTY_THEME: ThemeColorConfig = {
+  primaryColor: '',
+  secondaryColor: '',
+  accentColor: '',
+  backgroundColor: '',
+};
 
 const THEME_KEYS: Record<keyof ThemeColorConfig, string> = {
   primaryColor: 'theme_primary_color',
@@ -12,7 +19,7 @@ const THEME_KEYS: Record<keyof ThemeColorConfig, string> = {
 };
 
 export const ThemeSettingsForm: React.FC = () => {
-  const [config, setConfig] = useState<ThemeColorConfig>(mockThemeConfig);
+  const [config, setConfig] = useState<ThemeColorConfig>(EMPTY_THEME);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -23,13 +30,14 @@ export const ThemeSettingsForm: React.FC = () => {
       try {
         const settings = await adminService.getSettings();
         setConfig({
-          primaryColor: settings.theme_primary_color || mockThemeConfig.primaryColor,
-          secondaryColor: settings.theme_secondary_color || mockThemeConfig.secondaryColor,
-          accentColor: settings.theme_accent_color || mockThemeConfig.accentColor,
-          backgroundColor: settings.theme_background_color || mockThemeConfig.backgroundColor,
+          primaryColor: settings.theme_primary_color || '',
+          secondaryColor: settings.theme_secondary_color || '',
+          accentColor: settings.theme_accent_color || '',
+          backgroundColor: settings.theme_background_color || '',
         });
       } catch {
         setError('Failed to load theme settings');
+        setConfig(EMPTY_THEME);
       } finally {
         setIsLoading(false);
       }

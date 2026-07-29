@@ -34,21 +34,7 @@ export default function AllVendorsPage() {
       const list = unwrapList<AdminVendor>(res).map(mapVendorToRow);
       const total = unwrapTotal(res, list.length);
 
-      // Merge any newly created local vendors from localStorage if present
-      let combinedList = list;
-      if (page === 1) {
-        const stored = localStorage.getItem('trios_custom_vendors');
-        if (stored) {
-          try {
-            const customVendors = JSON.parse(stored);
-            combinedList = [...customVendors, ...list];
-          } catch (e) {
-            console.error('Failed to parse local vendors:', e);
-          }
-        }
-      }
-
-      setVendors(combinedList);
+      setVendors(list);
       setTotalPages(Math.max(1, Math.ceil(total / 20)));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load vendors');
@@ -74,12 +60,13 @@ export default function AllVendorsPage() {
           <h2 className="text-xl md:text-[22px] font-bold text-neutral-900 tracking-tight">
             Vendor Directory
           </h2>
-          <Link href="/dashboard/vendors/create">
-            <button className="flex items-center gap-2.5 px-6 py-3 bg-[#6312E1] hover:bg-[#520cbd] text-white font-bold text-sm rounded-full transition-colors focus:outline-none shadow-sm shadow-[#6312E1]/10">
-              <div className="w-5 h-5 bg-white text-[#6312E1] flex items-center justify-center rounded-md font-extrabold text-xs">
-                +
-              </div>
-              <span>Create Vendor</span>
+          <Link href="/dashboard/vendors">
+            <button
+              type="button"
+              title="Vendors self-register in the Trios app"
+              className="flex items-center gap-2.5 px-6 py-3 bg-white border border-neutral-200 text-neutral-800 font-bold text-sm rounded-full transition-colors focus:outline-none hover:border-[#6312E1]"
+            >
+              <span>Vendor directory</span>
             </button>
           </Link>
         </div>

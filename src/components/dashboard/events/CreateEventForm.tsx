@@ -133,29 +133,10 @@ export const CreateEventForm: React.FC = () => {
         ]
       };
 
-      await apiFetch('/event/create', {
+      await apiFetch('/admin/events', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
-
-      const formatted = formatDateTimeDisplay(dateTime);
-
-      const newEventRow = {
-        id: `#${Math.floor(100000 + Math.random() * 900000)}`,
-        category: category as any, // Propagates category to All Events table badge cleanly
-        title: eventTitle,
-        eventType: (eventType === 'Booking Event' ? 'BOOK' : 'RSVP') as any,
-        price: pricing,
-        date: eventType === 'Booking Event' ? formatted.date : 'Open now',
-        time: eventType === 'Booking Event' ? formatted.time : 'Closes 19:00',
-        vendorName: vendorName,
-        vendorId: `# ${Math.floor(100000 + Math.random() * 900000)}`,
-        status: 'Active' as const
-      };
-
-      const stored = localStorage.getItem('trios_custom_events');
-      const customEvents = stored ? JSON.parse(stored) : [];
-      localStorage.setItem('trios_custom_events', JSON.stringify([newEventRow, ...customEvents]));
 
       setSuccess(true);
       resetForm();

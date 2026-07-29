@@ -99,6 +99,20 @@ export interface AdminEventDetail extends AdminEvent {
   venue_address: string;
 }
 
+export interface AdminEventBooking {
+  booking_id: string;
+  booking_reference?: string;
+  booking_status: string;
+  booked_at: string;
+  user_id: string;
+  user_name: string;
+  user_email?: string;
+  profile_picture?: string;
+  ticket_type?: string;
+  quantity?: number;
+  price?: number;
+}
+
 export interface AdminVendor {
   vendor_id: string;
   full_name: string;
