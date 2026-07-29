@@ -2,13 +2,13 @@
   "schemes": [],
   "swagger": "2.0",
   "info": {
-    "description": "Trios backend REST API. Admin panel endpoints are under the `admin` tag — use `POST /admin/login` first, then pass the JWT as `Authorization: Bearer <token>`. Admin tokens have `type: admin_access` and are separate from user/vendor JWTs. Super-admin-only routes: manage admins, PATCH /admin/settings/{key}.",
-    "title": "Trios API",
+    "description": "",
+    "title": "",
     "contact": {},
-    "version": "1.0"
+    "version": ""
   },
-  "host": "localhost:8005",
-  "basePath": "/api/v1",
+  "host": "",
+  "basePath": "",
   "paths": {
     "/account/change-pin": {
       "post": {
@@ -18,9 +18,15 @@
           }
         ],
         "description": "Change the existing 4-digit transaction PIN for the authenticated user",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["account"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "account"
+        ],
         "summary": "Change account PIN",
         "parameters": [
           {
@@ -29,7 +35,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ChangeAccountPinRequest"
+              "$ref": "#/definitions/trios_internal_application_accounts_dtos.ChangeAccountPinRequest"
             }
           }
         ],
@@ -44,7 +50,7 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -53,9 +59,15 @@
     "/account/forgot-pin": {
       "post": {
         "description": "Request a PIN reset OTP sent to the user's email",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["account"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "account"
+        ],
         "summary": "Forgot account PIN",
         "parameters": [
           {
@@ -64,7 +76,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ForgotAccountPinRequest"
+              "$ref": "#/definitions/trios_internal_application_accounts_dtos.ForgotAccountPinRequest"
             }
           }
         ],
@@ -79,7 +91,7 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -88,9 +100,15 @@
     "/account/resend-pin-otp": {
       "post": {
         "description": "Resend the verification OTP for PIN reset",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["account"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "account"
+        ],
         "summary": "Resend PIN OTP",
         "parameters": [
           {
@@ -99,7 +117,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ResendPinOtpRequest"
+              "$ref": "#/definitions/trios_internal_application_accounts_dtos.ResendPinOtpRequest"
             }
           }
         ],
@@ -114,7 +132,7 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -128,9 +146,15 @@
           }
         ],
         "description": "Set a 4-digit transaction PIN for the authenticated user",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["account"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "account"
+        ],
         "summary": "Set account PIN",
         "parameters": [
           {
@@ -139,7 +163,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.SetAccountPinRequest"
+              "$ref": "#/definitions/trios_internal_application_accounts_dtos.SetAccountPinRequest"
             }
           }
         ],
@@ -154,7 +178,7 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -163,9 +187,15 @@
     "/account/verify-pin-reset": {
       "post": {
         "description": "Verify the OTP sent for PIN reset flow",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["account"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "account"
+        ],
         "summary": "Verify PIN reset OTP",
         "parameters": [
           {
@@ -174,7 +204,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ResetAccountPinOtpRequest"
+              "$ref": "#/definitions/trios_internal_application_accounts_dtos.ResetAccountPinOtpRequest"
             }
           }
         ],
@@ -189,7 +219,7 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -203,8 +233,12 @@
           }
         ],
         "description": "Super admin only. Paginated platform staff list.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "List admin accounts",
         "parameters": [
           {
@@ -246,9 +280,15 @@
           }
         ],
         "description": "Super admin only. Role ADMIN or SUPER_ADMIN.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Create admin account",
         "parameters": [
           {
@@ -257,7 +297,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.CreateAdminRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.CreateAdminRequest"
             }
           }
         ],
@@ -294,8 +334,12 @@
           }
         ],
         "description": "Super admin only. Cannot delete self or the last super admin.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Delete admin account",
         "parameters": [
           {
@@ -339,9 +383,15 @@
           }
         ],
         "description": "Super admin only. Cannot deactivate the last super admin.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Activate or deactivate admin",
         "parameters": [
           {
@@ -357,7 +407,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.UpdateAdminStatusRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.UpdateAdminStatusRequest"
             }
           }
         ],
@@ -394,8 +444,12 @@
           }
         ],
         "description": "Paginated list of sent broadcast messages (email, SMS, in-app).",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Broadcast message history",
         "parameters": [
           {
@@ -437,9 +491,15 @@
           }
         ],
         "description": "Create and record a broadcast message. Delivery is recorded for admin history.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Send broadcast message",
         "parameters": [
           {
@@ -448,7 +508,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.CreateBroadcastRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.CreateBroadcastRequest"
             }
           }
         ],
@@ -477,6 +537,148 @@
         }
       }
     },
+    "/admin/categories": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "All platform categories for admin management (active + inactive).",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
+        "summary": "List categories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Admin creates a category used in event create dropdowns.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
+        "summary": "Create category",
+        "parameters": [
+          {
+            "description": "Category",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.CreateCategoryRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "/admin/categories/{categoryId}": {
+      "delete": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
+        "summary": "Delete category",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Category UUID",
+            "name": "categoryId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "patch": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
+        "summary": "Update category",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Category UUID",
+            "name": "categoryId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Category",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.UpdateCategoryRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
     "/admin/change-password": {
       "post": {
         "security": [
@@ -485,9 +687,15 @@
           }
         ],
         "description": "Updates password for the logged-in admin account.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Change admin password",
         "parameters": [
           {
@@ -496,7 +704,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ChangeAdminPasswordRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.ChangeAdminPasswordRequest"
             }
           }
         ],
@@ -533,8 +741,12 @@
           }
         ],
         "description": "Returns platform totals for the admin dashboard cards: events, users, vendors, subscriptions, bookings, and revenue. Requires admin JWT (`type: admin_access`).",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Admin dashboard KPIs",
         "parameters": [
           {
@@ -554,7 +766,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.DashboardResponse"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.DashboardResponse"
             }
           },
           "401": {
@@ -582,8 +794,12 @@
           }
         ],
         "description": "Disputes linked to payments, shown under Support in the admin panel.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Payment disputes",
         "parameters": [
           {
@@ -627,9 +843,15 @@
           }
         ],
         "description": "Update dispute status and optional admin note.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Resolve or update dispute",
         "parameters": [
           {
@@ -645,7 +867,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.UpdateDisputeRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.UpdateDisputeRequest"
             }
           }
         ],
@@ -682,8 +904,12 @@
           }
         ],
         "description": "Global events list for the All Events sidebar module.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "List all platform events",
         "parameters": [
           {
@@ -717,6 +943,142 @@
             }
           }
         }
+      },
+      "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Create event for a vendor. Dropdown fields: event_type (book|rsvp), category_id, vendor_id. Multipart supports multiple `images`.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
+        "summary": "Admin create event",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Vendor UUID (dropdown)",
+            "name": "vendor_id",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Category UUID (dropdown)",
+            "name": "category_id",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "book or rsvp",
+            "name": "event_type",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Title",
+            "name": "title",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Description",
+            "name": "description",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Venue name",
+            "name": "venue_name",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Venue address",
+            "name": "venue_address",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "RFC3339 start",
+            "name": "start_date",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "RFC3339 end",
+            "name": "end_date",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "JSON array of ticket types",
+            "name": "ticket_types",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "file",
+            "description": "Event images (multi)",
+            "name": "images",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.AdminCreateEventResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "/admin/events/form-options": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Returns select options for Event Type, Category, and Vendor Name.",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
+        "summary": "Event create form dropdown options",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.EventFormOptionsResponse"
+            }
+          }
+        }
       }
     },
     "/admin/events/{eventId}": {
@@ -727,8 +1089,12 @@
           }
         ],
         "description": "Full event detail for the View More action in admin event tables.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Event detail",
         "parameters": [
           {
@@ -743,7 +1109,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.AdminEventDetail"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.AdminEventDetail"
             }
           },
           "401": {
@@ -763,6 +1129,117 @@
         }
       }
     },
+    "/admin/events/{eventId}/block": {
+      "patch": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Sets event status to `blocked` (or restores to `active`). Blocked events are hidden from public listings.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
+        "summary": "Block or unblock event",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Event UUID",
+            "name": "eventId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "blocked=true|false",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.BlockEventRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "/admin/events/{eventId}/images": {
+      "put": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Single endpoint for event gallery. Multipart: `images` (files to add) and `delete_ids` (JSON array or CSV of image UUIDs to remove). First remaining image becomes cover.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
+        "summary": "Manage event images (add and/or delete)",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Event UUID",
+            "name": "eventId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "file",
+            "description": "Image files to add (multi)",
+            "name": "images",
+            "in": "formData"
+          },
+          {
+            "type": "string",
+            "description": "JSON array or comma-separated image UUIDs to delete",
+            "name": "delete_ids",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
     "/admin/events/{id}/approve-cancellation": {
       "post": {
         "security": [
@@ -771,9 +1248,15 @@
           }
         ],
         "description": "Approves a pending event cancellation and queues refunds for confirmed bookings.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Approve event cancellation",
         "parameters": [
           {
@@ -817,8 +1300,12 @@
           }
         ],
         "description": "FAQ entries for the Platform Settings FAQ section.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "List platform FAQs",
         "responses": {
           "200": {
@@ -844,9 +1331,15 @@
           }
         ],
         "description": "Super admin only. Add a new FAQ entry.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Create FAQ",
         "parameters": [
           {
@@ -855,7 +1348,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.CreateFAQRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.CreateFAQRequest"
             }
           }
         ],
@@ -885,8 +1378,12 @@
           }
         ],
         "description": "Super admin only. Remove an FAQ entry.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Delete FAQ",
         "parameters": [
           {
@@ -921,9 +1418,15 @@
           }
         ],
         "description": "Super admin only. Edit an existing FAQ entry.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Update FAQ",
         "parameters": [
           {
@@ -939,7 +1442,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.UpdateFAQRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.UpdateFAQRequest"
             }
           }
         ],
@@ -964,9 +1467,15 @@
     "/admin/login": {
       "post": {
         "description": "Authenticates platform staff from the admins table. Returns JWT with type admin_access. Rate limited. Not for app users.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Admin login",
         "parameters": [
           {
@@ -975,7 +1484,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.AdminLoginRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.AdminLoginRequest"
             }
           }
         ],
@@ -1012,8 +1521,12 @@
           }
         ],
         "description": "Blacklists the current admin JWT.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Admin logout",
         "responses": {
           "200": {
@@ -1041,8 +1554,12 @@
           }
         ],
         "description": "Returns the logged-in admin profile for the header (name, email, avatar).",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Current admin profile",
         "responses": {
           "200": {
@@ -1070,8 +1587,12 @@
           }
         ],
         "description": "Generated vendor/event reports for the Reports module.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Vendor reports",
         "parameters": [
           {
@@ -1115,8 +1636,12 @@
           }
         ],
         "description": "KPI cards and chart series for the Reports page. Supports optional from/to date filters.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Reports analytics dashboard",
         "parameters": [
           {
@@ -1136,7 +1661,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.ReportsAnalyticsResponse"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.ReportsAnalyticsResponse"
             }
           },
           "401": {
@@ -1157,8 +1682,12 @@
           }
         ],
         "description": "Read global platform configuration keys. Both ADMIN and SUPER_ADMIN can read.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Platform settings",
         "responses": {
           "200": {
@@ -1186,9 +1715,15 @@
           }
         ],
         "description": "Super admin only. Updates a single platform_settings key (e.g. vendor_commission_percentage).",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Update platform setting",
         "parameters": [
           {
@@ -1204,7 +1739,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.UpdatePlatformSettingRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.UpdatePlatformSettingRequest"
             }
           }
         ],
@@ -1248,8 +1783,12 @@
           }
         ],
         "description": "Available subscription packages for the Subscriptions page cards.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Subscription plan packages",
         "responses": {
           "200": {
@@ -1275,9 +1814,15 @@
           }
         ],
         "description": "Super admin only. Add a new subscription package.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Create subscription plan",
         "parameters": [
           {
@@ -1286,7 +1831,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.CreateSubscriptionPlanRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.CreateSubscriptionPlanRequest"
             }
           }
         ],
@@ -1323,9 +1868,15 @@
           }
         ],
         "description": "Super admin only. Edit an existing subscription package.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Update subscription plan",
         "parameters": [
           {
@@ -1341,7 +1892,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.UpdateSubscriptionPlanRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.UpdateSubscriptionPlanRequest"
             }
           }
         ],
@@ -1378,8 +1929,12 @@
           }
         ],
         "description": "Active and historical vendor subscription plans.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Vendor subscriptions",
         "parameters": [
           {
@@ -1423,8 +1978,12 @@
           }
         ],
         "description": "User support tickets for the Support module.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Support tickets",
         "parameters": [
           {
@@ -1468,8 +2027,12 @@
           }
         ],
         "description": "Full support ticket for the View More action.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Support ticket detail",
         "parameters": [
           {
@@ -1513,9 +2076,15 @@
           }
         ],
         "description": "Move ticket through `open`, `in_progress`, `resolved`, `closed`.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Update support ticket status",
         "parameters": [
           {
@@ -1531,7 +2100,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.UpdateSupportTicketRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.UpdateSupportTicketRequest"
             }
           }
         ],
@@ -1568,8 +2137,12 @@
           }
         ],
         "description": "Paginated payment records across all users and vendors.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Platform transactions",
         "parameters": [
           {
@@ -1613,8 +2186,12 @@
           }
         ],
         "description": "Paginated list of end-user accounts (`users` table, roles `user`/`vendor`). Use `page` and `limit` query params. Admin JWT required.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "List all app users",
         "parameters": [
           {
@@ -1676,8 +2253,12 @@
           }
         ],
         "description": "Full user profile for the admin drawer/detail view.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "User profile detail",
         "parameters": [
           {
@@ -1721,8 +2302,12 @@
           }
         ],
         "description": "All bookings for a specific user. Used on the user detail drawer in the admin panel.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "User booking history",
         "parameters": [
           {
@@ -1780,9 +2365,15 @@
           }
         ],
         "description": "Toggle `is_active` on a user account. Does not affect admin accounts.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Activate or deactivate user",
         "parameters": [
           {
@@ -1798,7 +2389,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.UpdateUserStatusRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.UpdateUserStatusRequest"
             }
           }
         ],
@@ -1835,8 +2426,12 @@
           }
         ],
         "description": "Paginated vendor list with business name, subscription info, and event counts.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "List all vendors",
         "parameters": [
           {
@@ -1892,8 +2487,12 @@
           }
         ],
         "description": "Full vendor profile for the drill-down page (business info, subscription plan, location, status).",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Vendor profile detail",
         "parameters": [
           {
@@ -1908,7 +2507,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.AdminVendorDetail"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.AdminVendorDetail"
             }
           },
           "401": {
@@ -1928,6 +2527,60 @@
         }
       }
     },
+    "/admin/vendors/{vendorId}/block": {
+      "patch": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Blocks vendor account (`users.is_active=false`). Blocked vendors cannot create new events.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
+        "summary": "Block or unblock vendor",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Vendor profile UUID",
+            "name": "vendorId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "blocked=true|false",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.BlockVendorRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
     "/admin/vendors/{vendorId}/events": {
       "get": {
         "security": [
@@ -1936,8 +2589,12 @@
           }
         ],
         "description": "Events table on the vendor detail page. Same columns as All Events module.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Events by vendor",
         "parameters": [
           {
@@ -1988,8 +2645,12 @@
           }
         ],
         "description": "KYC documents and verification details for admin review (ID doc, CAC, business info).",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Vendor KYC review",
         "parameters": [
           {
@@ -2033,8 +2694,12 @@
           }
         ],
         "description": "Vendor profile plus events table in one response for the vendor detail page.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Vendor page bundle",
         "parameters": [
           {
@@ -2063,7 +2728,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.VendorPageResponse"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.VendorPageResponse"
             }
           },
           "401": {
@@ -2091,9 +2756,15 @@
           }
         ],
         "description": "Sets vendor `verification_status` (`pending`, `approved`, `rejected`) and linked user `is_active`.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Update vendor verification and account status",
         "parameters": [
           {
@@ -2109,7 +2780,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.UpdateVendorStatusRequest"
+              "$ref": "#/definitions/trios_internal_application_admin_dtos.UpdateVendorStatusRequest"
             }
           }
         ],
@@ -2146,8 +2817,12 @@
           }
         ],
         "description": "Paginated payout/withdrawal records for admin review.",
-        "produces": ["application/json"],
-        "tags": ["admin"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "admin"
+        ],
         "summary": "Vendor withdrawal requests",
         "parameters": [
           {
@@ -2215,9 +2890,15 @@
           }
         ],
         "description": "Change password for authenticated user",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Change password",
         "parameters": [
           {
@@ -2226,7 +2907,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.PasswordChangeRequest"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.PasswordChangeRequest"
             }
           }
         ],
@@ -2258,9 +2939,15 @@
     "/auth/forgot-password": {
       "post": {
         "description": "Request password reset using email or phone number",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Forgot password",
         "parameters": [
           {
@@ -2269,7 +2956,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ForgotPasswordRequest"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.ForgotPasswordRequest"
             }
           }
         ],
@@ -2277,7 +2964,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.ForgotPasswordResponse"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.ForgotPasswordResponse"
             }
           },
           "400": {
@@ -2293,9 +2980,15 @@
     "/auth/login": {
       "post": {
         "description": "Authenticate user",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "User login",
         "parameters": [
           {
@@ -2304,7 +2997,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.LoginRequest"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.LoginRequest"
             }
           },
           {
@@ -2337,7 +3030,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.LoginResponse"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.LoginResponse"
             }
           },
           "400": {
@@ -2365,14 +3058,18 @@
           }
         ],
         "description": "Logout the authenticated user and invalidate tokens",
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Logout user",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.LogoutResponse"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.LogoutResponse"
             }
           },
           "401": {
@@ -2388,9 +3085,15 @@
     "/auth/refresh-token": {
       "post": {
         "description": "Refresh access token using refresh token",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Refresh token",
         "parameters": [
           {
@@ -2431,9 +3134,15 @@
     "/auth/register": {
       "post": {
         "description": "Create a user account",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Register new user",
         "parameters": [
           {
@@ -2442,7 +3151,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.SignUpRequest"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.SignUpRequest"
             }
           }
         ],
@@ -2450,7 +3159,7 @@
           "201": {
             "description": "Created",
             "schema": {
-              "$ref": "#/definitions/dtos.SignUpResponse"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.SignUpResponse"
             }
           },
           "400": {
@@ -2480,9 +3189,15 @@
     "/auth/resend-otp": {
       "post": {
         "description": "Resend verification OTP to user",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Resend OTP",
         "parameters": [
           {
@@ -2491,7 +3206,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ResendOtpRequest"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.ResendOtpRequest"
             }
           }
         ],
@@ -2499,7 +3214,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.ResendOtpResponse"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.ResendOtpResponse"
             }
           },
           "400": {
@@ -2515,9 +3230,15 @@
     "/auth/reset-password": {
       "put": {
         "description": "Reset password after OTP verification",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Reset password",
         "parameters": [
           {
@@ -2526,7 +3247,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ResetPasswordRequest"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.ResetPasswordRequest"
             }
           }
         ],
@@ -2534,7 +3255,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.ResetPasswordResponse"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.ResetPasswordResponse"
             }
           },
           "400": {
@@ -2550,9 +3271,15 @@
     "/auth/verify-account": {
       "post": {
         "description": "Verify user account with OTP",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Verify account",
         "parameters": [
           {
@@ -2561,7 +3288,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.VerifyAccountRequest"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.VerifyAccountRequest"
             }
           },
           {
@@ -2594,7 +3321,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.VerifyAccountResponse"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.VerifyAccountResponse"
             }
           },
           "400": {
@@ -2617,9 +3344,15 @@
     "/auth/verify-reset-password-otp": {
       "post": {
         "description": "Verify OTP for password reset flow",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["authentication"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Verify reset password OTP",
         "parameters": [
           {
@@ -2628,7 +3361,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.VerifyPasswordForgotOtpRequest"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.VerifyPasswordForgotOtpRequest"
             }
           }
         ],
@@ -2636,7 +3369,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.VerifyPasswordForgotOtpResponse"
+              "$ref": "#/definitions/trios_internal_application_auth_dtos.VerifyPasswordForgotOtpResponse"
             }
           },
           "400": {
@@ -2664,9 +3397,15 @@
           }
         ],
         "description": "Get paginated list of all bookings for the authenticated vendor's events",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["bookings"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "bookings"
+        ],
         "summary": "Get vendor bookings",
         "responses": {
           "200": {
@@ -2679,13 +3418,13 @@
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -2699,8 +3438,12 @@
           }
         ],
         "description": "Returns bookings for events that have already ended",
-        "produces": ["application/json"],
-        "tags": ["bookings"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "bookings"
+        ],
         "summary": "Get past bookings",
         "parameters": [
           {
@@ -2720,19 +3463,19 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/userdtos.BookingListingResponse"
+              "$ref": "#/definitions/trios_internal_application_bookings_user_dtos.BookingListingResponse"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -2746,8 +3489,12 @@
           }
         ],
         "description": "Returns bookings for events that have not yet ended (upcoming + ongoing)",
-        "produces": ["application/json"],
-        "tags": ["bookings"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "bookings"
+        ],
         "summary": "Get upcoming bookings",
         "parameters": [
           {
@@ -2767,19 +3514,19 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/userdtos.BookingListingResponse"
+              "$ref": "#/definitions/trios_internal_application_bookings_user_dtos.BookingListingResponse"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -2793,9 +3540,15 @@
           }
         ],
         "description": "Get aggregated metrics for the vendor's wallet and events",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["dashboard"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "dashboard"
+        ],
         "summary": "Get Vendor Dashboard Stats",
         "responses": {
           "200": {
@@ -2808,13 +3561,13 @@
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -2828,9 +3581,15 @@
           }
         ],
         "description": "Get paginated reviews for a specific event with optional sentiment filter",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["dashboard"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "dashboard"
+        ],
         "summary": "Get event reviews",
         "parameters": [
           {
@@ -2870,19 +3629,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -2896,9 +3655,15 @@
           }
         ],
         "description": "Get aggregated metrics for a specific event (revenue, tickets sold, etc.)",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["dashboard"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "dashboard"
+        ],
         "summary": "Get event dashboard stats",
         "parameters": [
           {
@@ -2920,19 +3685,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -2946,9 +3711,15 @@
           }
         ],
         "description": "Get paginated list of events for the authenticated vendor, with optional search and filter",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["event"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "event"
+        ],
         "summary": "View vendor event listings",
         "parameters": [
           {
@@ -3005,19 +3776,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3031,9 +3802,15 @@
           }
         ],
         "description": "Create a new event with ticket types",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["event"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "event"
+        ],
         "summary": "Create event",
         "parameters": [
           {
@@ -3042,7 +3819,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.EventRequest"
+              "$ref": "#/definitions/trios_internal_application_events_dtos.EventRequest"
             }
           }
         ],
@@ -3057,19 +3834,19 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3083,9 +3860,15 @@
           }
         ],
         "description": "Admin approval of a pending event cancellation. Triggers automatic refunds for all confirmed bookings.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["event"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "event"
+        ],
         "summary": "Approve event cancellation",
         "parameters": [
           {
@@ -3107,19 +3890,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3133,9 +3916,15 @@
           }
         ],
         "description": "Request cancellation of an active or on-hold event. Requires approval from admin.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["event"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "event"
+        ],
         "summary": "Request event cancellation",
         "parameters": [
           {
@@ -3151,7 +3940,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.CancelEventRequest"
+              "$ref": "#/definitions/trios_internal_application_events_dtos.CancelEventRequest"
             }
           }
         ],
@@ -3166,19 +3955,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3192,9 +3981,15 @@
           }
         ],
         "description": "Place an active event on hold with options",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["event"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "event"
+        ],
         "summary": "Place event on hold",
         "parameters": [
           {
@@ -3210,7 +4005,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.HoldEventRequest"
+              "$ref": "#/definitions/trios_internal_application_events_dtos.HoldEventRequest"
             }
           }
         ],
@@ -3225,19 +4020,19 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3251,8 +4046,12 @@
           }
         ],
         "description": "Resume an event that is currently on hold",
-        "produces": ["application/json"],
-        "tags": ["event"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "event"
+        ],
         "summary": "Resume event",
         "parameters": [
           {
@@ -3274,19 +4073,19 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3300,8 +4099,12 @@
           }
         ],
         "description": "Browse and search public events with optional filters for category, date range, and location",
-        "produces": ["application/json"],
-        "tags": ["user-events"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user-events"
+        ],
         "summary": "Browse events",
         "parameters": [
           {
@@ -3351,19 +4154,19 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/userdtos.EventResponse"
+              "$ref": "#/definitions/trios_internal_application_events_user_dtos.EventResponse"
             }
           },
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3377,8 +4180,12 @@
           }
         ],
         "description": "Retrieve the list of events saved by the current user",
-        "produces": ["application/json"],
-        "tags": ["user-events"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user-events"
+        ],
         "summary": "Get saved events",
         "parameters": [
           {
@@ -3398,13 +4205,13 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/userdtos.EventResponse"
+              "$ref": "#/definitions/trios_internal_application_events_user_dtos.EventResponse"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3418,8 +4225,12 @@
           }
         ],
         "description": "Save an event to your personal list",
-        "produces": ["application/json"],
-        "tags": ["user-events"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user-events"
+        ],
         "summary": "Save event",
         "parameters": [
           {
@@ -3441,13 +4252,13 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3459,8 +4270,12 @@
           }
         ],
         "description": "Remove an event from your personal saved list",
-        "produces": ["application/json"],
-        "tags": ["user-events"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user-events"
+        ],
         "summary": "Unsave event",
         "parameters": [
           {
@@ -3482,7 +4297,7 @@
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3496,9 +4311,15 @@
           }
         ],
         "description": "Track a view or click on an event",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["interactions"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "interactions"
+        ],
         "summary": "Track event interaction",
         "parameters": [
           {
@@ -3514,7 +4335,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.InteractionRequest"
+              "$ref": "#/definitions/trios_internal_application_reviews_dtos.InteractionRequest"
             }
           }
         ],
@@ -3529,13 +4350,13 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3549,8 +4370,12 @@
           }
         ],
         "description": "Retrieve a list of notifications for the authenticated user",
-        "produces": ["application/json"],
-        "tags": ["notifications"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "notifications"
+        ],
         "summary": "Get all notifications",
         "parameters": [
           {
@@ -3577,13 +4402,13 @@
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3597,8 +4422,12 @@
           }
         ],
         "description": "Mark all notifications as read for the authenticated user",
-        "produces": ["application/json"],
-        "tags": ["notifications"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "notifications"
+        ],
         "summary": "Mark all notifications as read",
         "responses": {
           "200": {
@@ -3611,13 +4440,13 @@
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3631,8 +4460,12 @@
           }
         ],
         "description": "Get the total count of unread notifications for the user",
-        "produces": ["application/json"],
-        "tags": ["notifications"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "notifications"
+        ],
         "summary": "Get unread count",
         "responses": {
           "200": {
@@ -3645,13 +4478,13 @@
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3665,8 +4498,12 @@
           }
         ],
         "description": "Mark a specific notification as read by its ID",
-        "produces": ["application/json"],
-        "tags": ["notifications"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "notifications"
+        ],
         "summary": "Mark notification as read",
         "parameters": [
           {
@@ -3688,19 +4525,19 @@
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "404": {
             "description": "Notification not found",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3714,26 +4551,30 @@
           }
         ],
         "description": "Retrieve the profile details of the authenticated user",
-        "produces": ["application/json"],
-        "tags": ["profile"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
         "summary": "Get user profile",
         "responses": {
           "200": {
             "description": "User profile details",
             "schema": {
-              "$ref": "#/definitions/dtos.GetProfileResponse"
+              "$ref": "#/definitions/trios_internal_application_profile_dtos.GetProfileResponse"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3747,9 +4588,15 @@
           }
         ],
         "description": "Update the profile information for the authenticated user",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["profile"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
         "summary": "Update user profile",
         "parameters": [
           {
@@ -3758,7 +4605,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ProfileUpdateRequest"
+              "$ref": "#/definitions/trios_internal_application_profile_dtos.ProfileUpdateRequest"
             }
           }
         ],
@@ -3766,25 +4613,25 @@
           "200": {
             "description": "Profile updated successfully",
             "schema": {
-              "$ref": "#/definitions/dtos.UpdateProfileResponse"
+              "$ref": "#/definitions/trios_internal_application_profile_dtos.UpdateProfileResponse"
             }
           },
           "400": {
             "description": "Bad request (e.g., invalid data)",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3798,9 +4645,15 @@
           }
         ],
         "description": "Delete the authenticated user's review for an event",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["reviews"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "reviews"
+        ],
         "summary": "Delete event review",
         "parameters": [
           {
@@ -3822,19 +4675,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3848,9 +4701,15 @@
           }
         ],
         "description": "Save (POST) or unsave (DELETE) an event for the authenticated user",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["reviews"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "reviews"
+        ],
         "summary": "Toggle save event",
         "parameters": [
           {
@@ -3872,19 +4731,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3898,9 +4757,15 @@
           }
         ],
         "description": "Create or update a review (rating + comment) for an event",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["reviews"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "reviews"
+        ],
         "summary": "Submit event review",
         "parameters": [
           {
@@ -3916,7 +4781,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.ReviewRequest"
+              "$ref": "#/definitions/trios_internal_application_reviews_dtos.ReviewRequest"
             }
           }
         ],
@@ -3931,19 +4796,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -3957,9 +4822,15 @@
           }
         ],
         "description": "Initiate payment for a pending ticket booking",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tickets"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tickets"
+        ],
         "summary": "Finalize ticket purchase",
         "parameters": [
           {
@@ -3975,7 +4846,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.FinalizeTicketRequest"
+              "$ref": "#/definitions/trios_internal_application_tickets_dtos.FinalizeTicketRequest"
             }
           }
         ],
@@ -3983,25 +4854,25 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/dtos.FinalizeTicketResponse"
+              "$ref": "#/definitions/trios_internal_application_tickets_dtos.FinalizeTicketResponse"
             }
           },
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4015,9 +4886,15 @@
           }
         ],
         "description": "Initiate a ticket purchase and create a pending booking",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tickets"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tickets"
+        ],
         "summary": "Purchase tickets",
         "parameters": [
           {
@@ -4033,7 +4910,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.PurchaseTicketRequest"
+              "$ref": "#/definitions/trios_internal_application_tickets_dtos.PurchaseTicketRequest"
             }
           }
         ],
@@ -4041,25 +4918,25 @@
           "201": {
             "description": "Created",
             "schema": {
-              "$ref": "#/definitions/dtos.PurchaseTicketResponse"
+              "$ref": "#/definitions/trios_internal_application_tickets_dtos.PurchaseTicketResponse"
             }
           },
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4073,9 +4950,15 @@
           }
         ],
         "description": "Get paginated transaction history with optional filters (status, type, category, method)",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["transactions"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "transactions"
+        ],
         "summary": "Get transaction history",
         "parameters": [
           {
@@ -4138,19 +5021,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4159,8 +5042,12 @@
     "/transactions/view": {
       "get": {
         "description": "Render the interactive transactions history page",
-        "produces": ["text/html"],
-        "tags": ["transactions"],
+        "produces": [
+          "text/html"
+        ],
+        "tags": [
+          "transactions"
+        ],
         "summary": "View transactions page (HTML)",
         "responses": {
           "200": {
@@ -4172,7 +5059,7 @@
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4186,9 +5073,15 @@
           }
         ],
         "description": "Upload a profile avatar image for the authenticated user",
-        "consumes": ["multipart/form-data"],
-        "produces": ["application/json"],
-        "tags": ["uploads"],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "uploads"
+        ],
         "summary": "Upload user avatar",
         "parameters": [
           {
@@ -4210,19 +5103,19 @@
           "400": {
             "description": "Invalid file upload",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4236,9 +5129,15 @@
           }
         ],
         "description": "Complete vendor registration with business details and uploaded documents (NIN, CAC). Accepts multipart/form-data.",
-        "consumes": ["multipart/form-data"],
-        "produces": ["application/json"],
-        "tags": ["vendor"],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vendor"
+        ],
         "summary": "Complete vendor profile",
         "parameters": [
           {
@@ -4315,19 +5214,19 @@
           "400": {
             "description": "Bad Request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4341,26 +5240,30 @@
           }
         ],
         "description": "Retrieve the current balance and details of the authenticated user's wallet",
-        "produces": ["application/json"],
-        "tags": ["wallet"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "wallet"
+        ],
         "summary": "Get user wallet balance",
         "responses": {
           "200": {
             "description": "User wallet balance",
             "schema": {
-              "$ref": "#/definitions/dtos.GetUserBalanceResponse"
+              "$ref": "#/definitions/trios_internal_application_wallets_dtos.GetUserBalanceResponse"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4374,9 +5277,15 @@
           }
         ],
         "description": "Generate a payment link to credit the user's wallet",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["wallet"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "wallet"
+        ],
         "summary": "Credit wallet",
         "parameters": [
           {
@@ -4392,7 +5301,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dtos.FundWalletRequest"
+              "$ref": "#/definitions/trios_internal_application_wallets_dtos.FundWalletRequest"
             }
           }
         ],
@@ -4400,25 +5309,25 @@
           "201": {
             "description": "Payment link generated successfully",
             "schema": {
-              "$ref": "#/definitions/dtos.FundWalletResponse"
+              "$ref": "#/definitions/trios_internal_application_wallets_dtos.FundWalletResponse"
             }
           },
           "400": {
             "description": "Invalid request payload",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Failed to generate payment link",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4432,9 +5341,15 @@
           }
         ],
         "description": "Retrieve details of a specific bank by its code",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["withdrawal"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "withdrawal"
+        ],
         "summary": "Retrieve Bank Details",
         "parameters": [
           {
@@ -4443,7 +5358,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dto.RetrieveAccountDetailsRequest"
+              "$ref": "#/definitions/trios_internal_application_withdrawal_dto.RetrieveAccountDetailsRequest"
             }
           }
         ],
@@ -4455,13 +5370,13 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4475,9 +5390,15 @@
           }
         ],
         "description": "Initiate a withdrawal request",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["withdrawal"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "withdrawal"
+        ],
         "summary": "Initiate Withdrawal",
         "parameters": [
           {
@@ -4493,7 +5414,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dto.InitiateWithdrawalRequest"
+              "$ref": "#/definitions/trios_internal_application_withdrawal_dto.InitiateWithdrawalRequest"
             }
           }
         ],
@@ -4505,13 +5426,13 @@
           "400": {
             "description": "Bad request",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           },
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4525,9 +5446,15 @@
           }
         ],
         "description": "Fetch a list of banks",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["withdrawal"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "withdrawal"
+        ],
         "summary": "List Banks",
         "responses": {
           "200": {
@@ -4537,7 +5464,7 @@
           "500": {
             "description": "Internal server error",
             "schema": {
-              "$ref": "#/definitions/httpx.AppError"
+              "$ref": "#/definitions/trios_internal_shared_httpx.AppError"
             }
           }
         }
@@ -4545,50 +5472,114 @@
     }
   },
   "definitions": {
-    "dto.InitiateWithdrawalRequest": {
+    "trios_internal_application_accounts_dtos.ChangeAccountPinRequest": {
       "type": "object",
       "required": [
-        "account_name",
-        "account_number",
-        "amount",
-        "bank_code",
-        "currency",
-        "pin"
+        "current_password",
+        "new_pin",
+        "old_pin"
       ],
       "properties": {
-        "account_name": {
+        "current_password": {
           "type": "string"
         },
-        "account_number": {
+        "new_pin": {
           "type": "string"
         },
-        "amount": {
-          "type": "number"
-        },
-        "bank_code": {
-          "type": "string"
-        },
-        "currency": {
-          "type": "string"
-        },
-        "pin": {
+        "old_pin": {
           "type": "string"
         }
       }
     },
-    "dto.RetrieveAccountDetailsRequest": {
+    "trios_internal_application_accounts_dtos.ForgotAccountPinRequest": {
       "type": "object",
-      "required": ["account_number", "bank_code"],
+      "required": [
+        "email",
+        "password"
+      ],
       "properties": {
-        "account_number": {
+        "email": {
           "type": "string"
         },
-        "bank_code": {
+        "password": {
           "type": "string"
         }
       }
     },
-    "dtos.AdminEvent": {
+    "trios_internal_application_accounts_dtos.ResendPinOtpRequest": {
+      "type": "object",
+      "required": [
+        "email"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_accounts_dtos.ResetAccountPinOtpRequest": {
+      "type": "object",
+      "required": [
+        "email",
+        "verification_code"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "verification_code": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_accounts_dtos.SetAccountPinRequest": {
+      "type": "object",
+      "required": [
+        "account_pin",
+        "confirm_account_pin"
+      ],
+      "properties": {
+        "account_pin": {
+          "type": "string"
+        },
+        "confirm_account_pin": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.AdminCreateEventResponse": {
+      "type": "object",
+      "properties": {
+        "category_id": {
+          "type": "string"
+        },
+        "cover_image_url": {
+          "type": "string"
+        },
+        "event_id": {
+          "type": "string"
+        },
+        "event_type": {
+          "type": "string"
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_admin_dtos.EventImageItem"
+          }
+        },
+        "message": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "vendor_id": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.AdminEvent": {
       "type": "object",
       "properties": {
         "category": {
@@ -4629,7 +5620,7 @@
         }
       }
     },
-    "dtos.AdminEventDetail": {
+    "trios_internal_application_admin_dtos.AdminEventDetail": {
       "type": "object",
       "properties": {
         "category": {
@@ -4682,9 +5673,12 @@
         }
       }
     },
-    "dtos.AdminLoginRequest": {
+    "trios_internal_application_admin_dtos.AdminLoginRequest": {
       "type": "object",
-      "required": ["email", "password"],
+      "required": [
+        "email",
+        "password"
+      ],
       "properties": {
         "email": {
           "type": "string"
@@ -4694,7 +5688,7 @@
         }
       }
     },
-    "dtos.AdminVendor": {
+    "trios_internal_application_admin_dtos.AdminVendor": {
       "type": "object",
       "properties": {
         "business_name": {
@@ -4726,7 +5720,7 @@
         }
       }
     },
-    "dtos.AdminVendorDetail": {
+    "trios_internal_application_admin_dtos.AdminVendorDetail": {
       "type": "object",
       "properties": {
         "address": {
@@ -4776,7 +5770,515 @@
         }
       }
     },
-    "dtos.AuthUser": {
+    "trios_internal_application_admin_dtos.BlockEventRequest": {
+      "type": "object",
+      "properties": {
+        "blocked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.BlockVendorRequest": {
+      "type": "object",
+      "properties": {
+        "blocked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.CategoryItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.ChangeAdminPasswordRequest": {
+      "type": "object",
+      "required": [
+        "current_password",
+        "new_password"
+      ],
+      "properties": {
+        "current_password": {
+          "type": "string"
+        },
+        "new_password": {
+          "type": "string",
+          "minLength": 8
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.CreateAdminRequest": {
+      "type": "object",
+      "required": [
+        "email",
+        "name",
+        "password",
+        "role"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 8
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.CreateBroadcastRequest": {
+      "type": "object",
+      "required": [
+        "channel",
+        "content",
+        "title"
+      ],
+      "properties": {
+        "channel": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "recipients": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.CreateCategoryRequest": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "icon_url": {
+          "type": "string"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.CreateFAQRequest": {
+      "type": "object",
+      "required": [
+        "answer",
+        "question"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "integer"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.CreateSubscriptionPlanRequest": {
+      "type": "object",
+      "required": [
+        "max_events",
+        "max_tickets_per_event",
+        "name",
+        "price"
+      ],
+      "properties": {
+        "can_access_reports": {
+          "type": "boolean"
+        },
+        "can_broadcast": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "max_events": {
+          "type": "integer"
+        },
+        "max_tickets_per_event": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "integer"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.DashboardResponse": {
+      "type": "object",
+      "properties": {
+        "events_trend_pct": {
+          "type": "number"
+        },
+        "message": {
+          "type": "string"
+        },
+        "pending_approvals": {
+          "type": "integer"
+        },
+        "pending_verifications": {
+          "type": "integer"
+        },
+        "recent_events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_admin_dtos.AdminEvent"
+          }
+        },
+        "recent_vendors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_admin_dtos.AdminVendor"
+          }
+        },
+        "subscriptions_trend_pct": {
+          "type": "number"
+        },
+        "total_bookings": {
+          "type": "integer"
+        },
+        "total_events": {
+          "type": "integer"
+        },
+        "total_revenue": {
+          "type": "integer"
+        },
+        "total_subscriptions": {
+          "type": "integer"
+        },
+        "total_users": {
+          "type": "integer"
+        },
+        "total_vendors": {
+          "type": "integer"
+        },
+        "users_trend_pct": {
+          "type": "number"
+        },
+        "vendors_trend_pct": {
+          "type": "number"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.EventFormOptionsResponse": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_admin_dtos.CategoryItem"
+          }
+        },
+        "event_types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_admin_dtos.SelectOption"
+          }
+        },
+        "message": {
+          "type": "string"
+        },
+        "vendors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_admin_dtos.VendorSelectOption"
+          }
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.EventImageItem": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "event_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "integer"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.MonthlyAmountItem": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer"
+        },
+        "month": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.MonthlyCountItem": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer"
+        },
+        "month": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.ReportsAnalyticsResponse": {
+      "type": "object",
+      "properties": {
+        "active_vendors": {
+          "type": "integer"
+        },
+        "event_approvals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_admin_dtos.MonthlyCountItem"
+          }
+        },
+        "events_declined": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        },
+        "refunds_issued": {
+          "type": "integer"
+        },
+        "registered_events": {
+          "type": "integer"
+        },
+        "revenue_trend": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_admin_dtos.MonthlyAmountItem"
+          }
+        },
+        "total_revenue": {
+          "type": "integer"
+        },
+        "vendors_declined": {
+          "type": "integer"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.SelectOption": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.UpdateAdminStatusRequest": {
+      "type": "object",
+      "properties": {
+        "is_active": {
+          "type": "boolean"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.UpdateCategoryRequest": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "icon_url": {
+          "type": "string"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.UpdateDisputeRequest": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "admin_note": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.UpdateFAQRequest": {
+      "type": "object",
+      "required": [
+        "answer",
+        "question"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "question": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "integer"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.UpdatePlatformSettingRequest": {
+      "type": "object",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.UpdateSubscriptionPlanRequest": {
+      "type": "object",
+      "required": [
+        "max_events",
+        "max_tickets_per_event",
+        "name",
+        "price"
+      ],
+      "properties": {
+        "can_access_reports": {
+          "type": "boolean"
+        },
+        "can_broadcast": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "max_events": {
+          "type": "integer"
+        },
+        "max_tickets_per_event": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "integer"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.UpdateSupportTicketRequest": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.UpdateUserStatusRequest": {
+      "type": "object",
+      "properties": {
+        "is_active": {
+          "type": "boolean"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.UpdateVendorStatusRequest": {
+      "type": "object",
+      "required": [
+        "verification_status"
+      ],
+      "properties": {
+        "is_active": {
+          "type": "boolean"
+        },
+        "verification_status": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.VendorPageResponse": {
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_admin_dtos.AdminEvent"
+          }
+        },
+        "total_events": {
+          "type": "integer"
+        },
+        "vendor": {
+          "$ref": "#/definitions/trios_internal_application_admin_dtos.AdminVendorDetail"
+        }
+      }
+    },
+    "trios_internal_application_admin_dtos.VendorSelectOption": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_auth_dtos.AuthUser": {
       "type": "object",
       "properties": {
         "city": {
@@ -4817,7 +6319,7 @@
         }
       }
     },
-    "dtos.AuthUserWithTokens": {
+    "trios_internal_application_auth_dtos.AuthUserWithTokens": {
       "type": "object",
       "properties": {
         "access_token": {
@@ -4867,273 +6369,46 @@
         }
       }
     },
-    "dtos.CancelEventRequest": {
+    "trios_internal_application_auth_dtos.ForgotPasswordRequest": {
       "type": "object",
-      "required": ["notify_via", "reason"],
-      "properties": {
-        "message": {
-          "type": "string"
-        },
-        "notify_via": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "reason": {
-          "type": "string"
-        },
-        "remove_from_listings": {
-          "type": "boolean"
-        }
-      }
-    },
-    "dtos.ChangeAccountPinRequest": {
-      "type": "object",
-      "required": ["current_password", "new_pin", "old_pin"],
-      "properties": {
-        "current_password": {
-          "type": "string"
-        },
-        "new_pin": {
-          "type": "string"
-        },
-        "old_pin": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.ChangeAdminPasswordRequest": {
-      "type": "object",
-      "required": ["current_password", "new_password"],
-      "properties": {
-        "current_password": {
-          "type": "string"
-        },
-        "new_password": {
-          "type": "string",
-          "minLength": 8
-        }
-      }
-    },
-    "dtos.CreateAdminRequest": {
-      "type": "object",
-      "required": ["email", "name", "password", "role"],
       "properties": {
         "email": {
           "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string",
-          "minLength": 8
-        },
-        "role": {
-          "type": "string"
         }
       }
     },
-    "dtos.CreateBroadcastRequest": {
-      "type": "object",
-      "required": ["channel", "content", "title"],
-      "properties": {
-        "channel": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string"
-        },
-        "recipients": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.CreateFAQRequest": {
-      "type": "object",
-      "required": ["answer", "question"],
-      "properties": {
-        "answer": {
-          "type": "string"
-        },
-        "question": {
-          "type": "string"
-        },
-        "sort_order": {
-          "type": "integer"
-        }
-      }
-    },
-    "dtos.CreateSubscriptionPlanRequest": {
-      "type": "object",
-      "required": ["max_events", "max_tickets_per_event", "name", "price"],
-      "properties": {
-        "can_access_reports": {
-          "type": "boolean"
-        },
-        "can_broadcast": {
-          "type": "boolean"
-        },
-        "description": {
-          "type": "string"
-        },
-        "max_events": {
-          "type": "integer"
-        },
-        "max_tickets_per_event": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "price": {
-          "type": "integer"
-        }
-      }
-    },
-    "dtos.DashboardResponse": {
+    "trios_internal_application_auth_dtos.ForgotPasswordResponse": {
       "type": "object",
       "properties": {
-        "events_trend_pct": {
-          "type": "number"
-        },
         "message": {
           "type": "string"
         },
-        "pending_approvals": {
-          "type": "integer"
-        },
-        "pending_verifications": {
-          "type": "integer"
-        },
-        "recent_events": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dtos.AdminEvent"
+        "user": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "full_name": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "phone_number": {
+              "type": "string"
+            }
           }
-        },
-        "recent_vendors": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dtos.AdminVendor"
-          }
-        },
-        "subscriptions_trend_pct": {
-          "type": "number"
-        },
-        "total_bookings": {
-          "type": "integer"
-        },
-        "total_events": {
-          "type": "integer"
-        },
-        "total_revenue": {
-          "type": "integer"
-        },
-        "total_subscriptions": {
-          "type": "integer"
-        },
-        "total_users": {
-          "type": "integer"
-        },
-        "total_vendors": {
-          "type": "integer"
-        },
-        "users_trend_pct": {
-          "type": "number"
-        },
-        "vendors_trend_pct": {
-          "type": "number"
         }
       }
     },
-    "dtos.EventRequest": {
+    "trios_internal_application_auth_dtos.LoginRequest": {
       "type": "object",
       "required": [
-        "category_id",
-        "description",
-        "end_date",
-        "start_date",
-        "ticket_types",
-        "title",
-        "venue_address",
-        "venue_name"
+        "email",
+        "password"
       ],
       "properties": {
-        "-": {
-          "description": "Parsed from TicketTypesRaw",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dtos.TicketTypeRequest"
-          }
-        },
-        "category_id": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "end_date": {
-          "type": "string"
-        },
-        "start_date": {
-          "type": "string"
-        },
-        "ticket_types": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "venue_address": {
-          "type": "string"
-        },
-        "venue_name": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.FinalizeTicketRequest": {
-      "type": "object",
-      "required": ["booking_id", "method"],
-      "properties": {
-        "booking_id": {
-          "type": "string"
-        },
-        "method": {
-          "type": "string",
-          "enum": ["gateway", "wallet"]
-        }
-      }
-    },
-    "dtos.FinalizeTicketResponse": {
-      "type": "object",
-      "properties": {
-        "amount": {
-          "type": "string"
-        },
-        "checkout_link": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        },
-        "transaction_reference": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.ForgotAccountPinRequest": {
-      "type": "object",
-      "required": ["email", "password"],
-      "properties": {
         "email": {
           "type": "string"
         },
@@ -5142,159 +6417,18 @@
         }
       }
     },
-    "dtos.ForgotPasswordRequest": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.ForgotPasswordResponse": {
+    "trios_internal_application_auth_dtos.LoginResponse": {
       "type": "object",
       "properties": {
         "message": {
           "type": "string"
         },
         "user": {
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string"
-            },
-            "full_name": {
-              "type": "string"
-            },
-            "id": {
-              "type": "string"
-            },
-            "phone_number": {
-              "type": "string"
-            }
-          }
+          "$ref": "#/definitions/trios_internal_application_auth_dtos.AuthUserWithTokens"
         }
       }
     },
-    "dtos.FundWalletRequest": {
-      "type": "object",
-      "required": ["amount"],
-      "properties": {
-        "amount": {
-          "type": "integer",
-          "minimum": 100
-        }
-      }
-    },
-    "dtos.FundWalletResponse": {
-      "type": "object",
-      "properties": {
-        "amount": {
-          "type": "string"
-        },
-        "checkout_link": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        },
-        "user_id": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.GetProfileResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
-        },
-        "user": {
-          "$ref": "#/definitions/dtos.ProfileResponse"
-        }
-      }
-    },
-    "dtos.GetUserBalanceResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
-        },
-        "wallets": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dtos.WalletDetail"
-          }
-        }
-      }
-    },
-    "dtos.HoldEventRequest": {
-      "type": "object",
-      "required": ["notify_via", "reason", "resume_mode"],
-      "properties": {
-        "disable_registrations": {
-          "type": "boolean"
-        },
-        "hide_from_listings": {
-          "type": "boolean"
-        },
-        "message": {
-          "type": "string"
-        },
-        "notify_via": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "reason": {
-          "type": "string"
-        },
-        "resume_at": {
-          "type": "string"
-        },
-        "resume_mode": {
-          "type": "string",
-          "enum": ["manual", "auto"]
-        }
-      }
-    },
-    "dtos.InteractionRequest": {
-      "type": "object",
-      "required": ["type"],
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["view", "click"]
-        }
-      }
-    },
-    "dtos.LoginRequest": {
-      "type": "object",
-      "required": ["email", "password"],
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.LoginResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
-        },
-        "user": {
-          "$ref": "#/definitions/dtos.AuthUserWithTokens"
-        }
-      }
-    },
-    "dtos.LogoutResponse": {
+    "trios_internal_application_auth_dtos.LogoutResponse": {
       "type": "object",
       "properties": {
         "message": {
@@ -5302,31 +6436,13 @@
         }
       }
     },
-    "dtos.MonthlyAmountItem": {
+    "trios_internal_application_auth_dtos.PasswordChangeRequest": {
       "type": "object",
-      "properties": {
-        "amount": {
-          "type": "integer"
-        },
-        "month": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.MonthlyCountItem": {
-      "type": "object",
-      "properties": {
-        "count": {
-          "type": "integer"
-        },
-        "month": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.PasswordChangeRequest": {
-      "type": "object",
-      "required": ["confirm_new_password", "current_password", "new_password"],
+      "required": [
+        "confirm_new_password",
+        "current_password",
+        "new_password"
+      ],
       "properties": {
         "confirm_new_password": {
           "type": "string"
@@ -5341,210 +6457,35 @@
         }
       }
     },
-    "dtos.ProfileResponse": {
+    "trios_internal_application_auth_dtos.ResendOtpRequest": {
       "type": "object",
-      "properties": {
-        "date_of_birth": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "full_name": {
-          "type": "string"
-        },
-        "gender": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "is_active": {
-          "type": "boolean"
-        },
-        "is_pin_set": {
-          "type": "boolean"
-        },
-        "is_verified": {
-          "type": "boolean"
-        },
-        "lastLogin": {
-          "type": "string"
-        },
-        "phone_number": {
-          "type": "string"
-        },
-        "profilePicture": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.ProfileUpdateRequest": {
-      "type": "object",
-      "properties": {
-        "date_of_birth": {
-          "type": "string"
-        },
-        "full_name": {
-          "type": "string",
-          "maxLength": 100,
-          "minLength": 2
-        },
-        "gender": {
-          "type": "string",
-          "enum": ["male", "female", "others"]
-        }
-      }
-    },
-    "dtos.PurchaseTicketItem": {
-      "type": "object",
-      "required": ["quantity", "ticket_type_id"],
-      "properties": {
-        "quantity": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "ticket_type_id": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.PurchaseTicketRequest": {
-      "type": "object",
-      "required": ["event_id", "items"],
-      "properties": {
-        "event_id": {
-          "type": "string"
-        },
-        "items": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/definitions/dtos.PurchaseTicketItem"
-          }
-        }
-      }
-    },
-    "dtos.PurchaseTicketResponse": {
-      "type": "object",
-      "properties": {
-        "booking_id": {
-          "type": "string"
-        },
-        "booking_reference": {
-          "type": "string"
-        },
-        "category_id": {
-          "type": "string"
-        },
-        "category_name": {
-          "type": "string"
-        },
-        "event_id": {
-          "type": "string"
-        },
-        "event_name": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        },
-        "ticket_type_name": {
-          "type": "string"
-        },
-        "total_amount": {
-          "type": "integer"
-        }
-      }
-    },
-    "dtos.ReportsAnalyticsResponse": {
-      "type": "object",
-      "properties": {
-        "active_vendors": {
-          "type": "integer"
-        },
-        "event_approvals": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dtos.MonthlyCountItem"
-          }
-        },
-        "events_declined": {
-          "type": "integer"
-        },
-        "message": {
-          "type": "string"
-        },
-        "refunds_issued": {
-          "type": "integer"
-        },
-        "registered_events": {
-          "type": "integer"
-        },
-        "revenue_trend": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dtos.MonthlyAmountItem"
-          }
-        },
-        "total_revenue": {
-          "type": "integer"
-        },
-        "vendors_declined": {
-          "type": "integer"
-        }
-      }
-    },
-    "dtos.ResendOtpRequest": {
-      "type": "object",
-      "required": ["email"],
+      "required": [
+        "email"
+      ],
       "properties": {
         "email": {
           "type": "string"
         }
       }
     },
-    "dtos.ResendOtpResponse": {
+    "trios_internal_application_auth_dtos.ResendOtpResponse": {
       "type": "object",
       "properties": {
         "message": {
           "type": "string"
         },
         "user": {
-          "$ref": "#/definitions/dtos.AuthUser"
+          "$ref": "#/definitions/trios_internal_application_auth_dtos.AuthUser"
         }
       }
     },
-    "dtos.ResendPinOtpRequest": {
+    "trios_internal_application_auth_dtos.ResetPasswordRequest": {
       "type": "object",
-      "required": ["email"],
-      "properties": {
-        "email": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.ResetAccountPinOtpRequest": {
-      "type": "object",
-      "required": ["email", "verification_code"],
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "verification_code": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.ResetPasswordRequest": {
-      "type": "object",
-      "required": ["confirm_new_password", "new_password", "user_id"],
+      "required": [
+        "confirm_new_password",
+        "new_password",
+        "user_id"
+      ],
       "properties": {
         "confirm_new_password": {
           "type": "string"
@@ -5558,7 +6499,7 @@
         }
       }
     },
-    "dtos.ResetPasswordResponse": {
+    "trios_internal_application_auth_dtos.ResetPasswordResponse": {
       "type": "object",
       "properties": {
         "message": {
@@ -5583,33 +6524,7 @@
         }
       }
     },
-    "dtos.ReviewRequest": {
-      "type": "object",
-      "required": ["rating"],
-      "properties": {
-        "comment": {
-          "type": "string"
-        },
-        "rating": {
-          "type": "integer",
-          "maximum": 5,
-          "minimum": 1
-        }
-      }
-    },
-    "dtos.SetAccountPinRequest": {
-      "type": "object",
-      "required": ["account_pin", "confirm_account_pin"],
-      "properties": {
-        "account_pin": {
-          "type": "string"
-        },
-        "confirm_account_pin": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.SignUpRequest": {
+    "trios_internal_application_auth_dtos.SignUpRequest": {
       "type": "object",
       "required": [
         "confirm_password",
@@ -5651,180 +6566,23 @@
         }
       }
     },
-    "dtos.SignUpResponse": {
+    "trios_internal_application_auth_dtos.SignUpResponse": {
       "type": "object",
       "properties": {
         "message": {
           "type": "string"
         },
         "user": {
-          "$ref": "#/definitions/dtos.AuthUser"
+          "$ref": "#/definitions/trios_internal_application_auth_dtos.AuthUser"
         }
       }
     },
-    "dtos.TicketTypeRequest": {
+    "trios_internal_application_auth_dtos.VerifyAccountRequest": {
       "type": "object",
-      "required": ["name", "total_quantity"],
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "price": {
-          "type": "integer"
-        },
-        "total_quantity": {
-          "type": "integer"
-        }
-      }
-    },
-    "dtos.UpdateAdminStatusRequest": {
-      "type": "object",
-      "properties": {
-        "is_active": {
-          "type": "boolean"
-        }
-      }
-    },
-    "dtos.UpdateDisputeRequest": {
-      "type": "object",
-      "required": ["status"],
-      "properties": {
-        "admin_note": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.UpdateFAQRequest": {
-      "type": "object",
-      "required": ["answer", "question"],
-      "properties": {
-        "answer": {
-          "type": "string"
-        },
-        "is_active": {
-          "type": "boolean"
-        },
-        "question": {
-          "type": "string"
-        },
-        "sort_order": {
-          "type": "integer"
-        }
-      }
-    },
-    "dtos.UpdatePlatformSettingRequest": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.UpdateProfileResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
-        },
-        "user": {
-          "type": "object",
-          "properties": {
-            "full_name": {
-              "type": "string"
-            },
-            "id": {
-              "type": "string"
-            }
-          }
-        }
-      }
-    },
-    "dtos.UpdateSubscriptionPlanRequest": {
-      "type": "object",
-      "required": ["max_events", "max_tickets_per_event", "name", "price"],
-      "properties": {
-        "can_access_reports": {
-          "type": "boolean"
-        },
-        "can_broadcast": {
-          "type": "boolean"
-        },
-        "description": {
-          "type": "string"
-        },
-        "is_active": {
-          "type": "boolean"
-        },
-        "max_events": {
-          "type": "integer"
-        },
-        "max_tickets_per_event": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "price": {
-          "type": "integer"
-        }
-      }
-    },
-    "dtos.UpdateSupportTicketRequest": {
-      "type": "object",
-      "required": ["status"],
-      "properties": {
-        "status": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.UpdateUserStatusRequest": {
-      "type": "object",
-      "properties": {
-        "is_active": {
-          "type": "boolean"
-        }
-      }
-    },
-    "dtos.UpdateVendorStatusRequest": {
-      "type": "object",
-      "required": ["verification_status"],
-      "properties": {
-        "is_active": {
-          "type": "boolean"
-        },
-        "verification_status": {
-          "type": "string"
-        }
-      }
-    },
-    "dtos.VendorPageResponse": {
-      "type": "object",
-      "properties": {
-        "events": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dtos.AdminEvent"
-          }
-        },
-        "total_events": {
-          "type": "integer"
-        },
-        "vendor": {
-          "$ref": "#/definitions/dtos.AdminVendorDetail"
-        }
-      }
-    },
-    "dtos.VerifyAccountRequest": {
-      "type": "object",
-      "required": ["email", "verification_code"],
+      "required": [
+        "email",
+        "verification_code"
+      ],
       "properties": {
         "email": {
           "type": "string"
@@ -5834,20 +6592,23 @@
         }
       }
     },
-    "dtos.VerifyAccountResponse": {
+    "trios_internal_application_auth_dtos.VerifyAccountResponse": {
       "type": "object",
       "properties": {
         "message": {
           "type": "string"
         },
         "user": {
-          "$ref": "#/definitions/dtos.AuthUserWithTokens"
+          "$ref": "#/definitions/trios_internal_application_auth_dtos.AuthUserWithTokens"
         }
       }
     },
-    "dtos.VerifyPasswordForgotOtpRequest": {
+    "trios_internal_application_auth_dtos.VerifyPasswordForgotOtpRequest": {
       "type": "object",
-      "required": ["email", "verification_code"],
+      "required": [
+        "email",
+        "verification_code"
+      ],
       "properties": {
         "email": {
           "type": "string"
@@ -5857,7 +6618,7 @@
         }
       }
     },
-    "dtos.VerifyPasswordForgotOtpResponse": {
+    "trios_internal_application_auth_dtos.VerifyPasswordForgotOtpResponse": {
       "type": "object",
       "properties": {
         "email": {
@@ -5871,30 +6632,7 @@
         }
       }
     },
-    "dtos.WalletDetail": {
-      "type": "object",
-      "properties": {
-        "balance": {
-          "type": "string"
-        },
-        "currency": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        }
-      }
-    },
-    "httpx.AppError": {
-      "type": "object",
-      "properties": {
-        "message": {}
-      }
-    },
-    "userdtos.BookingListingResponse": {
+    "trios_internal_application_bookings_user_dtos.BookingListingResponse": {
       "type": "object",
       "properties": {
         "booked_at": {
@@ -5938,7 +6676,136 @@
         }
       }
     },
-    "userdtos.EventResponse": {
+    "trios_internal_application_events_dtos.CancelEventRequest": {
+      "type": "object",
+      "required": [
+        "notify_via",
+        "reason"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "notify_via": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "type": "string"
+        },
+        "remove_from_listings": {
+          "type": "boolean"
+        }
+      }
+    },
+    "trios_internal_application_events_dtos.EventRequest": {
+      "type": "object",
+      "required": [
+        "category_id",
+        "description",
+        "end_date",
+        "start_date",
+        "ticket_types",
+        "title",
+        "venue_address",
+        "venue_name"
+      ],
+      "properties": {
+        "-": {
+          "description": "Parsed from TicketTypesRaw",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_events_dtos.TicketTypeRequest"
+          }
+        },
+        "category_id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "end_date": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string"
+        },
+        "ticket_types": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "venue_address": {
+          "type": "string"
+        },
+        "venue_name": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_events_dtos.HoldEventRequest": {
+      "type": "object",
+      "required": [
+        "notify_via",
+        "reason",
+        "resume_mode"
+      ],
+      "properties": {
+        "disable_registrations": {
+          "type": "boolean"
+        },
+        "hide_from_listings": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "notify_via": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "type": "string"
+        },
+        "resume_at": {
+          "type": "string"
+        },
+        "resume_mode": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "auto"
+          ]
+        }
+      }
+    },
+    "trios_internal_application_events_dtos.TicketTypeRequest": {
+      "type": "object",
+      "required": [
+        "name",
+        "total_quantity"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "integer"
+        },
+        "total_quantity": {
+          "type": "integer"
+        }
+      }
+    },
+    "trios_internal_application_events_user_dtos.EventResponse": {
       "type": "object",
       "properties": {
         "average_rating": {
@@ -5977,7 +6844,7 @@
         "ticket_types": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/userdtos.TicketTypeInfo"
+            "$ref": "#/definitions/trios_internal_application_events_user_dtos.TicketTypeInfo"
           }
         },
         "title": {
@@ -5994,7 +6861,7 @@
         }
       }
     },
-    "userdtos.TicketTypeInfo": {
+    "trios_internal_application_events_user_dtos.TicketTypeInfo": {
       "type": "object",
       "properties": {
         "available_count": {
@@ -6022,14 +6889,362 @@
           "type": "integer"
         }
       }
-    }
-  },
-  "securityDefinitions": {
-    "BearerAuth": {
-      "description": "Type \"Bearer\" followed by a space and your JWT token",
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
+    },
+    "trios_internal_application_profile_dtos.GetProfileResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/trios_internal_application_profile_dtos.ProfileResponse"
+        }
+      }
+    },
+    "trios_internal_application_profile_dtos.ProfileResponse": {
+      "type": "object",
+      "properties": {
+        "date_of_birth": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "is_pin_set": {
+          "type": "boolean"
+        },
+        "is_verified": {
+          "type": "boolean"
+        },
+        "lastLogin": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        },
+        "profilePicture": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_profile_dtos.ProfileUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "date_of_birth": {
+          "type": "string"
+        },
+        "full_name": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 2
+        },
+        "gender": {
+          "type": "string",
+          "enum": [
+            "male",
+            "female",
+            "others"
+          ]
+        }
+      }
+    },
+    "trios_internal_application_profile_dtos.UpdateProfileResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "full_name": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "trios_internal_application_reviews_dtos.InteractionRequest": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "view",
+            "click"
+          ]
+        }
+      }
+    },
+    "trios_internal_application_reviews_dtos.ReviewRequest": {
+      "type": "object",
+      "required": [
+        "rating"
+      ],
+      "properties": {
+        "comment": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer",
+          "maximum": 5,
+          "minimum": 1
+        }
+      }
+    },
+    "trios_internal_application_tickets_dtos.FinalizeTicketRequest": {
+      "type": "object",
+      "required": [
+        "booking_id",
+        "method"
+      ],
+      "properties": {
+        "booking_id": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "gateway",
+            "wallet"
+          ]
+        }
+      }
+    },
+    "trios_internal_application_tickets_dtos.FinalizeTicketResponse": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string"
+        },
+        "checkout_link": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "transaction_reference": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_tickets_dtos.PurchaseTicketItem": {
+      "type": "object",
+      "required": [
+        "quantity",
+        "ticket_type_id"
+      ],
+      "properties": {
+        "quantity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ticket_type_id": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_tickets_dtos.PurchaseTicketRequest": {
+      "type": "object",
+      "required": [
+        "event_id",
+        "items"
+      ],
+      "properties": {
+        "event_id": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_tickets_dtos.PurchaseTicketItem"
+          }
+        }
+      }
+    },
+    "trios_internal_application_tickets_dtos.PurchaseTicketResponse": {
+      "type": "object",
+      "properties": {
+        "booking_id": {
+          "type": "string"
+        },
+        "booking_reference": {
+          "type": "string"
+        },
+        "category_id": {
+          "type": "string"
+        },
+        "category_name": {
+          "type": "string"
+        },
+        "event_id": {
+          "type": "string"
+        },
+        "event_name": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "ticket_type_name": {
+          "type": "string"
+        },
+        "total_amount": {
+          "type": "integer"
+        }
+      }
+    },
+    "trios_internal_application_wallets_dtos.FundWalletRequest": {
+      "type": "object",
+      "required": [
+        "amount"
+      ],
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "minimum": 100
+        }
+      }
+    },
+    "trios_internal_application_wallets_dtos.FundWalletResponse": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string"
+        },
+        "checkout_link": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_wallets_dtos.GetUserBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "wallets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trios_internal_application_wallets_dtos.WalletDetail"
+          }
+        }
+      }
+    },
+    "trios_internal_application_wallets_dtos.WalletDetail": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_withdrawal_dto.InitiateWithdrawalRequest": {
+      "type": "object",
+      "required": [
+        "account_name",
+        "account_number",
+        "amount",
+        "bank_code",
+        "currency",
+        "pin"
+      ],
+      "properties": {
+        "account_name": {
+          "type": "string"
+        },
+        "account_number": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number"
+        },
+        "bank_code": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "pin": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_application_withdrawal_dto.RetrieveAccountDetailsRequest": {
+      "type": "object",
+      "required": [
+        "account_number",
+        "bank_code"
+      ],
+      "properties": {
+        "account_number": {
+          "type": "string"
+        },
+        "bank_code": {
+          "type": "string"
+        }
+      }
+    },
+    "trios_internal_shared_httpx.AppError": {
+      "type": "object",
+      "properties": {
+        "message": {}
+      }
     }
   }
 }
