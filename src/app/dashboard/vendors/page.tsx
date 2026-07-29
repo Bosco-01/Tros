@@ -60,13 +60,12 @@ export default function AllVendorsPage() {
           <h2 className="text-xl md:text-[22px] font-bold text-neutral-900 tracking-tight">
             Vendor Directory
           </h2>
-          <Link href="/dashboard/vendors">
+          <Link href="/dashboard/vendors/create">
             <button
               type="button"
-              title="Vendors self-register in the Trios app"
-              className="flex items-center gap-2.5 px-6 py-3 bg-white border border-neutral-200 text-neutral-800 font-bold text-sm rounded-full transition-colors focus:outline-none hover:border-[#6312E1]"
+              className="flex items-center gap-2.5 px-6 py-3 bg-[#6312E1] text-white font-bold text-sm rounded-full transition-colors focus:outline-none hover:bg-[#520cbd]"
             >
-              <span>Vendor directory</span>
+              <span>+ Create Vendor</span>
             </button>
           </Link>
         </div>

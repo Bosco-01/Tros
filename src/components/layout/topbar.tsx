@@ -21,6 +21,7 @@ import {
   LifeBuoy,
   Settings,
   LogOut,
+  Tags,
 } from 'lucide-react';
 import { adminService } from '@/services/adminService';
 import { AdminProfile } from '@/types/admin';
@@ -33,6 +34,7 @@ const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'All Users', href: '/dashboard/users', icon: Users },
   { name: 'All Vendors', href: '/dashboard/vendors', icon: Store },
+  { name: 'Categories', href: '/dashboard/categories', icon: Tags },
   { name: 'All Events', href: '/dashboard/events', icon: Calendar },
   { name: 'Transactions', href: '/dashboard/transactions', icon: Banknote },
   { name: 'Reports', href: '/dashboard/reports', icon: BarChart2 },

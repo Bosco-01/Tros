@@ -14,6 +14,7 @@ const LIST_ARRAY_KEYS = [
   'bookings',
   'faqs',
   'plans',
+  'categories',
   'items',
   'results',
 ] as const;

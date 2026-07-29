@@ -341,19 +341,25 @@ export const adminService = {
     });
   },
 
-  listCategories: (serverToken?: string) => {
-    return apiFetch<T.CategoryItem[] | T.PaginatedResponse<T.CategoryItem>>('/admin/categories', {}, serverToken);
+  listCategories: async (serverToken?: string) => {
+    const raw = await apiFetch<{ message?: string; categories?: T.CategoryItem[] } | T.CategoryItem[]>(
+      '/admin/categories',
+      {},
+      serverToken,
+    );
+    if (Array.isArray(raw)) return raw;
+    return raw.categories ?? [];
   },
 
   createCategory: (data: T.CreateCategoryRequest) => {
-    return apiFetch<T.MessageResponse>('/admin/categories', {
+    return apiFetch<{ message: string; data: T.CategoryItem }>('/admin/categories', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
   updateCategory: (categoryId: string, data: T.UpdateCategoryRequest) => {
-    return apiFetch<T.MessageResponse>(`/admin/categories/${categoryId}`, {
+    return apiFetch<{ message: string; data: T.CategoryItem }>(`/admin/categories/${categoryId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
@@ -361,6 +367,20 @@ export const adminService = {
 
   deleteCategory: (categoryId: string) => {
     return apiFetch<T.MessageResponse>(`/admin/categories/${categoryId}`, { method: 'DELETE' });
+  },
+
+  createVendor: (formData: FormData) => {
+    return apiFetch<{
+      message: string;
+      vendor_id: string;
+      user_id: string;
+      business_name: string;
+      email: string;
+      verification_status: string;
+    }>('/admin/vendors', {
+      method: 'POST',
+      body: formData,
+    });
   },
 
   getEventFormOptions: (serverToken?: string) => {
