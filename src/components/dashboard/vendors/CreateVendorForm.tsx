@@ -254,7 +254,7 @@ export const CreateVendorForm: React.FC = () => {
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-neutral-500">
-              Initial Password
+              Create Password
             </label>
             <input
               type="password"
